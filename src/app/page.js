@@ -13,6 +13,9 @@ export default function Home() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+    context.lineCap = "round";
+    context.lineJoin = "round";
+    context.lineWidth = 10;
     contextRef.current = context;
   });
 

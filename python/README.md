@@ -1,0 +1,1 @@
+These python scripts are associated with [KanjiVG](https://kanjivg.tagaini.net/index.html).
