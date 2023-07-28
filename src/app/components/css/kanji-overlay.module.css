@@ -1,8 +1,8 @@
-.card{
+.overlay{
     position: absolute;
 }
 
-.overlay{
+.kanji{
     width: 500px;
     opacity: 0.5;
 }

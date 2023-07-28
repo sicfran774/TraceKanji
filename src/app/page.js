@@ -3,20 +3,21 @@
 'use client';
 
 import styles from './page.module.css';
-import Kanji from './components/kanji'
+import KanjiOverlay from './components/kanji-overlay'
 import { useEffect, useRef, useState} from "react";
 
-export default function Draw() {
+export default function App() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineJoin = "round";
-    context.lineWidth = 10;
+    context.lineWidth = 14;
     contextRef.current = context;
   }, []);
 
@@ -47,19 +48,27 @@ export default function Draw() {
       contextRef.current.stroke();
   };
 
+  function toggleOverlay(){
+    setShowOverlay(!showOverlay);
+  }
+
   return (
     <div className={styles.main}>
-      <Kanji />
-      <div className={styles.paint}>
-        <canvas
-        onMouseDown={startDrawing}
-        onMouseUp={endDrawing}
-        onMouseMove={draw}
-        width={'500px'}
-        height={'500px'}
-        ref={canvasRef}
-        />
+      <div className={styles.drawArea}>
+        {showOverlay && <KanjiOverlay />}
+        <div className={styles.paint}>
+          <canvas
+          onMouseDown={startDrawing}
+          onMouseUp={endDrawing}
+          onMouseMove={draw}
+          width={'500px'}
+          height={'500px'}
+          ref={canvasRef}
+          />
+        </div>
       </div>
+      
+      <button type="button" onClick={toggleOverlay} className='button'>Toggle Kanji</button>
     </div>
     
   )

@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-.main{
+.drawArea{
   width: 500px;
   margin: auto;
 }
@@ -13,4 +13,8 @@
   width: 500px;
   height: 500px;
   margin: auto;
+}
+
+.button{
+  position: relative;
 }

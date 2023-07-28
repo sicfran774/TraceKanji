@@ -1,9 +1,9 @@
 'use client'
 
-import styles from './css/kanji.module.css';
+import styles from './css/kanji-overlay.module.css';
 import { useEffect, useState} from "react";
 
-export default function Kanji() {
+export default function KanjiOverlay() {
     const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {
@@ -16,8 +16,8 @@ export default function Kanji() {
     }
 
     return (
-        <div className={styles.card}>
-            <img src="./kanji/test.svg" alt="test" className={styles.overlay}></img>
+        <div className={styles.overlay}>
+            <img src="./kanji/test.svg" alt="test" className={styles.kanji}></img>
         </div>
     )
 }
