@@ -3,9 +3,10 @@
 'use client';
 
 import styles from './page.module.css';
+import Kanji from './components/kanji'
 import { useEffect, useRef, useState} from "react";
 
-export default function Home() {
+export default function Draw() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -17,7 +18,7 @@ export default function Home() {
     context.lineJoin = "round";
     context.lineWidth = 10;
     contextRef.current = context;
-  });
+  }, []);
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();
@@ -48,17 +49,18 @@ export default function Home() {
 
   return (
     <div className={styles.main}>
-      <h1 className={styles.header1}>Trace Kanji</h1>
+      <Kanji />
       <div className={styles.paint}>
         <canvas
-          onMouseDown={startDrawing}
-          onMouseUp={endDrawing}
-          onMouseMove={draw}
-          width={'500px'}
-          height={'500px'}
-          ref={canvasRef}
+        onMouseDown={startDrawing}
+        onMouseUp={endDrawing}
+        onMouseMove={draw}
+        width={'500px'}
+        height={'500px'}
+        ref={canvasRef}
         />
       </div>
     </div>
+    
   )
 }

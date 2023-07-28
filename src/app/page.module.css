@@ -2,7 +2,13 @@
   text-align: center;
 }
 
+.main{
+  width: 500px;
+  margin: auto;
+}
+
 .paint{
+  position: absolute;
   border: 2px solid black;
   width: 500px;
   height: 500px;

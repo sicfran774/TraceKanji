@@ -1,0 +1,8 @@
+.card{
+    position: absolute;
+}
+
+.overlay{
+    width: 500px;
+    opacity: 0.5;
+}
