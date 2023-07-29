@@ -19,7 +19,7 @@ async function init(){
     await init()
 })()
 
-export async function getKanji() {
+export async function getKanji(character) {
     try{
         if(!kanji) await init()
 

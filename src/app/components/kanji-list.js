@@ -1,4 +1,5 @@
-import { getKanji } from "@/lib/mongodb/kanji";
+import { getKanji } from "@/lib/mongodb/kanji"
+import KanjiCard from "./kanji-card"
 
 async function fetchKanji(){
     const kanji = await getKanji()
@@ -14,7 +15,9 @@ export default async function KanjiList(){
         <div>
             <ul>
                 {kanji.map(k => (
-                    <li key={k.kanji}>{k.kanji}</li>
+                    <li key={k.kanji}>
+                        <KanjiCard svg={k.svg}/>
+                    </li>
                 ))}
             </ul>
         </div>
