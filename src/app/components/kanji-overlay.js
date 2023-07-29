@@ -1,10 +1,13 @@
 'use client'
 
+import SVG from 'react-inlinesvg'
 import styles from './css/kanji-overlay.module.css';
-import { useEffect, useState} from "react";
+import { useContext, useEffect, useState} from "react";
+import { SharedKanjiProvider } from './svg-provider';
 
 export default function KanjiOverlay() {
     const [hydrated, setHydrated] = useState(false);
+    let { sharedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
         setHydrated(true);
@@ -17,7 +20,7 @@ export default function KanjiOverlay() {
 
     return (
         <div className={styles.overlay}>
-            <img src="./kanji/test.svg" alt="test" className={styles.kanji}></img>
+            <SVG src={sharedKanji} alt="No image found" className={styles.kanji} />
         </div>
     )
 }

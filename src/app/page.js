@@ -4,9 +4,9 @@ import KanjiList from './components/kanji-list';
 
 export default async function App() {
   return (
-    <div className={styles.main}>
-      <DrawArea />
-      <KanjiList />
-    </div>
+      <div className={styles.main}>
+        <DrawArea />
+        <KanjiList />
+      </div>
   )
 }
