@@ -1,6 +1,8 @@
 import { getKanji } from "@/lib/mongodb/kanji"
 import KanjiCard from "./kanji-card"
 
+const KANJIAPI_URL = "https://kanjiapi.dev/v1"
+
 async function fetchKanji(){
     //Call async func to get kanji from db
     const kanji = await getKanji()
@@ -9,15 +11,27 @@ async function fetchKanji(){
     return kanji
 }
 
+async function fetchKanjiInfo(kanjiJson){
+    const kanjiInfo = await Promise.all(
+        kanjiJson.map(character => (
+            fetch(`${KANJIAPI_URL}/kanji/${character.kanji}`)
+            .then(result => result.json())
+            )
+        )
+    )
+    return kanjiInfo
+}
+
 export default async function KanjiList({}){
-    const kanji = await fetchKanji()
+    const kanjiJson = await fetchKanji()
+    const kanjiInfo = await fetchKanjiInfo(kanjiJson)
 
     return(
         <div>
             <ul>
-                {kanji.map(k => (
-                    <li key={k.kanji}>
-                        <KanjiCard svg={k.svg}/>
+                {kanjiJson.map((item, index) => (
+                    <li key={index}>
+                        <KanjiCard kanji={kanjiInfo[index]} svg={item.svg}/>
                     </li>
                 ))}
             </ul>
