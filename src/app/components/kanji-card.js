@@ -21,7 +21,6 @@ export default function KanjiCard({kanji, svg}){
 
     useEffect(() => {
         removeStrokeOrder();
-        
     }, []);
 
     function onClick(){

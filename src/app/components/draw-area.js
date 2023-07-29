@@ -52,6 +52,12 @@ export default function DrawArea() {
     setShowOverlay(!showOverlay);
   }
 
+  function clearCanvas(){
+    const canvas = canvasRef.current
+    const context = canvas.getContext("2d")
+    context.clearRect(0, 0, canvas.width, canvas.height)
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.drawArea}>
@@ -69,6 +75,7 @@ export default function DrawArea() {
       </div>
       
       <button type="button" onClick={toggleOverlay} className='button'>Toggle Kanji</button>
+      <button type="button" onClick={clearCanvas} className='button'>Clear Drawing</button>
     </div>
     
   )
