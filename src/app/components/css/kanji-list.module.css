@@ -1,3 +1,8 @@
+.kanjiList ul{
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .kanjiList li{
     list-style-type: none;
 }

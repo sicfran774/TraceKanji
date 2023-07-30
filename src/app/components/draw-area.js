@@ -124,11 +124,11 @@ export default function DrawArea() {
           ref={canvasRef}
           />
         </div>
-        <div className={styles.buttons}>
-          <button type="button" onClick={toggleOverlay} className='button'>{showKanji}</button>
-          <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
-          <button type="button" onClick={undoStroke} className='button'>Undo</button>
-        </div>
+      </div>
+      <div className={styles.buttons}>
+        <button type="button" onClick={toggleOverlay} className='button'>{showKanji}</button>
+        <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
+        <button type="button" onClick={undoStroke} className='button'>Undo</button>
       </div>
       <div className={styles.kanjiInfo}>
         <div className={styles.kanji}>
