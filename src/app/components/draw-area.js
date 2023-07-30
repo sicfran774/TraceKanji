@@ -11,6 +11,7 @@ export default function DrawArea() {
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
+  const [strokes, setStrokes] = useState([""])
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -19,7 +20,12 @@ export default function DrawArea() {
     context.lineJoin = "round";
     context.lineWidth = 14;
     contextRef.current = context;
+    setStrokes([canvasRef.current.toDataURL()])
   }, []);
+
+  useEffect(() => {
+    redrawCanvas()
+  }, [strokes])
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();
@@ -33,6 +39,7 @@ export default function DrawArea() {
   // Function for ending the drawing
   const endDrawing = () => {
     contextRef.current.closePath();
+    addStroke()
     setIsDrawing(false);
   };
 
@@ -50,6 +57,32 @@ export default function DrawArea() {
 
   function toggleOverlay(){
     setShowOverlay(!showOverlay);
+  }
+
+  const addStroke = () => {
+    setStrokes([...strokes, canvasRef.current.toDataURL()])
+  }
+
+  async function undoStroke(){
+    if(strokes.length > 1) 
+      setStrokes(strokes.slice(0, strokes.length - 1))
+  }
+
+  function redrawCanvas(){
+    const context = canvasRef.current.getContext("2d")
+
+    const canvasPic = new Image()
+    canvasPic.src = (strokes.length > 1) ? strokes[strokes.length - 1] : strokes[0]
+    
+    canvasPic.onload = function() { 
+      clearCanvas()
+      context.drawImage(canvasPic, 0, 0, 500, 500) 
+    }
+  }
+
+  function resetCanvas(){
+    setStrokes(strokes.slice(0, 1))
+    clearCanvas()
   }
 
   function clearCanvas(){
@@ -75,7 +108,8 @@ export default function DrawArea() {
       </div>
       
       <button type="button" onClick={toggleOverlay} className='button'>Toggle Kanji</button>
-      <button type="button" onClick={clearCanvas} className='button'>Clear Drawing</button>
+      <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
+      <button type="button" onClick={undoStroke} className='button'>Undo</button>
     </div>
     
   )
