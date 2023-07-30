@@ -31,6 +31,11 @@ export default function DrawArea() {
     redrawCanvas()
   }, [strokes])
 
+  useEffect(() => {
+    setShowOverlay(true)
+    setShowKanji("Hide Kanji Tracing")
+  }, [sharedKanji])
+
   const startDrawing = (e) => {
     contextRef.current.beginPath();
     contextRef.current.moveTo(
