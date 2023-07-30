@@ -98,17 +98,16 @@ export default function DrawArea() {
     context.clearRect(0, 0, canvas.width, canvas.height)
   }
 
-  function formatMeanings(){
-    const arr = sharedKanji.kanji.meanings
-    let meanings = ""
+  function formatList(arr){
+    let str = ""
     for(let i in arr){
       if(i < arr.length - 1){
-          meanings += arr[i] + ", "
+          str += arr[i] + ", "
       } else{
-          meanings += arr[i]
+          str += arr[i]
       }
     }
-    return meanings
+    return str
   }
 
   return (
@@ -136,7 +135,10 @@ export default function DrawArea() {
           <SVG src={sharedKanji.svg}/>
         </div>
         <div>
-          <p>{formatMeanings()}</p>
+          <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
+          <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
+          <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
+          <a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">List of words that use this kanji</a>
         </div>
       </div>
     </div>
