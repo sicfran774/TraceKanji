@@ -1,3 +1,9 @@
+.main{
+    margin-top: 10px;
+    top: 0;
+    width: 100%;
+}
+
 .drawArea{
     width: 500px;
     margin: auto;
@@ -11,6 +17,19 @@ height: 500px;
 margin: auto;
 }
 
-.button{
-position: relative;
+.buttons{
+    position: absolute;
+}
+
+.buttons > * {
+    margin-right: 10px;
+}
+
+.kanjiInfo{
+    display: flex;
+    margin-right: 0;
+    margin-left: auto;
+    width: 400px;
+    height: 200px;
+    border: 1px solid black;
 }

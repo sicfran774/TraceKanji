@@ -20,7 +20,7 @@ export default function KanjiOverlay() {
 
     return (
         <div className={styles.overlay}>
-            <SVG src={sharedKanji} alt="No image found" className={styles.kanji} />
+            <SVG src={sharedKanji.svg} alt="No image found" className={styles.kanji} />
         </div>
     )
 }

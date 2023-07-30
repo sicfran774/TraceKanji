@@ -3,15 +3,19 @@
 'use client';
 
 import styles from './css/draw-area.module.css';
+import SVG from 'react-inlinesvg'
 import KanjiOverlay from './kanji-overlay'
-import { useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState, useContext} from "react";
+import { SharedKanjiProvider } from './svg-provider';
 
 export default function DrawArea() {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
+  const [showKanji, setShowKanji] = useState("Hide Kanji Tracing")
   const [strokes, setStrokes] = useState([""])
+  let { sharedKanji } = useContext(SharedKanjiProvider)
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -57,9 +61,11 @@ export default function DrawArea() {
 
   function toggleOverlay(){
     setShowOverlay(!showOverlay);
+    setShowKanji((showOverlay) ? "Show Kanji Tracing" : "Hide Kanji Tracing")
   }
 
   const addStroke = () => {
+    //"DataURL" is the current state of the canvas
     setStrokes([...strokes, canvasRef.current.toDataURL()])
   }
 
@@ -71,6 +77,7 @@ export default function DrawArea() {
   function redrawCanvas(){
     const context = canvasRef.current.getContext("2d")
 
+    //Get DataURL of last element in stroke array. The first element is the empty canvas
     const canvasPic = new Image()
     canvasPic.src = (strokes.length > 1) ? strokes[strokes.length - 1] : strokes[0]
     
@@ -91,6 +98,19 @@ export default function DrawArea() {
     context.clearRect(0, 0, canvas.width, canvas.height)
   }
 
+  function formatMeanings(){
+    const arr = sharedKanji.kanji.meanings
+    let meanings = ""
+    for(let i in arr){
+      if(i < arr.length - 1){
+          meanings += arr[i] + ", "
+      } else{
+          meanings += arr[i]
+      }
+    }
+    return meanings
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.drawArea}>
@@ -105,11 +125,20 @@ export default function DrawArea() {
           ref={canvasRef}
           />
         </div>
+        <div className={styles.buttons}>
+          <button type="button" onClick={toggleOverlay} className='button'>{showKanji}</button>
+          <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
+          <button type="button" onClick={undoStroke} className='button'>Undo</button>
+        </div>
       </div>
-      
-      <button type="button" onClick={toggleOverlay} className='button'>Toggle Kanji</button>
-      <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
-      <button type="button" onClick={undoStroke} className='button'>Undo</button>
+      <div className={styles.kanjiInfo}>
+        <div className={styles.kanji}>
+          <SVG src={sharedKanji.svg}/>
+        </div>
+        <div>
+          <p>{formatMeanings()}</p>
+        </div>
+      </div>
     </div>
     
   )

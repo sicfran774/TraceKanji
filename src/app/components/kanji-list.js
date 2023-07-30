@@ -1,5 +1,6 @@
 import { getKanji } from "@/lib/mongodb/kanji"
 import KanjiCard from "./kanji-card"
+import styles from './css/kanji-list.module.css';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 
@@ -27,7 +28,7 @@ export default async function KanjiList({}){
     const kanjiInfo = await fetchKanjiInfo(kanjiJson)
 
     return(
-        <div>
+        <div className={styles.kanjiList}>
             <ul>
                 {kanjiJson.map((item, index) => (
                     <li key={index}>

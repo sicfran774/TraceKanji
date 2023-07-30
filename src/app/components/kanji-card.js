@@ -24,8 +24,12 @@ export default function KanjiCard({kanji, svg}){
     }, []);
 
     function onClick(){
-        setSharedKanji(svg)
-        window.scrollTo(0,0)
+        setSharedKanji({kanji: kanji, svg: svg})
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'smooth'
+        })
     }
 
     function removeStrokeOrder(){
