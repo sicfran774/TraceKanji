@@ -11,13 +11,16 @@ export default function KanjiCard({kanji, svg}){
     let { setSharedKanji } = useContext(SharedKanjiProvider)
     let meanings = ""
 
-    for(let i in kanji.meanings){
-        if(i < kanji.meanings.length - 1){
-            meanings += kanji.meanings[i] + ", "
-        } else{
-            meanings += kanji.meanings[i]
+    if(kanji){
+        for(let i in kanji.meanings){
+            if(i < kanji.meanings.length - 1){
+                meanings += kanji.meanings[i] + ", "
+            } else{
+                meanings += kanji.meanings[i]
+            }
         }
     }
+    
 
     useEffect(() => {
         removeStrokeOrder();
@@ -33,7 +36,7 @@ export default function KanjiCard({kanji, svg}){
     }
 
     function removeStrokeOrder(){
-        //Find "StrokeNumber" section and remove it from the SVG file
+        //Find "StrokeNumber" section and skip printing it from the SVG file
         let index = svg.indexOf("<g id=\"kvg:StrokeN")
         let svgNoStrokeOrder = svg.substring(0, index)
         svgNoStrokeOrder += "</svg>"

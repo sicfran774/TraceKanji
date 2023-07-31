@@ -19,14 +19,22 @@ async function init(){
     await init()
 })()
 
-export async function getKanji(character) {
+export async function getKanji(characters) {
     try{
         if(!kanji) await init()
 
-        const svg = await kanji.find({}).toArray()
+        let kanjiList
 
-        return svg
+        if(characters.length > 0){
+            kanjiList = await kanji.find({kanji: {$in: characters}}).toArray()
+        } else {
+            kanjiList = await kanji.find({}).toArray()
+        }
+        
+
+        return kanjiList
     } catch (e) {
+        console.log(e)
         return {error: 'Failed to fetch kanji'}
     }
 }
