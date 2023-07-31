@@ -10,3 +10,7 @@
 .kanjiList li{
     list-style-type: none;
 }
+
+.pageArrows > * {
+    margin-right: 10px;
+}

@@ -28,7 +28,7 @@ margin: auto;
 .kanjiInfo{
     display: flex;
     width: 500px;
-    height: 200px;
+    height: 225px;
     border: 1px solid black;
     margin: auto;
 }

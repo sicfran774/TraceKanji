@@ -4,16 +4,31 @@ import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 
+const ITEMS_PER_PAGE = 24;
+
 export default function Search({kanjiAPI}){
+    //kanjiAPI consists of two objects
+    // - info: this holds kanji info like meanings, grade, jlpt, readings
+    // - svg: contains svg string that shows stroke orders
 
     const [filter, setFilter] = useState("")
     const [kanjiInfo, setKanjiInfo] = useState(kanjiAPI)
+    const [doneLoading, setDoneLoading] = useState(false)
+    const [page, setPage] = useState(0);
+
+    let kanjiList = kanjiInfo;
+
+    useEffect(() => {
+        setKanjiPerPage()
+    }, [])
 
     useEffect(() => {
         getKanjiBasedOnFilter()
     }, [filter])
 
     const getKanjiBasedOnFilter = () => {
+        setPage(0)
+        setDoneLoading(false)
         const lowercase = filter.toLowerCase()
         //Go through each kanji, look at their meanings and see if it starts with filter
         const sameMeanings = kanjiAPI.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
@@ -29,34 +44,60 @@ export default function Search({kanjiAPI}){
         const sameKanji = kanjiAPI.filter(kanji => (kanji.info.kanji === lowercase))
 
         if(sameKanji.length > 0){
-            setKanjiInfo(sameKanji)
+            kanjiList = sameKanji
         } else if(sameKun.length > 0){
-            setKanjiInfo(sameKun)
+            kanjiList = sameKun
         } else if(sameOn.length > 0){
-            setKanjiInfo(sameOn)
+            kanjiList = sameOn
         } else if(sameGrade.length > 0){
-            setKanjiInfo(sameGrade)
+            kanjiList = sameGrade
         } else if(sameJLPT.length > 0){
-            setKanjiInfo(sameJLPT)
+            kanjiList = sameJLPT
         } else{
-            setKanjiInfo(sameMeanings)
+            kanjiList = sameMeanings
         }
+
+        setKanjiPerPage()
+    }
+
+    const setKanjiPerPage = () => {
+        let arr = []
+        for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
+            const chunk = kanjiList.slice(i, i + ITEMS_PER_PAGE)
+            arr.push(chunk)
+        }
+        setKanjiInfo(arr)
+        setDoneLoading(true)
+    }
+    
+    const changePage = (delta) => {
+        let diff
+        if((delta < 0 && page > 0) || (delta > 0 && page < kanjiInfo.length - 1))
+            diff = page + delta
+        else {
+            diff = page
+        }
+        setPage(diff)
     }
 
     return(
         <div className={styles.main}>
             <div className={styles.searchBox}>
                 <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
-                {/* <button type="button" onClick={getKanjiBasedOnMeaning} className='button'>Enter</button> */}
             </div>
             <div className={styles.kanjiList}>
                 <ul>
-                    {kanjiInfo.map(item => (
+                    {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
                         <li key={item.info.kanji}>
                             <KanjiCard kanji={item.info} svg={item.svg}/>
                         </li>
                     ))}
                 </ul>
+            </div>
+            <div className={styles.pageArrows}>
+                <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
+                <div>{page + 1}</div>
+                <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
             </div>
         </div>
     )
