@@ -140,10 +140,12 @@ export default function DrawArea() {
           <SVG src={sharedKanji.svg}/>
         </div>
         <div>
+          <p>Kanji: {sharedKanji.kanji.kanji}</p>
           <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
           <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
           <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
           <p>Grade: {sharedKanji.kanji.grade}</p>
+          <p>JLPT: {sharedKanji.kanji.jlpt}</p>
           <a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">List of words that use this kanji</a>
         </div>
       </div>
