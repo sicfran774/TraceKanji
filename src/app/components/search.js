@@ -13,7 +13,6 @@ export default function Search({kanjiAPI}){
 
     useEffect(() => {
         getKanjiBasedOnMeaning()
-        console.log(kanjiInfo)
     }, [filter])
 
     const getKanjiBasedOnMeaning = () => {

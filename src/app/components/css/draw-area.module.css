@@ -1,13 +1,11 @@
 .main{
     margin-top: 10px;
-    width: 500px;
-    height: 500px;
+    margin-left: auto;
 }
 
 .drawArea{
     width: 500px;
     height: 500px;
-    margin: auto;
 }
 
 .paint{
@@ -28,7 +26,6 @@ margin: auto;
 
 .kanjiInfo{
     display: flex;
-    margin: 10px 50px 0 auto;
     width: 400px;
     height: 200px;
     border: 1px solid black;
