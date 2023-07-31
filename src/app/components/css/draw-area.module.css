@@ -17,6 +17,7 @@ margin: auto;
 }
 
 .buttons{
+    margin: 5px 0 5px 0;
     height: 20px;
 }
 
@@ -29,4 +30,5 @@ margin: auto;
     width: 400px;
     height: 200px;
     border: 1px solid black;
+    margin: auto;
 }

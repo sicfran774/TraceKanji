@@ -12,14 +12,25 @@ export default function Search({kanjiAPI}){
     //console.log(kanjiInfoSVG)
 
     useEffect(() => {
-        getKanjiBasedOnMeaning()
+        getKanjiBasedOnFilter()
     }, [filter])
 
-    const getKanjiBasedOnMeaning = () => {
+    const getKanjiBasedOnFilter = () => {
         const lowercase = filter.toLowerCase()
         //Go through each kanji, look at their meanings and see if it starts with filter
         const sameMeanings = kanjiAPI.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
-        setKanjiInfo(sameMeanings)
+        //Same for kun readings
+        const sameKun = kanjiAPI.filter(kanji => (kanji.info.kun_readings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
+        //Same for on readings
+        const sameOn = kanjiAPI.filter(kanji => (kanji.info.on_readings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
+
+        if(sameKun.length > 0){
+            setKanjiInfo(sameKun)
+        } else if(sameOn.length > 0){
+            setKanjiInfo(sameOn)
+        } else{
+            setKanjiInfo(sameMeanings)
+        }
     }
 
     return(
