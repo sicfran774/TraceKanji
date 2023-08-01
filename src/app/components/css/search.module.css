@@ -1,17 +1,13 @@
-.main{
-    
-}
-
-.header{
-    
-}
-
 .searchBox{
     display: flex;
 }
 
 .searchText{
     margin-right: 5px;
+}
+
+.kanjiList{
+    height: 100%;
 }
 
 .kanjiList ul{
@@ -34,4 +30,5 @@
 
 .listAndDrawArea {
     display: flex;
+    justify-content: space-between;
 }

@@ -14,7 +14,7 @@ export default function DrawArea() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const [showKanji, setShowKanji] = useState("Hide Kanji Tracing")
-  const [strokes, setStrokes] = useState([""])
+  const [strokes, setStrokes] = useState(null)
   let { sharedKanji } = useContext(SharedKanjiProvider)
 
   useEffect(() => {
@@ -24,10 +24,12 @@ export default function DrawArea() {
     context.lineJoin = "round";
     context.lineWidth = 14;
     contextRef.current = context;
+
     setStrokes([canvasRef.current.toDataURL()])
   }, []);
 
   useEffect(() => {
+    console.log(strokes)
     redrawCanvas()
   }, [strokes])
 
@@ -81,6 +83,7 @@ export default function DrawArea() {
   }
 
   function redrawCanvas(){
+    if(!strokes) return
     const context = canvasRef.current.getContext("2d")
 
     //Get DataURL of last element in stroke array. The first element is the empty canvas
@@ -94,6 +97,7 @@ export default function DrawArea() {
   }
 
   function resetCanvas(){
+    if(!strokes) return
     setStrokes(strokes.slice(0, 1))
     clearCanvas()
   }
