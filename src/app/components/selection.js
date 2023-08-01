@@ -1,5 +1,5 @@
 import { getKanji } from "@/lib/mongodb/kanji"
-import styles from './css/kanji-list.module.css';
+import styles from './css/selection.module.css';
 import Search from "./search";
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"

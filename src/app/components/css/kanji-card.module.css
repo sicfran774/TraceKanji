@@ -1,11 +1,14 @@
 .card{
     display: flex;
     border: 1px solid black;
-    width: 300px;
-    height: 120px;
+    width: 320px;
+    height: 125px;
+    padding: 2px;
+    margin: 3px;
 }
 
 .kanji{
     width: 100px;
     height: 100px;
+    margin-right: 10px;
 }

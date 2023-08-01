@@ -2,16 +2,16 @@
     
 }
 
+.header{
+    
+}
+
 .searchBox{
     display: flex;
 }
 
 .searchText{
     margin-right: 5px;
-}
-
-.kanjiList{
-    height: 650px;
 }
 
 .kanjiList ul{
@@ -23,10 +23,15 @@
     list-style-type: none;
 }
 
-.pageArrows {
+.pageButtons {
+    margin-left: 10px;
     display: flex;
 }
 
-.pageArrows > * {
+.pageButtons > * {
     margin-right: 10px;
+}
+
+.listAndDrawArea {
+    display: flex;
 }

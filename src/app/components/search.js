@@ -3,8 +3,9 @@
 import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
+import DrawArea from './draw-area';
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 24;
 
 export default function Search({kanjiAPI}){
     //kanjiAPI consists of two objects
@@ -85,21 +86,29 @@ export default function Search({kanjiAPI}){
             <div className={styles.searchBox}>
                 <div className={styles.searchText}>Search</div>
                 <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
+                <div className={styles.deckSelector}>
+                    <select name="decks" id="decks">
+                        <option value="default">Default Deck (WIP)</option>
+                    </select>
+                </div>
+                <div className={styles.pageButtons}>
+                    <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
+                    <div>Page {page + 1}/{kanjiInfo.length}</div>
+                    <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
+                </div>
             </div>
-            <div className={styles.kanjiList}>
-                <ul>
-                    {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
-                        <li key={item.info.kanji}>
-                            <KanjiCard kanji={item.info} svg={item.svg}/>
-                        </li>
-                    ))}
-                </ul>
-                {!doneLoading && (<>Loading...</>)}
-            </div>
-            <div className={styles.pageArrows}>
-                <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
-                <div>Page {page + 1}/{kanjiInfo.length}</div>
-                <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
+            <div className={styles.listAndDrawArea}>
+                <div className={styles.kanjiList}>
+                    <ul>
+                        {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
+                            <li key={item.info.kanji}>
+                                <KanjiCard kanji={item.info} svg={item.svg}/>
+                            </li>
+                        ))}
+                    </ul>
+                    {!doneLoading && (<>Loading...</>)}
+                </div>
+                <DrawArea />
             </div>
         </div>
     )
