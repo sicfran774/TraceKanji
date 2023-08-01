@@ -4,7 +4,7 @@ import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 
-const ITEMS_PER_PAGE = 24;
+const ITEMS_PER_PAGE = 20;
 
 export default function Search({kanjiAPI}){
     //kanjiAPI consists of two objects
@@ -93,10 +93,11 @@ export default function Search({kanjiAPI}){
                         </li>
                     ))}
                 </ul>
+                {!doneLoading && (<>Loading...</>)}
             </div>
             <div className={styles.pageArrows}>
                 <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
-                <div>{page + 1}</div>
+                <div>Page {page + 1}/{kanjiInfo.length}</div>
                 <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
             </div>
         </div>

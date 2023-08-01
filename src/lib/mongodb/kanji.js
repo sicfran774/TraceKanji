@@ -9,7 +9,7 @@ async function init(){
     try{
         client = await clientPromise
         database = client.db('trace-kanji')
-        kanji = database.collection('kvg')
+        kanji = database.collection('kvg-v1')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }

@@ -2,6 +2,10 @@
     
 }
 
+.kanjiList{
+    height: 650px;
+}
+
 .kanjiList ul{
     display: flex;
     flex-wrap: wrap;
@@ -9,6 +13,10 @@
 
 .kanjiList li{
     list-style-type: none;
+}
+
+.pageArrows {
+    display: flex;
 }
 
 .pageArrows > * {
