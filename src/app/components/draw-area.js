@@ -33,6 +33,7 @@ export default function DrawArea() {
 
   useEffect(() => {
     setShowOverlay(true)
+    resetCanvas()
     setShowKanji("Hide Kanji Tracing")
   }, [sharedKanji])
 
