@@ -2,6 +2,14 @@
     
 }
 
+.searchBox{
+    display: flex;
+}
+
+.searchText{
+    margin-right: 5px;
+}
+
 .kanjiList{
     height: 650px;
 }

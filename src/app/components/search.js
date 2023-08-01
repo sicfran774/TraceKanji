@@ -83,6 +83,7 @@ export default function Search({kanjiAPI}){
     return(
         <div className={styles.main}>
             <div className={styles.searchBox}>
+                <div className={styles.searchText}>Search</div>
                 <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
             </div>
             <div className={styles.kanjiList}>
