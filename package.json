@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.11.1",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
     "mongodb": "^5.7.0",
     "next": "13.4.12",
+    "next-auth": "^4.22.3",
     "next-connect": "^1.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

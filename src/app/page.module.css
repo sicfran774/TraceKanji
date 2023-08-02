@@ -8,12 +8,3 @@
 .header{
     display: flex;
 }
-
-.signIn{
-    margin-left: auto;
-}
-
-.signIn button{
-    height: 40px;
-    width: 75px;
-}

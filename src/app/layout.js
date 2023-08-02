@@ -1,4 +1,5 @@
 import Provider from './components/svg-provider'
+import AuthContext from '@/lib/nextauth/auth-context'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -13,7 +14,9 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body className={inter.className}>
-        <Provider>{children}</Provider>
+        <AuthContext>
+          <Provider>{children}</Provider>
+        </AuthContext>
       </body>
     </html>
   )

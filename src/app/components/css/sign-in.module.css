@@ -1,0 +1,14 @@
+.signIn{
+    display: flex;
+    margin-left: auto;
+}
+
+.welcome{
+    text-align: center;
+    margin-right: 10px;
+}
+
+.signIn button{
+    height: 40px;
+    width: 75px;
+}
