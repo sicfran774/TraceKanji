@@ -5,6 +5,7 @@
 import styles from './css/draw-area.module.css';
 import SVG from 'react-inlinesvg'
 import KanjiOverlay from './kanji-overlay'
+import KanjiDeck from './kanji-deck'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from './svg-provider';
 
@@ -29,7 +30,6 @@ export default function DrawArea() {
   }, []);
 
   useEffect(() => {
-    console.log(strokes)
     redrawCanvas()
   }, [strokes])
 
@@ -152,7 +152,11 @@ export default function DrawArea() {
           <p>Grade: {sharedKanji.kanji.grade}</p>
           <p>JLPT: {sharedKanji.kanji.jlpt}</p>
           <a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">List of words that use this kanji</a>
+          <KanjiDeck />
         </div>
+      </div>
+      <div className={styles.myInfo}>
+        <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
       </div>
     </div>
     

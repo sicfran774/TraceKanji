@@ -19,7 +19,7 @@ async function init(){
     await init()
 })()
 
-export async function getKanji(characters) {
+export async function getKanji(currentList, characters) {
     try{
         if(!kanji) await init()
 
@@ -30,7 +30,6 @@ export async function getKanji(characters) {
         } else {
             kanjiList = await kanji.find({}).toArray()
         }
-        
 
         return kanjiList
     } catch (e) {

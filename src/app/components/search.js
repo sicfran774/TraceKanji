@@ -5,31 +5,46 @@ import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 import DrawArea from './draw-area';
 
+const KANJIAPI_URL = "https://kanjiapi.dev/v1"
+const ITEMS_PER_FETCH = 24;
 const ITEMS_PER_PAGE = 24;
 
-export default function Search({kanjiAPI}){
+export default function Search({kanjiAndSVG}){
     //kanjiAPI consists of two objects
     // - info: this holds kanji info like meanings, grade, jlpt, readings
     // - svg: contains svg string that shows stroke orders
 
+    const [kanjiAPI, setKanjiAPI] = useState(null)
     const [filter, setFilter] = useState("")
-    const [kanjiInfo, setKanjiInfo] = useState(kanjiAPI)
+    const [kanjiInfo, setKanjiInfo] = useState([]) //TODO: initialize this to kanjiAPI
     const [doneLoading, setDoneLoading] = useState(false)
     const [page, setPage] = useState(0);
 
-    let kanjiList = kanjiInfo;
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchDataInBatches()
+        }
+
+        fetchData().catch(console.error)
+    }, [])
 
     useEffect(() => {
+        getKanjiBasedOnFilter()
         setKanjiPerPage()
-    }, [])
+    }, [kanjiAPI])
 
     useEffect(() => {
         getKanjiBasedOnFilter()
     }, [filter])
 
+    let kanjiList = kanjiInfo;
+
     const getKanjiBasedOnFilter = () => {
+        if(!kanjiAPI) return
+
         setPage(0)
         setDoneLoading(false)
+
         const lowercase = filter.toLowerCase()
         //Go through each kanji, look at their meanings and see if it starts with filter
         const sameMeanings = kanjiAPI.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
@@ -60,16 +75,6 @@ export default function Search({kanjiAPI}){
 
         setKanjiPerPage()
     }
-
-    const setKanjiPerPage = () => {
-        let arr = []
-        for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
-            const chunk = kanjiList.slice(i, i + ITEMS_PER_PAGE)
-            arr.push(chunk)
-        }
-        setKanjiInfo(arr)
-        setDoneLoading(true)
-    }
     
     const changePage = (delta) => {
         let diff
@@ -81,6 +86,44 @@ export default function Search({kanjiAPI}){
         setPage(diff)
     }
 
+    const fetchDataInBatches = async () => {
+        let kanjiJson = []
+        
+        for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
+            const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
+            const batchPromises = batchKanjis.map(kanji => 
+                fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`)
+                .then(result => result.json()))
+        
+            const batchResults = await Promise.all(batchPromises);
+            kanjiJson.push(...batchResults);
+            
+            // Send the accumulated data after each batch
+            formatKanjiAPI(kanjiJson, kanjiAndSVG);
+        }
+    
+        formatKanjiAPI(kanjiJson, kanjiAndSVG);
+    }
+
+    const formatKanjiAPI = (kanjiJson, kanjiAndSVG) => {
+        let arr = []
+        for(let i in kanjiJson){
+            arr.push({info: kanjiJson[i], svg: kanjiAndSVG[i].svg})
+        }
+        kanjiList = arr;
+        setKanjiAPI(arr)
+    }
+
+    const setKanjiPerPage = () => {
+        let arr = []
+        for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
+            const chunk = kanjiList.slice(i, i + ITEMS_PER_PAGE)
+            arr.push(chunk)
+        }
+        setKanjiInfo(arr)
+        setDoneLoading(true)
+    }
+
     return(
         <div className={styles.main}>
             <div className={styles.searchBox}>
@@ -88,7 +131,7 @@ export default function Search({kanjiAPI}){
                 <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
                 <div className={styles.deckSelector}>
                     <select name="decks" id="decks">
-                        <option value="default">Default Deck (WIP)</option>
+                        <option value="default">All Kanji</option>
                     </select>
                 </div>
                 <div className={styles.pageButtons}>
