@@ -3,10 +3,9 @@ import styles from './css/selection.module.css';
 import Search from "./search";
 import { getServerSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import NextAuthOptions from "next-auth";
 
 export default async function Selection(){
-    const options = NextAuthOptions({
+    const session = await getServerSession({
         providers:[
           GoogleProvider({
               clientId:process.env.OAUTH_CLIENT_ID,
@@ -15,8 +14,6 @@ export default async function Selection(){
       ],
       secret: process.env.OAUTH_SECRET
     })
-    
-    const session = await getServerSession(options)
     console.log(JSON.stringify(session, null, 2))
 
     //Get all kanji found in Database

@@ -42,7 +42,7 @@ export default function Search({kanjiAndSVG}){
     const getKanjiBasedOnFilter = () => {
         if(!kanjiAPI) return
 
-        setPage(0)
+        if(page > kanjiInfo.length) setPage(0)
         setDoneLoading(false)
 
         const lowercase = filter.toLowerCase()
