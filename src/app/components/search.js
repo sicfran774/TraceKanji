@@ -41,8 +41,6 @@ export default function Search({kanjiAndSVG}){
 
     const getKanjiBasedOnFilter = () => {
         if(!kanjiAPI) return
-
-        if(page > kanjiInfo.length) setPage(0)
         setDoneLoading(false)
 
         const lowercase = filter.toLowerCase()
@@ -120,6 +118,7 @@ export default function Search({kanjiAndSVG}){
             const chunk = kanjiList.slice(i, i + ITEMS_PER_PAGE)
             arr.push(chunk)
         }
+        if(page > arr.length - 1) setPage(0)
         setKanjiInfo(arr)
         setDoneLoading(true)
     }
