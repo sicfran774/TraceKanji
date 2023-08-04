@@ -103,6 +103,7 @@ export default function Search({kanjiAndSVG}){
         formatKanjiAPI(kanjiJson, kanjiAndSVG);
     }
 
+    //This combines the KanjiAPI info with the SVG from MongoDB
     const formatKanjiAPI = (kanjiJson, kanjiAndSVG) => {
         let arr = []
         for(let i in kanjiJson){
@@ -125,22 +126,23 @@ export default function Search({kanjiAndSVG}){
 
     return(
         <div className={styles.main}>
-            <div className={styles.searchBox}>
-                <div className={styles.searchText}>Search</div>
-                <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
-                <div className={styles.deckSelector}>
-                    <select name="decks" id="decks">
-                        <option value="default">All Kanji</option>
-                    </select>
-                </div>
-                <div className={styles.pageButtons}>
-                    <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
-                    <div>Page {page + 1}/{kanjiInfo.length}</div>
-                    <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
-                </div>
-            </div>
             <div className={styles.listAndDrawArea}>
+                <DrawArea />
                 <div className={styles.kanjiList}>
+                    <div className={styles.searchBox}>
+                        <div className={styles.searchText}>Search</div>
+                        <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
+                        <div className={styles.deckSelector}>
+                            <select name="decks" id="decks">
+                                <option value="default">All Kanji</option>
+                            </select>
+                        </div>
+                        <div className={styles.pageButtons}>
+                            <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
+                            <div>Page {page + 1}/{kanjiInfo.length}</div>
+                            <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
+                        </div>
+                    </div>
                     <ul>
                         {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
                             <li key={item.info.kanji}>
@@ -150,7 +152,6 @@ export default function Search({kanjiAndSVG}){
                     </ul>
                     {!doneLoading && (<>Loading...</>)}
                 </div>
-                <DrawArea />
             </div>
         </div>
     )

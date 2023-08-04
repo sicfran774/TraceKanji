@@ -1,6 +1,6 @@
 .main{
     height: 100%;
-    margin-left: auto;
+    margin-top: 24px;
 }
 
 .drawArea{
@@ -35,8 +35,4 @@
 
 .addToDeck{
     margin-top: auto;
-}
-
-.myInfo{
-    text-align: end;
 }
