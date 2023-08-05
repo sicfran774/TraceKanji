@@ -119,9 +119,27 @@ export default function Search({kanjiAndSVG, email}){
 
     const fetchDecks = async () => {
         if(email){
-            const decks = (await fetch(`api/mongodb/${email}`).then(result => result.json())).decks
+            let decks = (await fetch(`api/mongodb/${email}`).then(result => result.json())).decks
+            if(!decks) decks = [["Deck One"], ["Deck Two"], ["Deck Three"]]
             console.log(decks)
             setDecks(decks)
+        }
+    }
+
+    const updateDecksInDB = async () => {
+        if(email){
+            console.log(decks)
+            const result = await fetch(`api/mongodb/${email}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    updatedDecks: decks
+                })
+            })
+
+            console.log(result)
         }
     }
 
@@ -165,6 +183,7 @@ export default function Search({kanjiAndSVG, email}){
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
                             <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
+                            <button type="button" onClick={() => updateDecksInDB()} className='button'>UPDATE</button>
                         </div>
                     </div>
                     <ul>

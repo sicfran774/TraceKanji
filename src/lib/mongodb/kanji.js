@@ -45,6 +45,11 @@ async function createAccount(email){
     return result;
 }
 
+export async function updateDecks(updatedDecks, email){
+    const result = await accounts.updateOne({email: email}, {$set:{decks: updatedDecks}})
+    return result
+}
+
 export async function getKanji(characters) {
     try{
         if(!kanji) await init()
