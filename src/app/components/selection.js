@@ -14,7 +14,9 @@ export default async function Selection(){
       ],
       secret: process.env.OAUTH_SECRET
     })
-    console.log(JSON.stringify(session, null, 2))
+
+    let email
+    if(session) email = session.user.email
 
     //Get all kanji found in Database
     const kanjiDB = await getKanji([], [])
@@ -28,7 +30,7 @@ export default async function Selection(){
 
     return(
         <div className={styles.main}>
-            <Search kanjiAndSVG={kanjiAndSVG} />
+            <Search kanjiAndSVG={kanjiAndSVG} email={email}/>
         </div>
     )
 }

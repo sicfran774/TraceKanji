@@ -1,6 +1,6 @@
 import clientPromise from ".";
 
-let client, database, kanji
+let client, database, kanji, accounts
 
 async function init(){
     //Already initialized
@@ -10,6 +10,7 @@ async function init(){
         client = await clientPromise
         database = client.db('trace-kanji')
         kanji = database.collection('kvg-v1')
+        accounts = database.collection('accounts')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }
@@ -19,7 +20,32 @@ async function init(){
     await init()
 })()
 
-export async function getKanji(currentList, characters) {
+export async function getDecks(email){
+    try{
+        if(!accounts) await init()
+
+        let deckList = await accounts.findOne({email: email})
+
+        //create new document if email doesn't exist in DB
+        if(!deckList) deckList = await createAccount(email)
+
+        return deckList
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to fetch decks'}
+    }
+}
+
+async function createAccount(email){
+    const newAccount = {
+        email: email,
+        decks: []
+    }
+    const result = await accounts.insertOne(newAccount)
+    return result;
+}
+
+export async function getKanji(characters) {
     try{
         if(!kanji) await init()
 

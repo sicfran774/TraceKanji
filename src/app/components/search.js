@@ -9,19 +9,23 @@ const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 24;
 const ITEMS_PER_PAGE = 24;
 
-export default function Search({kanjiAndSVG}){
+export default function Search({kanjiAndSVG, email}){
     //kanjiAPI consists of two objects
     // - info: this holds kanji info like meanings, grade, jlpt, readings
     // - svg: contains svg string that shows stroke orders
+    
+    //email is non-null when user is signed in
 
     const [kanjiAPI, setKanjiAPI] = useState(null)
     const [filter, setFilter] = useState("")
-    const [kanjiInfo, setKanjiInfo] = useState([]) //TODO: initialize this to kanjiAPI
+    const [kanjiInfo, setKanjiInfo] = useState([])
     const [doneLoading, setDoneLoading] = useState(false)
     const [page, setPage] = useState(0);
+    const [decks, setDecks] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
+            await fetchDecks()
             await fetchDataInBatches()
         }
 
@@ -113,6 +117,14 @@ export default function Search({kanjiAndSVG}){
         setKanjiAPI(arr)
     }
 
+    const fetchDecks = async () => {
+        if(email){
+            const decks = (await fetch(`api/mongodb/${email}`).then(result => result.json())).decks
+            console.log(decks)
+            setDecks(decks)
+        }
+    }
+
     const setKanjiPerPage = () => {
         let arr = []
         for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
@@ -124,6 +136,15 @@ export default function Search({kanjiAndSVG}){
         setDoneLoading(true)
     }
 
+    const changeDeck = (index) => {
+        if(index !== "default"){
+            //Get currently selected deck
+            const arr = decks[index]
+            const deck = arr.slice(1, arr.length)
+            console.log(deck)
+        }
+    }
+
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
@@ -132,11 +153,14 @@ export default function Search({kanjiAndSVG}){
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>Search</div>
                         <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
-                        <div className={styles.deckSelector}>
-                            <select name="decks" id="decks">
+                        {email && (<div className={styles.deckSelector}>
+                            <select name="decks" id="decks" onChange={e => changeDeck(e.target.value)}>
                                 <option value="default">All Kanji</option>
+                                {decks.map((deck, index) => (
+                                    <option key={index} value={index}>{deck[0]}</option>
+                                ))}
                             </select>
-                        </div>
+                        </div>)}
                         <div className={styles.pageButtons}>
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
