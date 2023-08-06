@@ -3,13 +3,13 @@
 import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
-import DrawArea from './draw-area';
+import KanjiInfo from './kanji-info';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 24;
 const ITEMS_PER_PAGE = 24;
 
-export default function Search({kanjiAndSVG, email}){
+export default function Search({kanjiAndSVG}){
     //kanjiAPI consists of two objects
     // - info: this holds kanji info like meanings, grade, jlpt, readings
     // - svg: contains svg string that shows stroke orders
@@ -21,11 +21,9 @@ export default function Search({kanjiAndSVG, email}){
     const [kanjiInfo, setKanjiInfo] = useState([])
     const [doneLoading, setDoneLoading] = useState(false)
     const [page, setPage] = useState(0);
-    const [decks, setDecks] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchDecks()
             await fetchDataInBatches()
         }
 
@@ -117,32 +115,6 @@ export default function Search({kanjiAndSVG, email}){
         setKanjiAPI(arr)
     }
 
-    const fetchDecks = async () => {
-        if(email){
-            let decks = (await fetch(`api/mongodb/${email}`).then(result => result.json())).decks
-            if(!decks) decks = [["Deck One"], ["Deck Two"], ["Deck Three"]]
-            console.log(decks)
-            setDecks(decks)
-        }
-    }
-
-    const updateDecksInDB = async () => {
-        if(email){
-            console.log(decks)
-            const result = await fetch(`api/mongodb/${email}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    updatedDecks: decks
-                })
-            })
-
-            console.log(result)
-        }
-    }
-
     const setKanjiPerPage = () => {
         let arr = []
         for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
@@ -154,36 +126,18 @@ export default function Search({kanjiAndSVG, email}){
         setDoneLoading(true)
     }
 
-    const changeDeck = (index) => {
-        if(index !== "default"){
-            //Get currently selected deck
-            const arr = decks[index]
-            const deck = arr.slice(1, arr.length)
-            console.log(deck)
-        }
-    }
-
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
-                <DrawArea />
+                <KanjiInfo />
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>Search</div>
                         <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
-                        {email && (<div className={styles.deckSelector}>
-                            <select name="decks" id="decks" onChange={e => changeDeck(e.target.value)}>
-                                <option value="default">All Kanji</option>
-                                {decks.map((deck, index) => (
-                                    <option key={index} value={index}>{deck[0]}</option>
-                                ))}
-                            </select>
-                        </div>)}
                         <div className={styles.pageButtons}>
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
                             <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
-                            <button type="button" onClick={() => updateDecksInDB()} className='button'>UPDATE</button>
                         </div>
                     </div>
                     <ul>

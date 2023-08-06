@@ -1,0 +1,123 @@
+'use client';
+
+import styles from './css/kanji-info.module.css';
+import SVG from 'react-inlinesvg'
+import { useState, useContext, useEffect } from "react";
+import { useSession } from 'next-auth/react';
+import { SharedKanjiProvider } from './svg-provider';
+import DrawArea from './draw-area';
+import DeckManager from './deck-manager';
+
+export default function KanjiInfo(){
+    const { sharedKanji } = useContext(SharedKanjiProvider)
+    const [openDeckManager, setOpenDeckManager] = useState(false)
+    const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
+    const [decks, setDecks] = useState([])
+    const {data, status} = useSession()
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchDecks()
+        }
+
+        fetchData().catch(console.error)
+    }, [status])
+
+    const formatList = (arr) => {
+        let str = ""
+        for(let i in arr){
+          if(i < arr.length - 1){
+              str += arr[i] + ", "
+          } else{
+              str += arr[i]
+          }
+        }
+        return str
+    }
+
+    const fetchDecks = async () => {
+        if(status === 'authenticated'){
+            try{
+                let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
+                if(!decks) decks = [["deck one"], ["deck two"]]
+                console.log(decks)
+                setDecks(decks)
+            } catch (e){
+                console.error(e)
+            }
+        } else {
+            console.log("Not logged in")
+        }
+    }
+
+    const updateDecksInDB = async () => {
+        if(status === 'authenticated'){
+            try{
+                console.log(decks)
+                const result = await fetch(`api/mongodb/${data.user.email}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        updatedDecks: decks
+                    })
+                })
+                console.log(result)
+            } catch (e){
+                console.error(e)
+            }
+        } else {
+            console.log("Not logged in")
+        }
+    }
+
+    const changeDeck = (index) => {
+        if(index !== "default"){
+            //Get currently selected deck
+            const arr = decks[index]
+            const deck = arr.slice(1, arr.length)
+            console.log(deck)
+        }
+    }
+
+    const toggleDeckManager = () => {
+        setOpenDeckManager(!openDeckManager);
+        setDeckManagerMsg((openDeckManager) ? "Open Deck Manager" : "Close Deck Manager")
+    }
+
+    return(
+        <div className={styles.main}>
+            {status === 'authenticated' && (<div className={styles.deckManager}>
+                <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
+                <div className={styles.deckSelector}>
+                    <select name="decks" id="decks" onChange={e => changeDeck(e.target.value)}>
+                        <option value="default">All Kanji</option>
+                        {decks.map((deck, index) => (
+                            <option key={index} value={index}>{deck[0]}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>)}
+            {openDeckManager && <DeckManager />}
+            {!openDeckManager && <DrawArea />}
+            <div className={styles.kanjiInfo}>
+                <div className={styles.kanji}>
+                    <SVG src={sharedKanji.svg}/>
+                </div>
+                <div>
+                    <p>Kanji: {sharedKanji.kanji.kanji}</p>
+                    <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
+                    <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
+                    <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
+                    <p>Grade: {sharedKanji.kanji.grade}</p>
+                    <p>JLPT: {sharedKanji.kanji.jlpt}</p>
+                    <a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">List of words that use this kanji</a>
+                </div>
+            </div>
+            <div className={styles.myInfo}>
+                <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
+            </div>
+        </div>
+    )
+}

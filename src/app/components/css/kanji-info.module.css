@@ -1,0 +1,15 @@
+.main{
+    height: 100%;
+}
+
+.kanjiInfo{
+    display: flex;
+    width: 500px;
+    height: 250px;
+    border: 1px solid black;
+    margin: auto;
+}
+
+.deckManager{
+    display: flex;
+}

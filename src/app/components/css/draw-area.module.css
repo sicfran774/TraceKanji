@@ -1,8 +1,3 @@
-.main{
-    height: 100%;
-    margin-top: 24px;
-}
-
 .drawArea{
     width: 500px;
     height: 500px;
@@ -23,14 +18,6 @@
 
 .buttons > * {
     margin-right: 10px;
-}
-
-.kanjiInfo{
-    display: flex;
-    width: 500px;
-    height: 250px;
-    border: 1px solid black;
-    margin: auto;
 }
 
 .addToDeck{
