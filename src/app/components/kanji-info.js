@@ -39,7 +39,7 @@ export default function KanjiInfo(){
         if(status === 'authenticated'){
             try{
                 let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
-                if(!decks) decks = [["deck one"], ["deck two"]]
+                if(!decks) decks = [["New Deck"]]
                 console.log(decks)
                 setDecks(decks)
             } catch (e){
@@ -99,7 +99,7 @@ export default function KanjiInfo(){
                     </select>
                 </div>
             </div>)}
-            {openDeckManager && <DeckManager />}
+            {openDeckManager && <DeckManager fetchedDecks={decks}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
