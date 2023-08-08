@@ -13,14 +13,13 @@ export default function Search({kanjiAndSVG}){
     //kanjiAPI consists of two objects
     // - info: this holds kanji info like meanings, grade, jlpt, readings
     // - svg: contains svg string that shows stroke orders
-    
-    //email is non-null when user is signed in
 
     const [kanjiAPI, setKanjiAPI] = useState(null)
     const [filter, setFilter] = useState("")
     const [kanjiInfo, setKanjiInfo] = useState([])
     const [doneLoading, setDoneLoading] = useState(false)
     const [page, setPage] = useState(0);
+    const [decks, setDecks] = useState([])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -129,7 +128,7 @@ export default function Search({kanjiAndSVG}){
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
-                <KanjiInfo />
+                <KanjiInfo decks={decks} setDecks={setDecks}/>
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>Search</div>

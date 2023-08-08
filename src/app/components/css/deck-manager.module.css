@@ -6,8 +6,19 @@
     margin-bottom: 30px;
 }
 
+.interchangable{
+    margin-top: 10px;
+}
+
+.tooltip{
+    font-size: 14px;
+    font-style: italic;
+}
+
 .deckList {
     margin-top: 10px;
+    height: 420px;
+    overflow-y: auto;
 }
 
 .deckList li{

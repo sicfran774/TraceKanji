@@ -8,11 +8,10 @@ import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 
-export default function KanjiInfo(){
+export default function KanjiInfo({decks, setDecks}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
-    const [decks, setDecks] = useState([])
     const {data, status} = useSession()
 
     useEffect(() => {
@@ -39,31 +38,9 @@ export default function KanjiInfo(){
         if(status === 'authenticated'){
             try{
                 let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
-                if(!decks) decks = [["New Deck"]]
+                if(!decks) decks = []
                 console.log(decks)
                 setDecks(decks)
-            } catch (e){
-                console.error(e)
-            }
-        } else {
-            console.log("Not logged in")
-        }
-    }
-
-    const updateDecksInDB = async () => {
-        if(status === 'authenticated'){
-            try{
-                console.log(decks)
-                const result = await fetch(`api/mongodb/${data.user.email}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        updatedDecks: decks
-                    })
-                })
-                console.log(result)
             } catch (e){
                 console.error(e)
             }
@@ -106,7 +83,7 @@ export default function KanjiInfo(){
                     </select>
                 </div>
             </div>)}
-            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks}/>}
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
