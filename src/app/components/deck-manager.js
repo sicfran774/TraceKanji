@@ -2,11 +2,14 @@
 
 import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
+import { SharedKanjiProvider } from './svg-provider';
 
 export default function DeckManager({fetchedDecks}){
 
     const [deckName, setDeckName] = useState()
     const [decks, setDecks] = useState(fetchedDecks)
+
+    let { editingDeck, setEditingDeck } = useContext(SharedKanjiProvider)
 
     const createDeck = () => {
         if(deckName){
@@ -19,6 +22,10 @@ export default function DeckManager({fetchedDecks}){
     const removeFromDeck = (index) => {
         const arr = decks.slice(0, index).concat(decks.slice(index + 1))
         setDecks(arr)
+    }
+
+    const toggleEditingDeck = () => {
+        setEditingDeck(!editingDeck)
     }
 
     return (
@@ -34,7 +41,7 @@ export default function DeckManager({fetchedDecks}){
                         <li key={index}>
                             {deck[0]}
                             <div className={styles.editDeck}>
-                                <button type="button" className='button' >Rename</button>
+                                <button type="button" className='button' onClick={() => toggleEditingDeck()}>Edit Deck</button>
                                 <button type="button" className='button' onClick={() => removeFromDeck(index)}>Delete</button>
                             </div>
                         </li>

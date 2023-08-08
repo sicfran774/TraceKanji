@@ -2,13 +2,15 @@
 
 import SVG from 'react-inlinesvg'
 import styles from './css/kanji-card.module.css';
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from './svg-provider';
 
 export default function KanjiCard({kanji, svg}){
-    const [kanjiSVG, setKanjiSVG] = useState(false);
+    const [kanjiSVG, setKanjiSVG] = useState(false)
+    const [selected, setSelected] = useState(false)
+    const cardRef = useRef()
 
-    let { setSharedKanji } = useContext(SharedKanjiProvider)
+    let { setSharedKanji, editingDeck } = useContext(SharedKanjiProvider)
     let meanings = ""
 
     if(kanji){
@@ -27,12 +29,23 @@ export default function KanjiCard({kanji, svg}){
     }, []);
 
     function onClick(){
-        setSharedKanji({kanji: kanji, svg: svg})
-        window.scrollTo({
+        if(editingDeck){
+            if(!selected){
+                console.log(`Selected ${kanji.kanji}`)
+                setSelected(true)
+                document.getElementById("card").style.borderColor = 'green'
+            } else {
+                console.log(`Deselected ${kanji.kanji}`)
+                setSelected(false)
+            }
+        } else {
+            setSharedKanji({kanji: kanji, svg: svg})
+            window.scrollTo({
             top: 0,
             left: 0,
             behavior: 'smooth'
-        })
+            })
+        }
     }
 
     function removeStrokeOrder(){
@@ -44,7 +57,7 @@ export default function KanjiCard({kanji, svg}){
     }
 
     return(
-        <div className={styles.card} onClick={onClick}>
+        <div className={styles.card} onClick={onClick} id="card">
             <div className={styles.kanji}>
                 <SVG src={kanjiSVG}/>
             </div>

@@ -82,7 +82,7 @@ export default function KanjiInfo(){
     }
 
     const toggleDeckManager = () => {
-        setOpenDeckManager(!openDeckManager);
+        setOpenDeckManager(!openDeckManager)
         setDeckManagerMsg((openDeckManager) ? "Open Deck Manager" : "Close Deck Manager")
     }
 
