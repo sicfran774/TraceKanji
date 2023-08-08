@@ -1,4 +1,4 @@
-import Provider from './components/svg-provider'
+import Provider from './components/shared-kanji-provider'
 import AuthContext from '@/lib/nextauth/auth-context'
 import './globals.css'
 import { Inter } from 'next/font/google'

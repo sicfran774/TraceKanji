@@ -4,12 +4,12 @@ import styles from './css/kanji-info.module.css';
 import SVG from 'react-inlinesvg'
 import { useState, useContext, useEffect } from "react";
 import { useSession } from 'next-auth/react';
-import { SharedKanjiProvider } from './svg-provider';
+import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 
 export default function KanjiInfo(){
-    const { sharedKanji } = useContext(SharedKanjiProvider)
+    const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const [decks, setDecks] = useState([])
@@ -82,8 +82,15 @@ export default function KanjiInfo(){
     }
 
     const toggleDeckManager = () => {
-        setOpenDeckManager(!openDeckManager)
-        setDeckManagerMsg((openDeckManager) ? "Open Deck Manager" : "Close Deck Manager")
+        if(openDeckManager){
+            setOpenDeckManager(false)
+            setEditingDeck(false)
+            setSelectedKanji([])
+            setDeckManagerMsg("Open Deck Manager")
+        } else {
+            setOpenDeckManager(true)
+            setDeckManagerMsg("Close Deck Manager")
+        }
     }
 
     return(
@@ -99,7 +106,7 @@ export default function KanjiInfo(){
                     </select>
                 </div>
             </div>)}
-            {openDeckManager && <DeckManager fetchedDecks={decks}/>}
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>

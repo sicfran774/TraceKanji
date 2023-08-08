@@ -5,7 +5,7 @@
 import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
-import { SharedKanjiProvider } from './svg-provider';
+import { SharedKanjiProvider } from './shared-kanji-provider';
 
 export default function DrawArea() {
   const canvasRef = useRef(null);

@@ -3,7 +3,7 @@
 import SVG from 'react-inlinesvg'
 import styles from './css/kanji-overlay.module.css';
 import { useContext, useEffect, useState} from "react";
-import { SharedKanjiProvider } from './svg-provider';
+import { SharedKanjiProvider } from './shared-kanji-provider';
 
 export default function KanjiOverlay() {
     const [hydrated, setHydrated] = useState(false);
