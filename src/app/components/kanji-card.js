@@ -28,24 +28,25 @@ export default function KanjiCard({kanji, svg}){
         removeStrokeOrder();
     }, []);
 
-    function onClick(){
+    function onClick(cardRef){
         if(editingDeck){
             if(!selected){
                 console.log(`Selected ${kanji.kanji}`)
                 setSelected(true)
-                document.getElementById("card").style.borderColor = 'green'
+                cardRef.current.style.borderColor = 'green'
             } else {
                 console.log(`Deselected ${kanji.kanji}`)
                 setSelected(false)
+                cardRef.current.style.borderColor = 'black'
             }
         } else {
-            setSharedKanji({kanji: kanji, svg: svg})
             window.scrollTo({
             top: 0,
             left: 0,
             behavior: 'smooth'
             })
         }
+        setSharedKanji({kanji: kanji, svg: svg})
     }
 
     function removeStrokeOrder(){
@@ -57,7 +58,7 @@ export default function KanjiCard({kanji, svg}){
     }
 
     return(
-        <div className={styles.card} onClick={onClick} id="card">
+        <div className={styles.card} ref={cardRef} onClick={() => onClick(cardRef)} id="card">
             <div className={styles.kanji}>
                 <SVG src={kanjiSVG}/>
             </div>

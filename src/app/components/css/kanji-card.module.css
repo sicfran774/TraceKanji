@@ -1,10 +1,11 @@
 .card{
     display: flex;
-    border: 1px solid black;
+    border: 3px solid;
     border-radius: 5px;
+    border-color: black;
     width: 320px;
     height: 125px;
-    padding: 2px;
+    padding: 3px;
     margin: 3px;
 }
 
