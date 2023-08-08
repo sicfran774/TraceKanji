@@ -20,10 +20,11 @@ export default function Search({kanjiAndSVG}){
     const [doneLoading, setDoneLoading] = useState(false)
     const [page, setPage] = useState(0);
     const [decks, setDecks] = useState([])
+    const [selectedDeck, setSelectedDeck] = useState("default")
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchDataInBatches()
+            await fetchDataInBatches(kanjiAndSVG)
         }
 
         fetchData().catch(console.error)
@@ -37,6 +38,10 @@ export default function Search({kanjiAndSVG}){
     useEffect(() => {
         getKanjiBasedOnFilter()
     }, [filter])
+
+    useEffect(() => {
+        getKanjiBasedOnArray()
+    }, [selectedDeck])
 
     let kanjiList = kanjiInfo;
 
@@ -85,7 +90,7 @@ export default function Search({kanjiAndSVG}){
         setPage(diff)
     }
 
-    const fetchDataInBatches = async () => {
+    const fetchDataInBatches = async (kanjiAndSVG) => {
         let kanjiJson = []
         
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
@@ -125,10 +130,24 @@ export default function Search({kanjiAndSVG}){
         setDoneLoading(true)
     }
 
+    const getKanjiBasedOnArray = async () => {
+        if(selectedDeck !== "default"){
+            //Get currently selected deck
+            const arr = decks[selectedDeck]
+            const deck = arr.slice(1, arr.length)
+            //Extract the SVG from the original kanjiAndSVG array
+            const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
+            //Send it to be loaded on page
+            fetchDataInBatches(deckKanjiWithSVG)
+        } else {
+            fetchDataInBatches(kanjiAndSVG)
+        }
+    }
+
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
-                <KanjiInfo decks={decks} setDecks={setDecks}/>
+                <KanjiInfo decks={decks} setDecks={setDecks} selectedDeck={selectedDeck} setSelectedDeck={setSelectedDeck}/>
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>Search</div>

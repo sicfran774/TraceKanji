@@ -2,17 +2,18 @@
 
 import styles from './css/kanji-info.module.css';
 import SVG from 'react-inlinesvg'
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { useSession } from 'next-auth/react';
 import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 
-export default function KanjiInfo({decks, setDecks}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const {data, status} = useSession()
+    const deckSelector = useRef()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -49,15 +50,6 @@ export default function KanjiInfo({decks, setDecks}){
         }
     }
 
-    const changeDeck = (index) => {
-        if(index !== "default"){
-            //Get currently selected deck
-            const arr = decks[index]
-            const deck = arr.slice(1, arr.length)
-            console.log(deck)
-        }
-    }
-
     const toggleDeckManager = () => {
         if(openDeckManager){
             setOpenDeckManager(false)
@@ -75,7 +67,7 @@ export default function KanjiInfo({decks, setDecks}){
             {status === 'authenticated' && (<div className={styles.deckManager}>
                 <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 <div className={styles.deckSelector}>
-                    <select name="decks" id="decks" onChange={e => changeDeck(e.target.value)}>
+                    <select name="decks" id="decks" ref={deckSelector} onChange={e => setSelectedDeck(e.target.value)}>
                         <option value="default">All Kanji</option>
                         {decks.map((deck, index) => (
                             <option key={index} value={index}>{deck[0]}</option>
@@ -83,7 +75,7 @@ export default function KanjiInfo({decks, setDecks}){
                     </select>
                 </div>
             </div>)}
-            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email}/>}
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>

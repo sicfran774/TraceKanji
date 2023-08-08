@@ -4,7 +4,7 @@ import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
 
-export default function DeckManager({decks, setDecks, email}){
+export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck}){
 
     const [deckName, setDeckName] = useState() //Text input when creating new deck
     const [editingDeckIndex, setEditingDeckIndex] = useState() //Index is saved on what deck is being edited
@@ -29,9 +29,12 @@ export default function DeckManager({decks, setDecks, email}){
         }
     }
 
-    const removeFromDeck = (index) => {
+    const deleteDeck = (index) => {
+        // [0, 1, 2, REMOVE, 4, 5]
         const arr = decks.slice(0, index).concat(decks.slice(index + 1))
         setDecks(arr)
+        setSelectedDeck("default")
+        deckSelector.current.value = "default"
     }
 
     const toggleEditingDeck = (index) => {
@@ -52,7 +55,6 @@ export default function DeckManager({decks, setDecks, email}){
                     return item
                 }
             })
-            console.log(arr)
             setDecks(arr)
             setSelectedKanji([])
         }
@@ -60,7 +62,6 @@ export default function DeckManager({decks, setDecks, email}){
 
     const updateDecksInDB = async () => {
         try{
-            console.log(decks)
             const result = await fetch(`api/mongodb/${email}`, {
                 method: 'POST',
                 headers: {
@@ -70,7 +71,7 @@ export default function DeckManager({decks, setDecks, email}){
                     updatedDecks: decks
                 })
             })
-            console.log(result)
+            return result
         } catch (e){
             console.error(e)
         }
@@ -99,7 +100,7 @@ export default function DeckManager({decks, setDecks, email}){
                                 {deck[0]}
                                 <div className={styles.editDeck}>
                                     <button type="button" className='button' onClick={() => toggleEditingDeck(index)}>Edit Deck</button>
-                                    <button type="button" className='button' onClick={() => removeFromDeck(index)}>Delete</button>
+                                    <button type="button" className='button' onClick={() => deleteDeck(index)}>Delete</button>
                                 </div>
                             </li>
                         ))}
