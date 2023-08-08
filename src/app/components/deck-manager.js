@@ -13,11 +13,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
-        const saveData = async () => {
-            await updateDecksInDB()
-        }
-
-        saveData().catch(console.error)
+        updateDecksInDB()
     }, [decks])
 
     const createDeck = () => {

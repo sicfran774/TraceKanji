@@ -41,7 +41,7 @@ export default function Search({kanjiAndSVG}){
 
     useEffect(() => {
         getKanjiBasedOnArray()
-    }, [selectedDeck])
+    }, [selectedDeck, decks])
 
     let kanjiList = kanjiInfo;
 
