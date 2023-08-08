@@ -83,7 +83,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 </div>)}
                 {editingDeck && (<div className={styles.editingDeck}>
                     <p>Editing deck: {decks[editingDeckIndex][0]}</p>
-                    <p className={styles.tooltip}>Select Kanji from the right to add/remove it from the deck. Click "Save Deck" when done</p>
+                    <p className={styles.tooltip}>Select Kanji from the right to add/remove it from the deck. Click &quot;Save Deck&quot; when done</p>
                     <button type="button" onClick={() => toggleEditingDeck()}>Save Deck</button>
                     <div className={styles.selectedKanji}>
                         {selectedKanji}
