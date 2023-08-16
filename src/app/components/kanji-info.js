@@ -50,6 +50,10 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
         }
     }
 
+    const changeDeck = (e) => {
+        setSelectedDeck(e.target.value)
+    }
+
     const toggleDeckManager = () => {
         if(openDeckManager){
             setOpenDeckManager(false)
@@ -67,7 +71,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
             {status === 'authenticated' && (<div className={styles.deckManager}>
                 <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 <div className={styles.deckSelector}>
-                    <select name="decks" id="decks" ref={deckSelector} onChange={e => setSelectedDeck(e.target.value)}>
+                    <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
                         <option value="default">All Kanji</option>
                         {decks.map((deck, index) => (
                             <option key={index} value={index}>{deck[0]}</option>
@@ -75,6 +79,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
                     </select>
                 </div>
             </div>)}
+            {status === 'unauthenticated' && (<div className="test">Sign in to create your own Kanji decks!</div>)}
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>

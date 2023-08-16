@@ -14,3 +14,16 @@
 .deckManager{
     display: flex;
 }
+
+.deckSelector{
+    margin-left: 5px;
+}
+
+.deckSelector select {
+    height: 25px;
+}
+
+.test{
+    height: 50px;
+    display: flex;
+}

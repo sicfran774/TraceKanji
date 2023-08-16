@@ -9,6 +9,8 @@ const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 24;
 const ITEMS_PER_PAGE = 24;
 
+let abortController = null
+
 export default function Search({kanjiAndSVG}){
     //kanjiAPI consists of two objects
     // - info: this holds kanji info like meanings, grade, jlpt, readings
@@ -22,13 +24,19 @@ export default function Search({kanjiAndSVG}){
     const [decks, setDecks] = useState([])
     const [selectedDeck, setSelectedDeck] = useState("default")
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchDataInBatches(kanjiAndSVG)
-        }
+    let kanjiList = kanjiInfo
 
-        fetchData().catch(console.error)
-    }, [])
+    useEffect(() => {
+        /*  A new AbortController is created everytime a deck is selected.
+            If there is already an abort controller, we abort it to cancel
+            any existing fetches going on (look below in "fetchDataInBatches()")
+        */  
+        if(abortController){
+            abortController.abort()
+        }
+        abortController = new AbortController()
+        getKanjiBasedOnArray()
+    }, [ , selectedDeck])
 
     useEffect(() => {
         getKanjiBasedOnFilter()
@@ -38,12 +46,6 @@ export default function Search({kanjiAndSVG}){
     useEffect(() => {
         getKanjiBasedOnFilter()
     }, [filter])
-
-    useEffect(() => {
-        getKanjiBasedOnArray()
-    }, [selectedDeck, decks])
-
-    let kanjiList = kanjiInfo;
 
     const getKanjiBasedOnFilter = () => {
         if(!kanjiAPI) return
@@ -92,18 +94,28 @@ export default function Search({kanjiAndSVG}){
 
     const fetchDataInBatches = async (kanjiAndSVG) => {
         let kanjiJson = []
-        
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
-            const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
-            const batchPromises = batchKanjis.map(kanji => 
-                fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`)
+            try{
+                /*
+                For signal in fetch:
+                If another call of this function is made while a current one is running, stop the fetches
+                i.e. when the deck is changed, we don't want the default deck to keep loading
+                */
+                const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
+                const batchPromises = batchKanjis.map(kanji => 
+                fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {signal: abortController.signal}) 
                 .then(result => result.json()))
         
-            const batchResults = await Promise.all(batchPromises);
-            kanjiJson.push(...batchResults);
-            
-            // Send the accumulated data after each batch
-            formatKanjiAPI(kanjiJson, kanjiAndSVG);
+                const batchResults = await Promise.all(batchPromises);
+
+                kanjiJson.push(...batchResults);
+                
+                // Send the accumulated data after each batch
+                formatKanjiAPI(kanjiJson, kanjiAndSVG);
+            } catch (err) {
+                //We reached here possibly because the signal threw an AbortSignal error, so just return nothing
+                return
+            }
         }
     
         formatKanjiAPI(kanjiJson, kanjiAndSVG);
@@ -130,7 +142,7 @@ export default function Search({kanjiAndSVG}){
         setDoneLoading(true)
     }
 
-    const getKanjiBasedOnArray = async () => {
+    const getKanjiBasedOnArray = () => {
         if(selectedDeck !== "default"){
             //Get currently selected deck
             const arr = decks[selectedDeck]
