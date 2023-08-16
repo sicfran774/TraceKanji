@@ -79,7 +79,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
                     </select>
                 </div>
             </div>)}
-            {status === 'unauthenticated' && (<div className="test">Sign in to create your own Kanji decks!</div>)}
+            {status !== 'authenticated' && (<div className="test">Sign in to create your own Kanji decks!</div>)}
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
             {!openDeckManager && <DrawArea />}
             <div className={styles.kanjiInfo}>

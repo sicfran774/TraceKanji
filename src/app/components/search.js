@@ -4,6 +4,7 @@ import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 import KanjiInfo from './kanji-info';
+import { CircularProgress } from '@mui/material';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 24;
@@ -20,6 +21,7 @@ export default function Search({kanjiAndSVG}){
     const [filter, setFilter] = useState("")
     const [kanjiInfo, setKanjiInfo] = useState([])
     const [doneLoading, setDoneLoading] = useState(false)
+    const [doneLoadingKanji, setDoneLoadingKanji] = useState(false)
     const [page, setPage] = useState(0);
     const [decks, setDecks] = useState([])
     const [selectedDeck, setSelectedDeck] = useState("default")
@@ -118,6 +120,7 @@ export default function Search({kanjiAndSVG}){
             }
         }
     
+        setDoneLoadingKanji(true)
         formatKanjiAPI(kanjiJson, kanjiAndSVG);
     }
 
@@ -168,6 +171,7 @@ export default function Search({kanjiAndSVG}){
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
                             <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
+                            {!doneLoadingKanji && (<div>Loading Kanji...</div>)}
                         </div>
                     </div>
                     <ul>
@@ -177,7 +181,7 @@ export default function Search({kanjiAndSVG}){
                             </li>
                         ))}
                     </ul>
-                    {!doneLoading && (<>Loading...</>)}
+                    {!doneLoading && (<CircularProgress/>)}
                 </div>
             </div>
         </div>
