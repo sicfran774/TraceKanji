@@ -1,3 +1,8 @@
+# To use the script:
+# 1. Create "input.txt" and "output.txt" files
+# 2. Put desired kanjis into input.txt, no spaces or newlines (i.e. 亜哀愛挨悪握圧扱)
+# 3. Run script, output string will be in output.txt to be inputted into MongoDB
+
 # {
 #   "_id": { "$oid": "64c48382c731a8a0b826e5f7" },
 #   "kanji": "kanji","svg": "blah"
@@ -38,10 +43,10 @@ def convertIntoJson(kanjiFiles, kanjis):
 if __name__ == "__main__":
 	kanjiPaths = []
 	kanjis = []
-	outputFile = open("./test/output.txt", "a", encoding="utf8")
+	outputFile = open("./output.txt", "a", encoding="utf8")
 
 	#Go through each character in input.txt
-	with open("./test/input.txt", "r", encoding="utf8") as f:
+	with open("./input.txt", "r", encoding="utf8") as f:
 		while True:
 			c = f.read(1)
 			if not c:
