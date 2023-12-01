@@ -23,8 +23,25 @@ export default function DrawArea() {
     context.lineJoin = "round";
     context.lineWidth = 14;
     contextRef.current = context;
-
+    
     setStrokes([canvasRef.current.toDataURL()])
+
+    // Prevent scrolling when touching the canvas
+    document.body.addEventListener("touchstart", function (e) {
+      if (e.target == canvas) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    document.body.addEventListener("touchend", function (e) {
+      if (e.target == canvas) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    document.body.addEventListener("touchmove", function (e) {
+      if (e.target == canvas) {
+        e.preventDefault();
+      }
+    }, { passive: false });
   }, []);
 
   useEffect(() => {
@@ -39,10 +56,19 @@ export default function DrawArea() {
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();
-    contextRef.current.moveTo(
-      e.nativeEvent.offsetX,
-      e.nativeEvent.offsetY
-    );
+    if(!e.targetTouches){
+      contextRef.current.moveTo(
+        e.nativeEvent.offsetX,
+        e.nativeEvent.offsetY
+      )
+    } else {
+      let touchPos = getTouchPos(canvasRef.current, e)
+      contextRef.current.moveTo(
+        touchPos.x,
+        touchPos.y
+      )
+    }
+
     setIsDrawing(true);
   };
 
@@ -54,15 +80,24 @@ export default function DrawArea() {
   };
 
   const draw = (e) => {
-      if (!isDrawing) {
-          return;
-      }
-      contextRef.current.lineTo(
-          e.nativeEvent.offsetX,
-          e.nativeEvent.offsetY
-      );
+    if (!isDrawing) {
+      return;
+    }
 
-      contextRef.current.stroke();
+    if(!e.targetTouches){
+      contextRef.current.lineTo(
+        e.nativeEvent.offsetX,
+        e.nativeEvent.offsetY
+      )
+    } else {
+      let touchPos = getTouchPos(canvasRef.current, e)
+      contextRef.current.lineTo(
+        touchPos.x,
+        touchPos.y
+      )
+    }
+
+    contextRef.current.stroke();
   };
 
   function toggleOverlay(){
@@ -106,6 +141,15 @@ export default function DrawArea() {
     context.clearRect(0, 0, canvas.width, canvas.height)
   }
 
+  // Get the position of a touch relative to the canvas
+  function getTouchPos(canvasDom, touchEvent) {
+    var rect = canvasDom.getBoundingClientRect();
+    return {
+      x: touchEvent.touches[0].clientX - rect.left,
+      y: touchEvent.touches[0].clientY - rect.top
+    };
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.drawArea}>
@@ -115,6 +159,9 @@ export default function DrawArea() {
           onMouseDown={startDrawing}
           onMouseUp={endDrawing}
           onMouseMove={draw}
+          onTouchStart={startDrawing}
+          onTouchEnd={endDrawing}
+          onTouchMove={draw}
           width={'500px'}
           height={'500px'}
           ref={canvasRef}
