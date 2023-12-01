@@ -3,12 +3,9 @@
     height: 500px;
 }
 
-.paint{
-    position: absolute;
-    border: 2px solid black;
-    width: 500px;
-    height: 500px;
-    margin: auto;
+.canvas{
+    background-color: white;
+    border: 1px solid black;
 }
 
 .buttons{

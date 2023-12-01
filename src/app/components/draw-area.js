@@ -165,6 +165,7 @@ export default function DrawArea() {
           width={'500px'}
           height={'500px'}
           ref={canvasRef}
+          className={styles.canvas}
           />
         </div>
       </div>
