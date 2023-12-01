@@ -4,7 +4,7 @@
     border-radius: 5px;
     border-color: black;
     background-color: white;
-    width: 320px;
+    width: 340px;
     height: 125px;
     padding: 3px;
     margin: 3px;
@@ -14,4 +14,30 @@
     width: 100px;
     height: 100px;
     margin-right: 10px;
+}
+
+.kanjiInfo{
+    display: flex;
+    width: 500px;
+    height: 250px;
+    border: 1px solid black;
+    margin: auto;
+}
+
+@media only screen and (min-width: 1560px) and (max-width: 1919px) {
+    .card{
+        width: 370px;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1559px) {
+    .card{
+        width: 410px;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    .card{
+        width: 500px;
+    }
 }

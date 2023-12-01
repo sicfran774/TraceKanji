@@ -1,6 +1,5 @@
 .signIn{
-    display: flex;
-    margin-left: auto;
+    margin-right: 30px;
 }
 
 .welcome{
@@ -11,4 +10,10 @@
 .signIn button{
     height: 40px;
     width: 75px;
+}
+
+@media only screen and (max-width: 768px) {
+    .signIn{
+        margin-right: 0px;
+    }
 }

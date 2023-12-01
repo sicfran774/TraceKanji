@@ -1,10 +1,51 @@
 .main{
+    width: 1920px;
+    margin: auto;
 }
 
 .body{
     display: flex;
+    justify-content: space-between;
 }
 
 .header{
+    margin: auto;
     display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media only screen and (min-width: 1560px) and (max-width: 1919px) {
+    .main{
+        width: 1660px;
+        margin: auto;
+    }
+
+    .header{
+        width: 1660px;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1559px) {
+    .main, .header{
+        width: 1360px;
+    }
+}
+
+/* @media only screen and (min-width: 769px) and (max-width: 1080px) {
+    .main, .header{
+        width: 1045px;
+    }
+} */
+
+@media only screen and (max-width: 768px) {
+    .main{
+        width: 500px;
+        margin: 2px 0px 2px 3px;
+    }
+
+    .body{
+        display: block;
+        width: 500px;
+    }
 }

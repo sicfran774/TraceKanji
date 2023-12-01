@@ -4,10 +4,16 @@
 
 .searchText{
     margin-right: 5px;
+    display: flex;
+}
+
+.searchText p {
+    margin-right: 3px;
 }
 
 .kanjiList{
     height: 100%;
+    margin-left: auto;
 }
 
 .kanjiList ul{
@@ -28,6 +34,10 @@
     margin-right: 10px;
 }
 
+.loading{
+    width: 200px;
+}
+
 .listAndDrawArea {
     display: flex;
     justify-content: space-between;
@@ -36,4 +46,22 @@
 
 .deckSelector {
     margin-left: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+    .listAndDrawArea {
+        display: flex;
+        width: 500px;
+        flex-direction: column;
+    }
+
+    .searchBox{
+        justify-content: space-between;
+    }
+
+    .loading{
+        position: absolute;
+        width: 100px;
+        transform: translate(-70px, -17px);
+    }
 }

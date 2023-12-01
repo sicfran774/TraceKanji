@@ -165,22 +165,26 @@ export default function Search({kanjiAndSVG}){
                 <KanjiInfo decks={decks} setDecks={setDecks} selectedDeck={selectedDeck} setSelectedDeck={setSelectedDeck}/>
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
-                        <div className={styles.searchText}>Search</div>
-                        <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
+                        <div className={styles.searchText}>
+                            <p>Search</p>
+                            <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
+                        </div>
                         <div className={styles.pageButtons}>
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
                             <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
-                            {!doneLoadingKanji && (<div>Loading Kanji...</div>)}
+                            {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji...</div>)}
                         </div>
                     </div>
-                    <ul>
-                        {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
-                            <li key={item.info.kanji}>
-                                <KanjiCard kanji={item.info} svg={item.svg}/>
-                            </li>
-                        ))}
-                    </ul>
+                    <div className={styles.kanjiListGrid}>
+                        <ul>
+                            {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
+                                <li key={item.info.kanji}>
+                                    <KanjiCard kanji={item.info} svg={item.svg}/>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                     {!doneLoading && (<CircularProgress/>)}
                 </div>
             </div>
