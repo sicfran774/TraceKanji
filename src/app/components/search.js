@@ -7,7 +7,7 @@ import KanjiInfo from './kanji-info';
 import { CircularProgress } from '@mui/material';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
-const ITEMS_PER_FETCH = 24;
+const ITEMS_PER_FETCH = 100;
 const ITEMS_PER_PAGE = 24;
 
 let abortController = null
@@ -96,6 +96,7 @@ export default function Search({kanjiAndSVG}){
 
     const fetchDataInBatches = async (kanjiAndSVG) => {
         let kanjiJson = []
+        setDoneLoadingKanji(false)
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
             try{
                 /*
@@ -173,7 +174,7 @@ export default function Search({kanjiAndSVG}){
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
                             <div>Page {page + 1}/{kanjiInfo.length}</div>
                             <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
-                            {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji...</div>)}
+                            {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji... <CircularProgress size="15px"/></div>)}
                         </div>
                     </div>
                     <div className={styles.kanjiListGrid}>
