@@ -26,6 +26,9 @@ export default function Search({kanjiAndSVG}){
     const [decks, setDecks] = useState([])
     const [selectedDeck, setSelectedDeck] = useState("default")
 
+    const [recognizeKanji, setRecognizeKanji] = useState(false)
+    const [recKanjiList, setRecKanjiList] = useState([])
+
     let kanjiList = kanjiInfo
 
     useEffect(() => {
@@ -38,12 +41,16 @@ export default function Search({kanjiAndSVG}){
         }
         abortController = new AbortController()
         getKanjiBasedOnArray()
-    }, [ , selectedDeck])
+    }, [ , selectedDeck, recKanjiList, recognizeKanji])
 
     useEffect(() => {
         getKanjiBasedOnFilter()
         setKanjiPerPage()
     }, [kanjiAPI])
+
+    useEffect(() => {
+        console.log(recKanjiList)
+    }, [recKanjiList])
 
     useEffect(() => {
         getKanjiBasedOnFilter()
@@ -155,6 +162,10 @@ export default function Search({kanjiAndSVG}){
             const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
             //Send it to be loaded on page
             fetchDataInBatches(deckKanjiWithSVG)
+        } else if (recognizeKanji){
+            console.log("here")
+            const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
+            fetchDataInBatches(recognizedKanjiWithSVG)
         } else {
             fetchDataInBatches(kanjiAndSVG)
         }
@@ -163,7 +174,15 @@ export default function Search({kanjiAndSVG}){
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
-                <KanjiInfo decks={decks} setDecks={setDecks} selectedDeck={selectedDeck} setSelectedDeck={setSelectedDeck}/>
+                <KanjiInfo 
+                    decks={decks} 
+                    setDecks={setDecks} 
+                    selectedDeck={selectedDeck} 
+                    setSelectedDeck={setSelectedDeck} 
+                    recognizeKanji={recognizeKanji} 
+                    setRecognizeKanji={setRecognizeKanji}
+                    setRecKanjiList={setRecKanjiList}
+                />
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>
