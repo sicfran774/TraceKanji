@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
 
 const backgroundColor = 'black'
+const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
 
 export default function DrawArea({enableRecognition, setRecKanjiList}) {
   const canvasRef = useRef(null);
@@ -177,7 +178,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
   }
 
   async function predictKanji(){
-    await fetch("http://127.0.0.1:5000/", {
+    await fetch(flaskEndpoint, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
