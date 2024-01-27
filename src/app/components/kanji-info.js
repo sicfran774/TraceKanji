@@ -8,10 +8,12 @@ import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
+    
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
+    const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
     const {data, status} = useSession()
     const deckSelector = useRef()
 
@@ -66,10 +68,22 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
         }
     }
 
+    const toggleRecognizeKanji = () => {
+        if(recognizeKanji){
+            setRecognizeKanji(false)
+            setSelectedKanji([])
+            setRecKanjiMsg("Enable Kanji Recognition")
+        } else {
+            setRecognizeKanji(true)
+            setRecKanjiMsg("Disable Kanji Recognition")
+        }
+    }
+
     return(
         <div className={styles.main}>
             {status === 'authenticated' && (<div className={styles.deckManager}>
                 <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
+                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
                 <div className={styles.deckSelector}>
                     <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
                         <option value="default">All Kanji</option>
@@ -79,9 +93,12 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck}){
                     </select>
                 </div>
             </div>)}
-            {status !== 'authenticated' && (<div className="test">Sign in to create your own Kanji decks!</div>)}
+            {status !== 'authenticated' && (<div className="notSignedIn">
+                <span>Sign in to create your own Kanji decks!</span>
+                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
+            </div>)}
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
-            {!openDeckManager && <DrawArea />}
+            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
                     <SVG src={sharedKanji.svg}/>

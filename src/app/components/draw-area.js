@@ -7,7 +7,9 @@ import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
 
-export default function DrawArea() {
+const backgroundColor = 'black'
+
+export default function DrawArea({enableRecognition, setRecKanjiList}) {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -21,7 +23,7 @@ export default function DrawArea() {
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineJoin = "round";
-    context.lineWidth = 14;
+    context.lineWidth = 5;
     contextRef.current = context;
     
     setStrokes([canvasRef.current.toDataURL()])
@@ -53,6 +55,10 @@ export default function DrawArea() {
     resetCanvas()
     setShowKanji("Hide Kanji Tracing")
   }, [sharedKanji])
+
+  useEffect(() => {
+    redrawBackground()
+  }, [enableRecognition])
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();
@@ -108,11 +114,15 @@ export default function DrawArea() {
   const addStroke = () => {
     //"DataURL" is the current state of the canvas
     setStrokes([...strokes, canvasRef.current.toDataURL()])
+    if(enableRecognition){
+      predictKanji()
+    }
   }
 
   async function undoStroke(){
     if(strokes.length > 1) 
       setStrokes(strokes.slice(0, strokes.length - 1))
+    predictKanji()
   }
 
   function redrawCanvas(){
@@ -133,12 +143,28 @@ export default function DrawArea() {
     if(!strokes) return
     setStrokes(strokes.slice(0, 1))
     clearCanvas()
+    redrawBackground()
   }
 
   function clearCanvas(){
     const canvas = canvasRef.current
     const context = canvas.getContext("2d")
     context.clearRect(0, 0, canvas.width, canvas.height)
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  function redrawBackground(){
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    if(enableRecognition){
+      context.fillStyle = backgroundColor;
+      context.strokeStyle = "white";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    } else {
+      context.fillStyle = "white";
+      context.strokeStyle = "black";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
   }
 
   // Get the position of a touch relative to the canvas
@@ -148,6 +174,23 @@ export default function DrawArea() {
       x: touchEvent.touches[0].clientX - rect.left,
       y: touchEvent.touches[0].clientY - rect.top
     };
+  }
+
+  async function predictKanji(){
+    await fetch("http://127.0.0.1:5000/", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({data: canvasRef.current.toDataURL()})
+    })
+    .then(response => {
+      return response.json()
+    })
+    .then(data => {
+      setRecKanjiList(data)
+      console.log(data)
+    })
   }
 
   return (
