@@ -125,6 +125,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             </div>
             <div className={styles.myInfo}>
                 <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
+                <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
             </div>
         </div>
     )

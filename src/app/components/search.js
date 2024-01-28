@@ -50,7 +50,7 @@ export default function Search({kanjiAndSVG}){
 
     useEffect(() => {
         setSelectedDeck("default")
-        if(doneLoading) document.getElementById("decks").selectedIndex = 0
+        if(doneLoading && decks.length > 0) document.getElementById("decks").selectedIndex = 0
     }, [recKanjiList])
 
     useEffect(() => {
