@@ -2,12 +2,13 @@
 
 Start learning [here](https://tracekanji.com)!
 
-An extensive study tool for Japanese learners, specifically in the meanings and stroke orders of over 2000 kanji. Users can login to save specfic kanji to their own created decks, providing an easy way to facilitate their study at their own pace. In-depth information such as the JLPT grade, onyomi and kunyomi readings, and more are provided through KanjiAPI, and stroke orders are retrieved from KanjiVG, a collection of vector graphics.
+An extensive study tool for Japanese learners, specifically in the meanings and stroke orders of over 2000 kanji. Features recognition of handwritten kanji, which updates the best matching kanji every time a stroke is made. Users can login to save specfic kanji to their own created decks, providing an easy way to facilitate their study at their own pace. In-depth information such as the JLPT grade, onyomi and kunyomi readings, and more are provided through KanjiAPI, and stroke orders are retrieved from KanjiVG, a collection of vector graphics.
 
 ## Features
 - Information on all [Jōyō kanji](https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji) (2,136 kanji): basic meanings, kunyomi/onyomi readings, grade, JLPT level, and words that use the kanji. This information is retrieved from [KanjiAPI](https://github.com/onlyskin/kanjiapi.dev), an excellent API of thousands of kanji.
 - Stroke orders/images of each kanji, courtesy of SVG files from the [KanjiVG project](https://kanjivg.tagaini.net/)
 - Draw area to practice writing kanji, as well as overlaying stroke orders onto the canvas, undo-ing strokes and hiding the kanji tracing.
+- Handwritten kanji recognition to make it easy to find out what that kanji means. Stroke order does not matter!
 - Search filter to find specific kanji. Meanings, kanji, and kunyomi/onyomi readings can simply be typed into the search bar. Grades and JLPT levels can be filtered using ```grade:[level]``` and ```jlpt:[level]``` respectively.
 - After signing in, you are able to create your own decks of kanji to facilitate and organize your study
 
@@ -18,6 +19,7 @@ An extensive study tool for Japanese learners, specifically in the meanings and 
 ## Technologies Used
 - [KanjiAPI](https://github.com/onlyskin/kanjiapi.dev)
 - [KanjiVG](https://kanjivg.tagaini.net/)
+- [KanjiRecognizerAPI](https://github.com/sicfran774/KanjiRecognizerAPI) (Courtesy of [CaptainDario's Kanji recognition machine learning model](https://github.com/CaptainDario/DaKanji-Single-Kanji-Recognition))
 - React
 - NextJS (deployed on Vercel)
 - MongoDB
