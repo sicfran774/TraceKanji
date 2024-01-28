@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
+import Snackbar from '@mui/material/Snackbar';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -14,6 +15,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
+    const [open, setOpen] = useState(false)
     const {data, status} = useSession()
     const deckSelector = useRef()
 
@@ -52,7 +54,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                 console.error(e)
             }
         } else {
-            console.log("Not logged in")
+            console.log("Sign in to create your own kanji decks!")
         }
     }
 
@@ -87,6 +89,18 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         }
     }
 
+    const copyKanji = () => {
+        setOpen(true)
+        navigator.clipboard.writeText(sharedKanji.kanji.kanji)
+    }
+
+    const handleCloseSnack = (event, reason) => {
+        if (reason === "clickaway") {
+          return;
+        }
+        setOpen(false);
+    };
+
     return(
         <div className={styles.main}>
             {status === 'authenticated' && (<div className={styles.deckManager}>
@@ -114,19 +128,30 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                     <SVG src={sharedKanji.svg}/>
                 </div>
                 <div>
-                    <p>Kanji: {sharedKanji.kanji.kanji}</p>
+                    <p>Kanji: {sharedKanji.kanji.kanji} {sharedKanji.kanji ? (<button type="button" className='button' onClick={() => copyKanji()}>Copy</button>) : (<></>)}</p>
                     <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
                     <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
                     <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
                     <p>Grade: {sharedKanji.kanji.grade}</p>
                     <p>JLPT: {sharedKanji.kanji.jlpt}</p>
-                    <a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">List of words that use this kanji</a>
+                    <p><a href={"https://jisho.org/search/" + sharedKanji.kanji.kanji} target="_blank">Jisho</a></p>
+                    <p><a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">kanjikai</a></p>
                 </div>
             </div>
             <div className={styles.myInfo}>
                 <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
                 <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
             </div>
+            <Snackbar
+                open={open}
+                onClose={handleCloseSnack}
+                autoHideDuration={1000}
+                message={`${sharedKanji.kanji.kanji} copied to clipboard`}
+                anchorOrigin={{
+                    horizontal: "left",
+                    vertical: "bottom",
+                }}
+            />
         </div>
     )
 }

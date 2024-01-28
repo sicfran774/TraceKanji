@@ -208,10 +208,10 @@ export default function Search({kanjiAndSVG}){
                     </div>) : 
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
-                            (<>Start drawing on the left to populate the list!</>) : 
-                            (doneLoading ? <>
+                            (<>Start drawing to populate this list!</>) : 
+                            (doneLoading && decks.length > 0 ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
-                                <></>)
+                                (doneLoading ? <>No kanji found!</> : <></>))
                         }
                     </div>)}
                     {!doneLoading && (<CircularProgress/>)}
