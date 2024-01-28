@@ -25,6 +25,10 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         fetchData().catch(console.error)
     }, [status])
 
+    useEffect(() => {
+        closeDeckManager()
+    }, [recognizeKanji])
+
     const formatList = (arr) => {
         let str = ""
         for(let i in arr){
@@ -58,14 +62,18 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
 
     const toggleDeckManager = () => {
         if(openDeckManager){
-            setOpenDeckManager(false)
-            setEditingDeck(false)
-            setSelectedKanji([])
-            setDeckManagerMsg("Open Deck Manager")
+            closeDeckManager()
         } else {
             setOpenDeckManager(true)
             setDeckManagerMsg("Close Deck Manager")
         }
+    }
+
+    const closeDeckManager = () => {
+        setOpenDeckManager(false)
+        setEditingDeck(false)
+        setSelectedKanji([])
+        setDeckManagerMsg("Open Deck Manager")
     }
 
     const toggleRecognizeKanji = () => {
@@ -82,18 +90,20 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     return(
         <div className={styles.main}>
             {status === 'authenticated' && (<div className={styles.deckManager}>
-                <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
-                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
-                <div className={styles.deckSelector}>
-                    <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
-                        <option value="default">All Kanji</option>
-                        {decks.map((deck, index) => (
-                            <option key={index} value={index}>{deck[0]}</option>
-                        ))}
-                    </select>
+                <div className={styles.deckManagerButtons}>
+                    <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
+                    <div className={styles.deckSelector}>
+                        <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
+                            <option value="default">All Kanji</option>
+                            {decks.map((deck, index) => (
+                                <option key={index} value={index}>{deck[0]}</option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
+                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
             </div>)}
-            {status !== 'authenticated' && (<div className="notSignedIn">
+            {status !== 'authenticated' && (<div className={styles.notSignedIn}>
                 <span>Sign in to create your own Kanji decks!</span>
                 <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
             </div>)}

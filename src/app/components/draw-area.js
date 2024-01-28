@@ -6,6 +6,7 @@ import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
+import { red } from '@mui/material/colors';
 
 const backgroundColor = 'black'
 const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
@@ -58,7 +59,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
   }, [sharedKanji])
 
   useEffect(() => {
-    redrawBackground()
+    resetCanvas()
   }, [enableRecognition])
 
   const startDrawing = (e) => {
@@ -123,7 +124,9 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
   async function undoStroke(){
     if(strokes.length > 1) 
       setStrokes(strokes.slice(0, strokes.length - 1))
-    predictKanji()
+    if(enableRecognition){
+      predictKanji()
+    }
   }
 
   function redrawCanvas(){
@@ -144,14 +147,13 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     if(!strokes) return
     setStrokes(strokes.slice(0, 1))
     clearCanvas()
-    redrawBackground()
   }
 
   function clearCanvas(){
     const canvas = canvasRef.current
     const context = canvas.getContext("2d")
     context.clearRect(0, 0, canvas.width, canvas.height)
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    redrawBackground()
   }
 
   function redrawBackground(){
@@ -162,9 +164,10 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
       context.strokeStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
     } else {
-      context.fillStyle = "white";
       context.strokeStyle = "black";
+      context.fillStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
+      context.clearRect(0, 0, canvas.width, canvas.height)
     }
   }
 
@@ -190,7 +193,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     })
     .then(data => {
       setRecKanjiList(data)
-      console.log(data)
+      //console.log(data)
     })
   }
 

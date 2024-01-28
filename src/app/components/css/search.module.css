@@ -11,9 +11,14 @@
     margin-right: 3px;
 }
 
+.kanjiListGrid{
+    margin-top: 5px;
+}
+
 .kanjiList{
     height: 100%;
     margin-left: auto;
+    margin-top: 15px;
 }
 
 .kanjiList ul{
@@ -23,6 +28,11 @@
 
 .kanjiList li{
     list-style-type: none;
+}
+
+.noKanjiFound{
+    font-size: 20px;
+    margin: 10px 0 0 0;
 }
 
 .pageButtons {

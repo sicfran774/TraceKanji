@@ -13,6 +13,13 @@
 
 .deckManager{
     display: flex;
+    flex-direction: column;
+    margin-bottom: 2px;
+}
+
+.deckManagerButtons{
+    display: flex;
+    margin-bottom: 2px;
 }
 
 .deckSelector{
@@ -25,7 +32,8 @@
 
 .notSignedIn{
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    margin-bottom: 3px;
 }
 
 @media only screen and (max-width: 768px) {

@@ -1,5 +1,7 @@
 .signIn{
     margin-right: 30px;
+    display: flex;
+    align-items: center;
 }
 
 .welcome{

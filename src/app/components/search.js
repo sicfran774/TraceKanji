@@ -49,7 +49,8 @@ export default function Search({kanjiAndSVG}){
     }, [kanjiAPI])
 
     useEffect(() => {
-        console.log(recKanjiList)
+        setSelectedDeck("default")
+        if(doneLoading) document.getElementById("decks").selectedIndex = 0
     }, [recKanjiList])
 
     useEffect(() => {
@@ -163,7 +164,6 @@ export default function Search({kanjiAndSVG}){
             //Send it to be loaded on page
             fetchDataInBatches(deckKanjiWithSVG)
         } else if (recognizeKanji){
-            console.log("here")
             const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
             fetchDataInBatches(recognizedKanjiWithSVG)
         } else {
@@ -196,7 +196,8 @@ export default function Search({kanjiAndSVG}){
                             {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji... <CircularProgress size="15px"/></div>)}
                         </div>
                     </div>
-                    <div className={styles.kanjiListGrid}>
+                    {doneLoading && kanjiInfo.length > 0 ? 
+                    (<div className={styles.kanjiListGrid}>
                         <ul>
                             {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
                                 <li key={item.info.kanji}>
@@ -204,7 +205,15 @@ export default function Search({kanjiAndSVG}){
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </div>) : 
+                    (<div className={styles.noKanjiFound}>
+                        {recognizeKanji ? 
+                            (<>Start drawing on the left to populate the list!</>) : 
+                            (doneLoading ? <>
+                                No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
+                                <></>)
+                        }
+                    </div>)}
                     {!doneLoading && (<CircularProgress/>)}
                 </div>
             </div>

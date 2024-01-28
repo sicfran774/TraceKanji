@@ -12,7 +12,10 @@ export default async function App() {
   return (
       <div className={styles.main}>
         <div className={styles.header}>
-          <h1>Trace Kanji</h1>
+          <div className={styles.title}>
+            <h1>Trace Kanji</h1>
+            <span>Kanji tracer and handwriting recognition</span>
+          </div>
           <SignIn />
         </div>
         <div className={styles.body}>
