@@ -13,23 +13,26 @@ const ITEMS_PER_PAGE = 24;
 let abortController = null
 
 export default function Search({kanjiAndSVG}){
-    //kanjiAPI consists of two objects
-    // - info: this holds kanji info like meanings, grade, jlpt, readings
-    // - svg: contains svg string that shows stroke orders
 
-    const [kanjiAPI, setKanjiAPI] = useState(null)
+    //fetchedKanji consists of two objects
+    // - info: this holds kanji info like kanji itself, meanings, grade, jlpt, readings
+    // - svg: contains svg string that shows stroke orders
+    const [fetchedKanji, setFetchedKanji] = useState(null)
+    const [filteredList, setFilteredList] = useState([]) // If filter is applied, this will take from fetchedKanji
+    const [kanjiInfo, setKanjiInfo] = useState([]) // [[Page 1 Kanji], [Page 2 Kanji], [...], ...]
+
     const [filter, setFilter] = useState("")
-    const [kanjiInfo, setKanjiInfo] = useState([])
+    
     const [doneLoading, setDoneLoading] = useState(false)
     const [doneLoadingKanji, setDoneLoadingKanji] = useState(false)
+
     const [page, setPage] = useState(0);
+
     const [decks, setDecks] = useState([])
     const [selectedDeck, setSelectedDeck] = useState("default")
 
     const [recognizeKanji, setRecognizeKanji] = useState(false)
     const [recKanjiList, setRecKanjiList] = useState([])
-
-    let kanjiList = kanjiInfo
 
     useEffect(() => {
         /*  A new AbortController is created everytime a deck is selected.
@@ -45,8 +48,7 @@ export default function Search({kanjiAndSVG}){
 
     useEffect(() => {
         getKanjiBasedOnFilter()
-        setKanjiPerPage()
-    }, [kanjiAPI])
+    }, [fetchedKanji, filter])
 
     useEffect(() => {
         setSelectedDeck("default")
@@ -54,42 +56,43 @@ export default function Search({kanjiAndSVG}){
     }, [recKanjiList])
 
     useEffect(() => {
-        getKanjiBasedOnFilter()
-    }, [filter])
+        setKanjiPerPage()
+        console.log(filteredList)
+    }, [filteredList])
 
     const getKanjiBasedOnFilter = () => {
-        if(!kanjiAPI) return
+        if(!fetchedKanji) return
         setDoneLoading(false)
 
         const lowercase = filter.toLowerCase()
         //Go through each kanji, look at their meanings and see if it starts with filter
-        const sameMeanings = kanjiAPI.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
+        const sameMeanings = fetchedKanji.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
         //Same for kun readings
-        const sameKun = kanjiAPI.filter(kanji => (kanji.info.kun_readings.some((meaning) => meaning.startsWith(lowercase))))
+        const sameKun = fetchedKanji.filter(kanji => (kanji.info.kun_readings.some((meaning) => meaning.startsWith(lowercase))))
         //Same for on readings
-        const sameOn = kanjiAPI.filter(kanji => (kanji.info.on_readings.some((meaning) => meaning.startsWith(lowercase))))
+        const sameOn = fetchedKanji.filter(kanji => (kanji.info.on_readings.some((meaning) => meaning.startsWith(lowercase))))
         //Grade
-        const sameGrade = kanjiAPI.filter(kanji => (`grade:${kanji.info.grade}` === lowercase))
+        const sameGrade = fetchedKanji.filter(kanji => (`grade:${kanji.info.grade}` === lowercase))
         //JLPT
-        const sameJLPT = kanjiAPI.filter(kanji => (`jlpt:${kanji.info.jlpt}` === lowercase))
+        const sameJLPT = fetchedKanji.filter(kanji => (`jlpt:${kanji.info.jlpt}` === lowercase))
         //Kanji
-        const sameKanji = kanjiAPI.filter(kanji => (kanji.info.kanji === lowercase))
+        const sameKanji = fetchedKanji.filter(kanji => (kanji.info.kanji === lowercase))
 
-        if(sameKanji.length > 0){
-            kanjiList = sameKanji
+        if (filter.length == 0){
+            setFilteredList(fetchedKanji)
+        } else if(sameKanji.length > 0){
+            setFilteredList(sameKanji)
         } else if(sameKun.length > 0){
-            kanjiList = sameKun
+            setFilteredList(sameKun)
         } else if(sameOn.length > 0){
-            kanjiList = sameOn
+            setFilteredList(sameOn)
         } else if(sameGrade.length > 0){
-            kanjiList = sameGrade
+            setFilteredList(sameGrade)
         } else if(sameJLPT.length > 0){
-            kanjiList = sameJLPT
+            setFilteredList(sameJLPT)
         } else{
-            kanjiList = sameMeanings
+            setFilteredList(sameMeanings)
         }
-
-        setKanjiPerPage()
     }
     
     const changePage = (delta) => {
@@ -102,7 +105,8 @@ export default function Search({kanjiAndSVG}){
         setPage(diff)
     }
 
-    const fetchDataInBatches = async (kanjiAndSVG) => {
+    // Fetches Kanji info from KanjiAPI
+    const fetchDataInBatches = async (kanjiAndSVG, originalOrder = []) => {
         let kanjiJson = []
         setDoneLoadingKanji(false)
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
@@ -122,7 +126,7 @@ export default function Search({kanjiAndSVG}){
                 kanjiJson.push(...batchResults);
                 
                 // Send the accumulated data after each batch
-                formatKanjiAPI(kanjiJson, kanjiAndSVG);
+                combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
             } catch (err) {
                 //We reached here possibly because the signal threw an AbortSignal error, so just return nothing
                 return
@@ -130,28 +134,39 @@ export default function Search({kanjiAndSVG}){
         }
     
         setDoneLoadingKanji(true)
-        formatKanjiAPI(kanjiJson, kanjiAndSVG);
+        combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
     }
 
     //This combines the KanjiAPI info with the SVG from MongoDB
-    const formatKanjiAPI = (kanjiJson, kanjiAndSVG) => {
+    const combineKanjiAPIandSVG = (kanjiJson, kanjiAndSVG, originalOrder = []) => {
         let arr = []
         for(let i in kanjiJson){
             arr.push({info: kanjiJson[i], svg: kanjiAndSVG[i].svg})
         }
-        kanjiList = arr;
-        setKanjiAPI(arr)
+        if(originalOrder.length > 0){
+            arr.sort((a, b) => {
+                const indexA = originalOrder.indexOf(a.info.kanji)
+                const indexB = originalOrder.indexOf(b.info.kanji)
+
+                const defaultIndex = originalOrder.length;
+
+                return indexA === -1 ? defaultIndex : indexA - (indexB === -1 ? defaultIndex : indexB);
+            })            
+        }
+        setFetchedKanji(arr)
     }
 
     const setKanjiPerPage = () => {
-        let arr = []
-        for(let i = 0; i < kanjiList.length; i += ITEMS_PER_PAGE){
-            const chunk = kanjiList.slice(i, i + ITEMS_PER_PAGE)
-            arr.push(chunk)
+        if(filteredList){
+            let arr = []
+            for(let i = 0; i < filteredList.length; i += ITEMS_PER_PAGE){
+                const chunk = filteredList.slice(i, i + ITEMS_PER_PAGE)
+                arr.push(chunk)
+            }
+            if(page > arr.length - 1) setPage(0)
+            setKanjiInfo(arr)
+            setDoneLoading(true)
         }
-        if(page > arr.length - 1) setPage(0)
-        setKanjiInfo(arr)
-        setDoneLoading(true)
     }
 
     const getKanjiBasedOnArray = () => {
@@ -165,7 +180,8 @@ export default function Search({kanjiAndSVG}){
             fetchDataInBatches(deckKanjiWithSVG)
         } else if (recognizeKanji){
             const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
-            fetchDataInBatches(recognizedKanjiWithSVG)
+            //recognizedKanjiWithSVG.sort((a, b) => recKanjiList.indexOf(a.kanji) - recKanjiList.indexOf(b.kanji))
+            fetchDataInBatches(recognizedKanjiWithSVG, recKanjiList)
         } else {
             fetchDataInBatches(kanjiAndSVG)
         }
@@ -187,7 +203,8 @@ export default function Search({kanjiAndSVG}){
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>
                             <p>Search</p>
-                            <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}></input>
+                            <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}
+                                disabled={kanjiInfo.length <= 0 && !doneLoading}></input>
                         </div>
                         <div className={styles.pageButtons}>
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
@@ -196,25 +213,26 @@ export default function Search({kanjiAndSVG}){
                             {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji... <CircularProgress size="15px"/></div>)}
                         </div>
                     </div>
-                    {doneLoading && kanjiInfo.length > 0 ? 
+                    {kanjiInfo.length > 0 ? 
                     (<div className={styles.kanjiListGrid}>
                         <ul>
-                            {doneLoading && kanjiInfo.length > 0 && kanjiInfo[page].map(item => (
-                                <li key={item.info.kanji}>
-                                    <KanjiCard kanji={item.info} svg={item.svg}/>
-                                </li>
-                            ))}
+                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => { 
+                                return (
+                                    <li key={item.info.kanji}>
+                                        <KanjiCard kanji={item.info} svg={item.svg}/>
+                                    </li>
+                            )})}
                         </ul>
                     </div>) : 
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
                             (<>Start drawing to populate this list!</>) : 
-                            (doneLoading && decks.length > 0 ? <>
+                            (decks.length > 0 ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))
                         }
                     </div>)}
-                    {!doneLoading && (<CircularProgress/>)}
+                    {kanjiInfo.length <= 0 && !doneLoading && (<CircularProgress/>)}
                 </div>
             </div>
         </div>

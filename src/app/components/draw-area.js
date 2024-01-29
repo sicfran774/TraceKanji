@@ -6,7 +6,6 @@ import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
-import { red } from '@mui/material/colors';
 
 const backgroundColor = 'black'
 const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
