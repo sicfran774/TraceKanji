@@ -4,11 +4,11 @@ import styles from './css/kanji-info.module.css';
 import SVG from 'react-inlinesvg'
 import { useState, useContext, useEffect, useRef } from "react";
 import { useSession } from 'next-auth/react';
-import { SharedKanjiProvider } from './shared-kanji-provider';
+import { SharedKanjiProvider } from '../shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
-import ChangelogDialog from './changelog/changelog';
+import ChangelogDialog from '../changelog/changelog';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)

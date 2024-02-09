@@ -1,11 +1,12 @@
 .overlay{
-    position: absolute;
+    position: relative;
 }
 
 .kanji{
     width: 500px;
     height: 500px;
     opacity: 0.25;
+    position: absolute;
 }
 
 @media (prefers-color-scheme: dark) {

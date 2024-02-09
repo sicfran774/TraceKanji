@@ -3,7 +3,7 @@
 import styles from './css/search.module.css';
 import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
-import KanjiInfo from './kanji-info';
+import KanjiInfo from './draw-area/kanji-info';
 import { CircularProgress } from '@mui/material';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"

@@ -4,7 +4,7 @@ import styles from './css/changelog.module.css';
 
 const ContactInfo = () => {
   return (
-    <div>
+    <div className={styles.contactInfo}>
         <p>
             Questions or suggestions?&nbsp;
             <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
@@ -18,6 +18,10 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.2.2 (2/9/2024)</u></Typography>
+      <ul>
+        <li>- Improved deck manager accessibility</li>
+      </ul>
       <Typography variant="h6"><u>0.2.1 (2/8/2024)</u></Typography>
       <ul>
         <li>- Dark/light mode color schemes based on system</li>
@@ -31,7 +35,7 @@ const Changelog = () => {
       <Typography variant="h6"><u>0.1 (11/30/2023)</u></Typography>
       <ul>
         <li>- Sign in to access deck manager to save specific kanji</li>
-        <li>- Website is mobile-friendly</li>
+        <li>- Mobile-accessibility</li>
       </ul>
     </div>
   );
@@ -39,7 +43,7 @@ const Changelog = () => {
 
 const ChangelogDialog = ({ open, onClose }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} className={styles.dialog}>
       <DialogTitle>Changelog</DialogTitle>
       <DialogContent>
         <ContactInfo />

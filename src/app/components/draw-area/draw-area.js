@@ -5,7 +5,7 @@
 import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
-import { SharedKanjiProvider } from './shared-kanji-provider';
+import { SharedKanjiProvider } from '../shared-kanji-provider';
 
 const backgroundColor = 'black'
 const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
@@ -210,10 +210,20 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     })
   }
 
+  const GridOverLay = () => {
+    return (
+      <div className={styles.grid}>
+        <div className={styles.vertical}></div>
+        <div className={styles.horizontal}></div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.drawArea}>
         {showOverlay && <KanjiOverlay />}
+        <GridOverLay />
         <div className={styles.paint}>
           <canvas
           onMouseDown={startDrawing}

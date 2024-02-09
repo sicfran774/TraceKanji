@@ -4,10 +4,7 @@ import SVG from 'react-inlinesvg'
 import styles from './css/kanji-card.module.css';
 import { useContext, useState, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
-
-const selectedColor = '#31a387'
-const selectedDarkModeColor = '#31a387'
-const darkModeColor = '#2d313a'
+import { selectedColor, selectedDarkModeColor, darkModeColor } from '../util/colors'
 
 export default function KanjiCard({kanji, svg}){
     const [kanjiSVG, setKanjiSVG] = useState(false)
