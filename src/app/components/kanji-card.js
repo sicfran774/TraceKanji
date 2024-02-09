@@ -5,7 +5,9 @@ import styles from './css/kanji-card.module.css';
 import { useContext, useState, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
 
-const selectedColor = "#59ff83"
+const selectedColor = '#31a387'
+const selectedDarkModeColor = '#31a387'
+const darkModeColor = '#2d313a'
 
 export default function KanjiCard({kanji, svg}){
     const [kanjiSVG, setKanjiSVG] = useState(false)
@@ -24,24 +26,28 @@ export default function KanjiCard({kanji, svg}){
             }
         }
     }
-    
 
     useEffect(() => {
         removeStrokeOrder();
         if(selectedKanji.includes(kanji.kanji)){
             setSelected(true)
-            setColor(selectedColor)
+            changeCardBackground(selectedDarkModeColor, selectedColor)        
         }
+
+        //Detect dark/light mode change
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) { 
+            changeCardBackground(darkModeColor, 'white')
+        })
     }, []);
 
     //Runs when selectedKanji is empty (ideally when user clicks save to reset all cards)
     useEffect(() => {
         if(selectedKanji.length === 0){
             setSelected(false)
-            setColor('white')
+            changeCardBackground(darkModeColor, 'white')  
         } else if(selectedKanji.includes(kanji.kanji)){
             setSelected(true)
-            setColor(selectedColor)
+            changeCardBackground(selectedDarkModeColor, selectedColor)
         }
     }, [selectedKanji])
 
@@ -50,11 +56,11 @@ export default function KanjiCard({kanji, svg}){
             let arr
             if(!selected){
                 setSelected(true)
-                setColor(selectedColor)
+                changeCardBackground(selectedDarkModeColor, selectedColor)
                 arr = [...selectedKanji, kanji.kanji] //Add kanji to list
             } else {
                 setSelected(false)
-                setColor('white')
+                changeCardBackground(darkModeColor, 'white')
                 arr = selectedKanji.filter(item => item !== kanji.kanji) //Remove that kanji from list
             }
             setSelectedKanji(arr)
@@ -69,8 +75,19 @@ export default function KanjiCard({kanji, svg}){
     }
 
     function setColor(color){
-        cardRef.current.style.backgroundColor = color
-        
+        try{
+            cardRef.current.style.backgroundColor = color
+        } catch (e){
+
+        }
+    }
+
+    function changeCardBackground(dark, light){
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setColor(dark)
+        } else {
+            setColor(light)
+        }
     }
 
     function removeStrokeOrder(){

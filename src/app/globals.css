@@ -89,3 +89,13 @@ html, body{
     margin: auto;
   }
 }
+
+@media (prefers-color-scheme: dark) {
+  :root{
+    color-scheme: dark;
+  }
+  html, body{
+      color: white;
+      background-color: #101012;
+  }
+}

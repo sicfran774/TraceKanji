@@ -41,3 +41,15 @@
         width: 500px;
     }
 }
+
+@media (prefers-color-scheme: dark) {
+    .card{
+        color: white;
+        background-color: #363636;
+        border-color: #1b1c1f;
+    }
+
+    .kanji{
+        filter: invert(100%) sepia(10%) saturate(16%) hue-rotate(151deg) brightness(98%) contrast(105%);
+    }
+  }

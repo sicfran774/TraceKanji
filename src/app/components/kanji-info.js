@@ -8,6 +8,7 @@ import { SharedKanjiProvider } from './shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
+import ChangelogDialog from './changelog/changelog';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -16,6 +17,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
     const [open, setOpen] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false);
     const {data, status} = useSession()
     const deckSelector = useRef()
 
@@ -101,6 +103,14 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setOpen(false);
     };
 
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+      };
+    
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
     return(
         <div className={styles.main}>
             {status === 'authenticated' && (<div className={styles.deckManager}>
@@ -141,6 +151,16 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             <div className={styles.myInfo}>
                 <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
                 <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
+                <p>
+                    Questions or suggestions?&nbsp;
+                    <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
+                        Contact me!
+                    </a>
+                </p>
+                <p>
+                    <button onClick={handleOpenDialog}>Changelog</button>
+                    <ChangelogDialog open={openDialog} onClose={handleCloseDialog} />
+                </p>
             </div>
             <Snackbar
                 open={open}

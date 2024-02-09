@@ -57,7 +57,7 @@ export default function Search({kanjiAndSVG}){
 
     useEffect(() => {
         setKanjiPerPage()
-        console.log(filteredList)
+        //console.log(filteredList)
     }, [filteredList])
 
     const getKanjiBasedOnFilter = () => {

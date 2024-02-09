@@ -7,3 +7,9 @@
     height: 500px;
     opacity: 0.25;
 }
+
+@media (prefers-color-scheme: dark) {
+    .kanji{
+        filter: invert(100%) sepia(10%) saturate(16%) hue-rotate(151deg) brightness(98%) contrast(105%);
+    }
+}

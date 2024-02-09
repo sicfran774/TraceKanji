@@ -4,8 +4,8 @@ import SignIn from './components/sign-in';
 import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
-  title: 'Trace Kanji: Online japanese kanji tracer',
-  description: 'Create your own decks and search for kanji',
+  title: 'Trace Kanji: Kanji recognition and learning tool',
+  description: 'Handwritten kanji recognizer. Learn stroke orders, discover words and info about the kanji in a mobile-friendly environment. Sign-in to create kanji decks.',
 }
 
 export default async function App() {

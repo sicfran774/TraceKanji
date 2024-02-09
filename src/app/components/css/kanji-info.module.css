@@ -8,7 +8,9 @@
     width: 500px;
     height: 250px;
     border: 1px solid black;
+    border-radius: 10px;
     margin: auto;
+    padding: 5px;
 }
 
 .deckManager{
@@ -43,5 +45,15 @@
 
     .kanjiInfo{
         margin: 0 0 20px 0;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .kanjiInfo{
+        border-color: white;
+    }
+
+    .kanji{
+        filter: invert(100%) sepia(10%) saturate(16%) hue-rotate(151deg) brightness(98%) contrast(105%);
     }
 }

@@ -5,6 +5,7 @@
 
 .canvas{
     border: 1px solid black;
+    border-radius: 10px;
     position: absolute;
 }
 
@@ -19,4 +20,10 @@
 
 .addToDeck{
     margin-top: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    .canvas{
+        border-color: white;
+    }
 }

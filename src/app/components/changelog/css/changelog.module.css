@@ -1,0 +1,9 @@
+.changelog li{
+    margin-bottom: 5px;
+    list-style-type:none;
+}
+
+.changelog ul{
+    margin-bottom: 20px;
+    list-style-type:none;
+}

@@ -45,6 +45,16 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
         e.preventDefault();
       }
     }, { passive: false });
+
+    //Detect dark/light mode change
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) { 
+      resetCanvas()
+      if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        context.strokeStyle = "black";
+      } else {
+        context.strokeStyle = "white";
+      }
+    })
   }, []);
 
   useEffect(() => {
@@ -163,7 +173,11 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
       context.strokeStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
     } else {
-      context.strokeStyle = "black";
+      if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        context.strokeStyle = "black";
+      } else {
+        context.strokeStyle = "white";
+      }
       context.fillStyle = "white";
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.clearRect(0, 0, canvas.width, canvas.height)
