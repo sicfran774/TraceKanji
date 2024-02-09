@@ -11,7 +11,7 @@ An extensive study tool for Japanese learners, specifically in the meanings and 
 - Handwritten kanji recognition to make it easy to find out what that kanji means. Stroke order does not matter!
 - Search filter to find specific kanji. Meanings, kanji, and kunyomi/onyomi readings can simply be typed into the search bar. Grades and JLPT levels can be filtered using ```grade:[level]``` and ```jlpt:[level]``` respectively.
 - After signing in, you are able to create your own decks of kanji to facilitate and organize your study
-- Simplistic and clear design, desktop and mobile friendly
+- Simplistic and clear design, dark/light mode, desktop and mobile friendly
 
 ![image](https://github.com/sicfran774/TraceKanji/assets/1214993/73cbd4e7-af53-41e1-ba53-d54414f3f178)
 
@@ -20,9 +20,9 @@ An extensive study tool for Japanese learners, specifically in the meanings and 
 ## Technologies Used
 - [KanjiAPI](https://github.com/onlyskin/kanjiapi.dev)
 - [KanjiVG](https://kanjivg.tagaini.net/)
-- [KanjiRecognizerAPI](https://github.com/sicfran774/KanjiRecognizerAPI) (Courtesy of [CaptainDario's Kanji recognition machine learning model](https://github.com/CaptainDario/DaKanji-Single-Kanji-Recognition))
+- [KanjiRecognizerAPI (Tensorflow)](https://github.com/sicfran774/KanjiRecognizerAPI) (Courtesy of [CaptainDario's Kanji recognition machine learning model](https://github.com/CaptainDario/DaKanji-Single-Kanji-Recognition))
 - React
 - NextJS (deployed on Vercel)
 - MongoDB
 
-This project is a work-in-progress. If you have any suggestions, feel free to create a PR.
+This project is a work-in-progress. If you have any suggestions, feel free to create a PR or [contact me](mailto:sicfran.774@gmail.com?subject=Trace%20Kanji%20Feedback).
