@@ -6,6 +6,7 @@ import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
+import { darkModeColor } from '@/app/util/colors';
 
 const backgroundColor = 'black'
 const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
@@ -169,17 +170,18 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     if(enableRecognition){
-      context.fillStyle = backgroundColor;
+      if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.getElementById('drawArea').style.backgroundColor = darkModeColor
+      }
+
       context.strokeStyle = "white";
-      context.fillRect(0, 0, canvas.width, canvas.height);
     } else {
       if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.getElementById('drawArea').style.backgroundColor = 'white'
         context.strokeStyle = "black";
       } else {
         context.strokeStyle = "white";
       }
-      context.fillStyle = "white";
-      context.fillRect(0, 0, canvas.width, canvas.height);
       context.clearRect(0, 0, canvas.width, canvas.height)
     }
   }
@@ -221,7 +223,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
 
   return (
     <div className={styles.main}>
-      <div className={styles.drawArea}>
+      <div className={styles.drawArea} id='drawArea'>
         {showOverlay && <KanjiOverlay />}
         <GridOverLay />
         <div className={styles.paint}>

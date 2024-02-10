@@ -18,6 +18,12 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.2.3 (2/10/2024)</u></Typography>
+      <ul>
+        <li>- Fixed search bar where it loses focus if no kanji are found</li>
+        <li>- Added grid lines in draw area</li>
+        <li>- Improved feedback when kanji recognition is enabled (light-mode background changes)</li>
+      </ul>
       <Typography variant="h6"><u>0.2.2 (2/9/2024)</u></Typography>
       <ul>
         <li>- Improved deck manager accessibility</li>
@@ -43,8 +49,8 @@ const Changelog = () => {
 
 const ChangelogDialog = ({ open, onClose }) => {
   return (
-    <Dialog open={open} onClose={onClose} className={styles.dialog}>
-      <DialogTitle>Changelog</DialogTitle>
+    <Dialog open={open} onClose={onClose} className={styles.dialog} scroll='paper'>
+      <DialogTitle>Changelog </DialogTitle>
       <DialogContent>
         <ContactInfo />
         <Changelog />

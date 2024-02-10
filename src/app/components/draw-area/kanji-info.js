@@ -9,6 +9,7 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 import ChangelogDialog from '../changelog/changelog';
+import { green } from '@mui/material/colors';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -125,11 +126,11 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                         </select>
                     </div>
                 </div>
-                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
+                <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
             {status !== 'authenticated' && (<div className={styles.notSignedIn}>
                 <span>Sign in to create your own Kanji decks!</span>
-                <button type="button" className='button' onClick={() => toggleRecognizeKanji()}>{recKanjiMsg}</button>
+                <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
             {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}

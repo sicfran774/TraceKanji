@@ -204,7 +204,7 @@ export default function Search({kanjiAndSVG}){
                         <div className={styles.searchText}>
                             <p>Search</p>
                             <input type="text" id="filter" name="filter" onChange={e => setFilter(e.target.value)}
-                                disabled={kanjiInfo.length <= 0 && !doneLoading}></input>
+                                placeholder="jlpt:1, grade:4, kana" />
                         </div>
                         <div className={styles.pageButtons}>
                             <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
@@ -227,7 +227,7 @@ export default function Search({kanjiAndSVG}){
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
                             (<>Start drawing to populate this list!</>) : 
-                            (decks.length > 0 ? <>
+                            (decks.length > 0 && !document.getElementById('filter').value ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))
                         }
