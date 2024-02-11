@@ -5,6 +5,7 @@ import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 import KanjiInfo from './draw-area/kanji-info';
 import { CircularProgress } from '@mui/material';
+import Study from './study/study';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 100;
@@ -188,6 +189,10 @@ export default function Search({kanjiAndSVG}){
         }
     }
 
+    const KanjiCardList = () => {
+        return 
+    }
+
     return(
         <div className={styles.main}>
             <div className={styles.listAndDrawArea}>
@@ -202,6 +207,7 @@ export default function Search({kanjiAndSVG}){
                     studying={studying}
                     setStudying={setStudying}
                 />
+                {studying ? <Study/> : (
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>
@@ -237,6 +243,7 @@ export default function Search({kanjiAndSVG}){
                     </div>)}
                     {kanjiInfo.length <= 0 && !doneLoading && (<CircularProgress/>)}
                 </div>
+                )}
             </div>
         </div>
     )
