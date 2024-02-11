@@ -9,9 +9,8 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 import ChangelogDialog from '../changelog/changelog';
-import { green } from '@mui/material/colors';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
@@ -51,7 +50,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             try{
                 let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
                 if(!decks) decks = []
-                console.log(decks)
                 setDecks(decks)
             } catch (e){
                 console.error(e)
@@ -132,7 +130,9 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                 <span>Sign in to create your own Kanji decks!</span>
                 <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
-            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} 
+                                    deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
+                                    studying={studying} setStudying={setStudying}/>}
             {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>

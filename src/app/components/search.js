@@ -20,6 +20,7 @@ export default function Search({kanjiAndSVG}){
     const [fetchedKanji, setFetchedKanji] = useState(null)
     const [filteredList, setFilteredList] = useState([]) // If filter is applied, this will take from fetchedKanji
     const [kanjiInfo, setKanjiInfo] = useState([]) // [[Page 1 Kanji], [Page 2 Kanji], [...], ...]
+    const [studying, setStudying] = useState(false)
 
     const [filter, setFilter] = useState("")
     
@@ -198,6 +199,8 @@ export default function Search({kanjiAndSVG}){
                     recognizeKanji={recognizeKanji} 
                     setRecognizeKanji={setRecognizeKanji}
                     setRecKanjiList={setRecKanjiList}
+                    studying={studying}
+                    setStudying={setStudying}
                 />
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>

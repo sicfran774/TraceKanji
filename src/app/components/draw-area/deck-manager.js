@@ -5,12 +5,14 @@ import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 
-export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck}){
+export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying}){
 
     const [deckName, setDeckName] = useState() //Text input when creating new deck
-    const [editingDeckIndex, setEditingDeckIndex] = useState() //Index is saved on what deck is being edited
+    const [deckIndex, setDeckIndex] = useState() //Index is saved on what deck is being edited
     const [openDeck, setOpenDeck] = useState(false)
+
     const [confirmDeleteScreen, setConfirmDeleteScreen] = useState(false)
+    const [deckManagerTitle, setDeckManagerTitle] = useState("Manage Decks")
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -42,7 +44,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const toggleOpenDeck = (index) => {
         if(!openDeck){
             setOpenDeck(true)
-            setEditingDeckIndex(index)
+            setDeckIndex(index)
             if(decks[index].length > 1){
                 setSelectedKanji(decks[index].slice(1, decks[index].length))
             }
@@ -59,7 +61,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             setEditingDeck(false)
             //Find the deck we were editing in the decks array, then overwrite it with selectedKanji
             const arr = decks.map((item, index) => {
-                if(index === editingDeckIndex){
+                if(index === deckIndex){
                     let temp = [item[0]]
                     return temp.concat(selectedKanji)
                 } else {
@@ -91,12 +93,23 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         }
     }
 
+    const startStudy = (index) => {
+        setStudying(true)
+        setDeckManagerTitle(decks[index][0])
+        setDeckIndex(index)
+    }
+
+    const endStudy = (index) => {
+        setStudying(false)
+        setDeckManagerTitle("Manage Decks")
+    }
+
     const DeckEditor = () => {
         return (
             <table className={styles.editingDeck}>
                 <thead>
                     <tr>
-                        <td valign='top' height={30}><h2>{decks[editingDeckIndex][0]}</h2></td>
+                        <td valign='top' height={30}><h2>{decks[deckIndex][0]}</h2></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,7 +121,18 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                     </tr>)}
                     <tr>
                         {!confirmDeleteScreen && (<td height={20} colSpan="2" className={styles.selectedKanji}>
-                            {selectedKanji}
+                            {!editingDeck ? (<ul className={styles.kanjiInDeckList}>
+                                {selectedKanji.map((kanji, index) => (
+                                    <li key={index}>
+                                        <div className={styles.editDeck}>
+                                            {kanji}
+                                            <button type="button" className='button' >Edit Kanji</button>      
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>) :
+                            <>{selectedKanji}</>
+                            }
                         </td>)}
                     </tr>
                     <tr>
@@ -142,36 +166,53 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const ConfirmDelete = () => {
         return (
             <div>
-                <p>Are you sure you want to delete &quot;{decks[editingDeckIndex][0]}&quot;?</p>
+                <p>Are you sure you want to delete &quot;{decks[deckIndex][0]}&quot;?</p>
                 <div className={styles.deleteButtons}>
                     <button type="button" className={styles.deckButton} onClick={() => toggleConfirmDeleteScreen()}>Cancel</button>
-                    <button type="button" className={styles.deckButton} onClick={() => deleteDeck(editingDeckIndex)}>Delete Deck</button>
+                    <button type="button" className={styles.deckButton} onClick={() => deleteDeck(deckIndex)}>Delete Deck</button>
                 </div>                
             </div>
         )
     }
 
+    const StudyScreen = () => {
+        return (
+            <div>
+                <button type="button" onClick={() => endStudy()}>End Study</button>
+            </div>
+        )
+    }
+
+    const DeckScreen = () => {
+        return (
+            <>
+            {!openDeck && (<div className={styles.createDeck}>
+                <input type="text" id="deckName" name="deckName" placeholder="Type deck name here" onChange={e => setDeckName(e.target.value)}></input>
+                <button type="button" className='button' onClick={() => createDeck()}>Create New Deck</button>
+            </div>)}
+            {openDeck && <DeckEditor/>}
+            {!openDeck && (<div className={styles.deckList}>
+                <ul>
+                    {decks.map((deck, index) => (
+                        <li key={index}>
+                            {deck[0]}
+                            <div className={styles.editDeck}>
+                                <button type="button" className='button' onClick={() => startStudy(index)}>Start Study</button>
+                                <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>)}
+            </>
+        )
+    }
+
     return (
         <div className={styles.main}>
-            <h2>Manage Decks</h2>
+            <h2>{deckManagerTitle}</h2>
             <div className={styles.interchangable}>
-                {!openDeck && (<div className={styles.createDeck}>
-                    <input type="text" id="deckName" name="deckName" placeholder="Type deck name here" onChange={e => setDeckName(e.target.value)}></input>
-                    <button type="button" className='button' onClick={() => createDeck()}>Create New Deck</button>
-                </div>)}
-                {openDeck && <DeckEditor/>}
-                {!openDeck && (<div className={styles.deckList}>
-                    <ul>
-                        {decks.map((deck, index) => (
-                            <li key={index}>
-                                {deck[0]}
-                                <div className={styles.editDeck}>
-                                    <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>      
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>)}
+                {studying ? (<StudyScreen/>) : (<DeckScreen/>)}
             </div>
         </div>
     )

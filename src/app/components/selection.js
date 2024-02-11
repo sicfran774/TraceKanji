@@ -2,6 +2,14 @@ import { getKanji } from "@/lib/mongodb/kanji"
 import styles from './css/selection.module.css';
 import Search from "./search";
 
+//                     Search
+//         /                        \
+// KanjiCardList                KanjiInfo (left side)
+//      |                        /                   \
+//  KanjiCard           Deck Manager/Draw Area   Info about kanji (under draw area)
+//                              |
+//                          Deck Editor
+
 export default async function Selection(){
     //Get all kanji found in Database
     const kanjiDB = await getKanji([], [])
