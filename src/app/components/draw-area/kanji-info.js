@@ -10,7 +10,7 @@ import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 import ChangelogDialog from '../changelog/changelog';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
@@ -112,7 +112,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
 
     return(
         <div className={styles.main}>
-            {status === 'authenticated' && (<div className={styles.deckManager}>
+            {status === 'authenticated' && !studying && (<div className={styles.deckManager}>
                 <div className={styles.deckManagerButtons}>
                     <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                     <div className={styles.deckSelector}>
@@ -132,7 +132,9 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             </div>)}
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} 
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
-                                    studying={studying} setStudying={setStudying}/>}
+                                    studying={studying} setStudying={setStudying}
+                                    deckIndex={deckIndex} setDeckIndex={setDeckIndex}
+                                    closeDeckManager={closeDeckManager}/>}
             {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
             <div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>

@@ -5,10 +5,9 @@ import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 
-export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying}){
+export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager}){
 
     const [deckName, setDeckName] = useState() //Text input when creating new deck
-    const [deckIndex, setDeckIndex] = useState() //Index is saved on what deck is being edited
     const [openDeck, setOpenDeck] = useState(false)
 
     const [confirmDeleteScreen, setConfirmDeleteScreen] = useState(false)
@@ -20,6 +19,12 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     useEffect(() => {
         updateDecksInDB()
     }, [decks])
+
+    useEffect(() => {
+        if(studying){
+            closeDeckManager()
+        }
+    }, [studying])
 
     const createDeck = () => {
         if(deckName){
@@ -99,10 +104,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setDeckIndex(index)
     }
 
-    const endStudy = (index) => {
-        setStudying(false)
-        setDeckManagerTitle("Manage Decks")
-    }
+    // const endStudy = (index) => {
+    //     setStudying(false)
+    //     setDeckManagerTitle("Manage Decks")
+    // }
 
     const DeckEditor = () => {
         return (
@@ -175,14 +180,6 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         )
     }
 
-    const StudyScreen = () => {
-        return (
-            <div>
-                <button type="button" onClick={() => endStudy()}>End Study</button>
-            </div>
-        )
-    }
-
     const DeckScreen = () => {
         return (
             <>
@@ -212,7 +209,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         <div className={styles.main}>
             <h2>{deckManagerTitle}</h2>
             <div className={styles.interchangable}>
-                {studying ? (<StudyScreen/>) : (<DeckScreen/>)}
+                <DeckScreen/>
             </div>
         </div>
     )

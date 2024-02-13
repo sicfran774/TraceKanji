@@ -21,7 +21,10 @@ export default function Search({kanjiAndSVG}){
     const [fetchedKanji, setFetchedKanji] = useState(null)
     const [filteredList, setFilteredList] = useState([]) // If filter is applied, this will take from fetchedKanji
     const [kanjiInfo, setKanjiInfo] = useState([]) // [[Page 1 Kanji], [Page 2 Kanji], [...], ...]
+
+    // Gets passed to deck manager and when kanji list gets replaced with study screen
     const [studying, setStudying] = useState(false)
+    const [deckIndex, setDeckIndex] = useState() //Index is saved on what deck is being edited
 
     const [filter, setFilter] = useState("")
     
@@ -61,6 +64,12 @@ export default function Search({kanjiAndSVG}){
         setKanjiPerPage()
         //console.log(filteredList)
     }, [filteredList])
+
+    useEffect(() => {
+        if(studying){
+            //document.getElementById("listAndDrawArea").className = 
+        }
+    }, [studying])
 
     const getKanjiBasedOnFilter = () => {
         if(!fetchedKanji) return
@@ -189,13 +198,9 @@ export default function Search({kanjiAndSVG}){
         }
     }
 
-    const KanjiCardList = () => {
-        return 
-    }
-
     return(
         <div className={styles.main}>
-            <div className={styles.listAndDrawArea}>
+            <div id="listAndDrawArea" className={styles.listAndDrawArea}>
                 <KanjiInfo 
                     decks={decks} 
                     setDecks={setDecks} 
@@ -206,8 +211,13 @@ export default function Search({kanjiAndSVG}){
                     setRecKanjiList={setRecKanjiList}
                     studying={studying}
                     setStudying={setStudying}
+                    deckIndex={deckIndex}
+                    setDeckIndex={setDeckIndex}
                 />
-                {studying ? <Study/> : (
+                {studying && decks[deckIndex] ? 
+                <Study deck={decks[deckIndex]}
+                       setStudying={setStudying}/>
+                : (
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>
