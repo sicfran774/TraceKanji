@@ -1,0 +1,29 @@
+.main{
+    height: 270px;
+}
+
+.info{
+    width: 500px;
+    height: 175px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+.showAnswerDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.showAnswerDiv button{
+    width: 200px;
+    height: 50px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .info{
+        border-color: white;
+    }
+}

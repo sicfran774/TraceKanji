@@ -1,0 +1,17 @@
+.main{
+    width: 500px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.buttonDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+}
+
+.buttonDiv button{
+    width: 75px;
+    height: 50px;
+}

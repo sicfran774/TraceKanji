@@ -85,8 +85,11 @@ html, body{
 
 @media only screen and (max-width: 768px) {
   html, body{
-    width: 500px;
-    margin: auto;
+    width: 530px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 

@@ -5,7 +5,7 @@ import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 
-export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager}){
+export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, disableRecognizeKanji}){
 
     const [deckName, setDeckName] = useState() //Text input when creating new deck
     const [openDeck, setOpenDeck] = useState(false)
@@ -102,6 +102,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setStudying(true)
         setDeckManagerTitle(decks[index][0])
         setDeckIndex(index)
+        disableRecognizeKanji()
     }
 
     // const endStudy = (index) => {
@@ -194,6 +195,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                         <li key={index}>
                             {deck[0]}
                             <div className={styles.editDeck}>
+                                <div className={styles.deckNumbers}>
+                                    <span style={{color: "lightblue"}}>{deck.length - 1}</span>
+                                    <span style={{color: "red"}}>0</span>
+                                    <span style={{color: "green"}}>0</span>
+                                </div>
                                 <button type="button" className='button' onClick={() => startStudy(index)}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
                             </div>

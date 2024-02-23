@@ -9,6 +9,7 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 import ChangelogDialog from '../changelog/changelog';
+import StudyButtons from '../study/study-buttons';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -81,13 +82,21 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
 
     const toggleRecognizeKanji = () => {
         if(recognizeKanji){
-            setRecognizeKanji(false)
-            setSelectedKanji([])
-            setRecKanjiMsg("Enable Kanji Recognition")
+            disableRecognizeKanji()
         } else {
-            setRecognizeKanji(true)
-            setRecKanjiMsg("Disable Kanji Recognition")
+            enableRecognizeKanji()
         }
+    }
+
+    const enableRecognizeKanji = () => {
+        setRecognizeKanji(true)
+        setRecKanjiMsg("Disable Kanji Recognition")
+    }
+
+    const disableRecognizeKanji = () => {
+        setRecognizeKanji(false)
+        setSelectedKanji([])
+        setRecKanjiMsg("Enable Kanji Recognition")
     }
 
     const copyKanji = () => {
@@ -134,9 +143,10 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
                                     studying={studying} setStudying={setStudying}
                                     deckIndex={deckIndex} setDeckIndex={setDeckIndex}
-                                    closeDeckManager={closeDeckManager}/>}
+                                    closeDeckManager={closeDeckManager}
+                                    disableRecognizeKanji={disableRecognizeKanji}/>}
             {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
-            <div className={styles.kanjiInfo}>
+            {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
                     <SVG src={sharedKanji.svg}/>
                 </div>
@@ -150,7 +160,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                     <p><a href={"https://jisho.org/search/" + sharedKanji.kanji.kanji} target="_blank">Jisho</a></p>
                     <p><a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">kanjikai</a></p>
                 </div>
-            </div>
+            </div>)}
             <div className={styles.myInfo}>
                 <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
                 <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>

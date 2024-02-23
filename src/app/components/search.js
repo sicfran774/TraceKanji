@@ -201,6 +201,9 @@ export default function Search({kanjiAndSVG}){
     return(
         <div className={styles.main}>
             <div id="listAndDrawArea" className={styles.listAndDrawArea}>
+                {studying && decks[deckIndex] &&
+                <Study deck={decks[deckIndex]}
+                       setStudying={setStudying}/>}
                 <KanjiInfo 
                     decks={decks} 
                     setDecks={setDecks} 
@@ -214,10 +217,8 @@ export default function Search({kanjiAndSVG}){
                     deckIndex={deckIndex}
                     setDeckIndex={setDeckIndex}
                 />
-                {studying && decks[deckIndex] ? 
-                <Study deck={decks[deckIndex]}
-                       setStudying={setStudying}/>
-                : (
+                {!studying &&
+                (
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>

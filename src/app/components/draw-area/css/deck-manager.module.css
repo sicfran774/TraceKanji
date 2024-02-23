@@ -33,12 +33,18 @@
 }
 
 .editDeck{
+    display: flex;
+    align-items: center;
     margin-left: auto;
 }
 
 .editDeck button{
     margin-left: 10px;
     padding: 3px;
+}
+
+.deckNumbers span{
+    margin-right: 15px;
 }
 
 .editingDeck{
