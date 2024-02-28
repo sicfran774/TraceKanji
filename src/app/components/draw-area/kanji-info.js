@@ -68,8 +68,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         if(openDeckManager){
             closeDeckManager()
         } else {
-            setOpenDeckManager(true)
-            setDeckManagerMsg("Close Deck Manager")
+            openDeckManagerFunc()
         }
     }
 
@@ -78,6 +77,11 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setEditingDeck(false)
         setSelectedKanji([])
         setDeckManagerMsg("Open Deck Manager")
+    }
+
+    const openDeckManagerFunc = () => {
+        setOpenDeckManager(true)
+        setDeckManagerMsg("Close Deck Manager")
     }
 
     const toggleRecognizeKanji = () => {
@@ -143,9 +147,9 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
                                     studying={studying} setStudying={setStudying}
                                     deckIndex={deckIndex} setDeckIndex={setDeckIndex}
-                                    closeDeckManager={closeDeckManager}
+                                    closeDeckManager={closeDeckManager} openDeckManager={openDeckManagerFunc}
                                     disableRecognizeKanji={disableRecognizeKanji}/>}
-            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
+            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList} studying={studying}/>}
             {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
                     <SVG src={sharedKanji.svg}/>

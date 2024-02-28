@@ -56,20 +56,16 @@ export default function Search({kanjiAndSVG}){
     }, [fetchedKanji, filter])
 
     useEffect(() => {
-        setSelectedDeck("default")
-        if(doneLoading && decks.length > 0) document.getElementById("decks").selectedIndex = 0
-    }, [recKanjiList])
+        if(!studying){
+            setSelectedDeck("default")
+            if(doneLoading && decks.length > 0) document.getElementById("decks").selectedIndex = 0
+        }
+    }, [recKanjiList, studying])
 
     useEffect(() => {
         setKanjiPerPage()
         //console.log(filteredList)
     }, [filteredList])
-
-    useEffect(() => {
-        if(studying){
-            //document.getElementById("listAndDrawArea").className = 
-        }
-    }, [studying])
 
     const getKanjiBasedOnFilter = () => {
         if(!fetchedKanji) return
@@ -114,6 +110,24 @@ export default function Search({kanjiAndSVG}){
             diff = page
         }
         setPage(diff)
+    }
+
+    const getKanjiBasedOnArray = () => {
+        if(selectedDeck !== "default"){
+            //Get currently selected deck
+            const arr = decks[selectedDeck]
+            const deck = arr.slice(1, arr.length)
+            //Extract the SVG from the original kanjiAndSVG array
+            const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
+            //Send it to be loaded on page
+            fetchDataInBatches(deckKanjiWithSVG, deck)
+        } else if (recognizeKanji){
+            const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
+            //recognizedKanjiWithSVG.sort((a, b) => recKanjiList.indexOf(a.kanji) - recKanjiList.indexOf(b.kanji))
+            fetchDataInBatches(recognizedKanjiWithSVG, recKanjiList)
+        } else {
+            fetchDataInBatches(kanjiAndSVG)
+        }
     }
 
     // Fetches Kanji info from KanjiAPI
@@ -180,30 +194,13 @@ export default function Search({kanjiAndSVG}){
         }
     }
 
-    const getKanjiBasedOnArray = () => {
-        if(selectedDeck !== "default"){
-            //Get currently selected deck
-            const arr = decks[selectedDeck]
-            const deck = arr.slice(1, arr.length)
-            //Extract the SVG from the original kanjiAndSVG array
-            const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
-            //Send it to be loaded on page
-            fetchDataInBatches(deckKanjiWithSVG)
-        } else if (recognizeKanji){
-            const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
-            //recognizedKanjiWithSVG.sort((a, b) => recKanjiList.indexOf(a.kanji) - recKanjiList.indexOf(b.kanji))
-            fetchDataInBatches(recognizedKanjiWithSVG, recKanjiList)
-        } else {
-            fetchDataInBatches(kanjiAndSVG)
-        }
-    }
-
     return(
         <div className={styles.main}>
             <div id="listAndDrawArea" className={styles.listAndDrawArea}>
-                {studying && decks[deckIndex] &&
-                <Study deck={decks[deckIndex]}
-                       setStudying={setStudying}/>}
+                {studying && doneLoading &&
+                <Study deck={fetchedKanji}
+                       setStudying={setStudying}
+                />}
                 <KanjiInfo 
                     decks={decks} 
                     setDecks={setDecks} 
@@ -247,7 +244,7 @@ export default function Search({kanjiAndSVG}){
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
                             (<>Start drawing to populate this list!</>) : 
-                            (decks.length > 0 && !document.getElementById('filter').value ? <>
+                            (decks.length > 0 && document.getElementById('filter') && !document.getElementById('filter').value ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))
                         }

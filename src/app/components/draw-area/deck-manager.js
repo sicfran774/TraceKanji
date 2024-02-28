@@ -5,9 +5,9 @@ import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 
-export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, disableRecognizeKanji}){
+export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, openDeckManager, disableRecognizeKanji}){
 
-    const [deckName, setDeckName] = useState() //Text input when creating new deck
+    let deckName = "" //Text input when creating new deck
     const [openDeck, setOpenDeck] = useState(false)
 
     const [confirmDeleteScreen, setConfirmDeleteScreen] = useState(false)
@@ -21,16 +21,14 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     }, [decks])
 
     useEffect(() => {
-        if(studying){
-            closeDeckManager()
-        }
+        studying ? closeDeckManager() : openDeckManager()
     }, [studying])
 
     const createDeck = () => {
         if(deckName){
             var newDecks = [...decks, [deckName]]
             setDecks(newDecks)
-            setDeckName(null)
+            deckName = ""
             document.getElementById('deckName').value = "";
         }
     }
@@ -102,6 +100,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setStudying(true)
         setDeckManagerTitle(decks[index][0])
         setDeckIndex(index)
+        setSelectedDeck(index)
         disableRecognizeKanji()
     }
 
@@ -185,7 +184,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         return (
             <>
             {!openDeck && (<div className={styles.createDeck}>
-                <input type="text" id="deckName" name="deckName" placeholder="Type deck name here" onChange={e => setDeckName(e.target.value)}></input>
+                <input type="text" id="deckName" name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
                 <button type="button" className='button' onClick={() => createDeck()}>Create New Deck</button>
             </div>)}
             {openDeck && <DeckEditor/>}
