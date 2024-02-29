@@ -2,7 +2,7 @@ import styles from './css/study.module.css'
 import { useEffect, useState, useContext } from 'react'
 import StudyButtons from './study-buttons'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { blue } from '@mui/material/colors';
+import SVG from 'react-inlinesvg'
 
 export default function Study({ deck, setStudying }){
 
@@ -26,31 +26,41 @@ export default function Study({ deck, setStudying }){
         setShowAnswer(true)
     }
 
+    const Hint = (kanjiInfo) => {
+        return (
+            <div className={styles.hint}>
+                {<h1>{kanjiInfo.kanjiInfo.info.heisig_en}</h1>}
+            </div>
+        )
+    }
+
+    const Answer = (kanjiInfo) => {
+        return (
+            <div className={styles.answer}>
+                {<SVG src={kanjiInfo.kanjiInfo.svg} className={styles.kanji}/>}
+            </div>
+        )
+    }
+
     return (
         <div className={styles.main}>
+            <button onClick={() => endStudy()}>End Study</button>
             <div className={styles.info}>
-                <ul>
-                {deck.map((item, index) => {
-                    if(index == kanjiIndex){
-                        return (<li style={{color: "blue"}} key={item.info.kanji}>{item.info.kanji}</li>)
-                    } else {
-                        return (<li key={item.info.kanji}>{item.info.kanji}</li>)
-                    }
-                    
-                })}
-                </ul>
-                <button onClick={() => endStudy()}>End Study</button>
+                <Hint kanjiInfo={deck[kanjiIndex]} />
+                {showAnswer && <Answer kanjiInfo={deck[kanjiIndex]}/>}
             </div>
-            {showAnswer ? <StudyButtons 
-                            deck={deck}
-                            setShowAnswer={setShowAnswer}
-                            kanjiIndex={kanjiIndex}
-                            setKanjiIndex={setKanjiIndex}
-                            endStudy={endStudy}
-                        /> : 
-            (<div className={styles.showAnswerDiv}>
-                <button onClick={() => answerTrue()}>Show Answer</button>
-            </div>)}
+            {showAnswer ? 
+                <StudyButtons 
+                    deck={deck}
+                    setShowAnswer={setShowAnswer}
+                    kanjiIndex={kanjiIndex}
+                    setKanjiIndex={setKanjiIndex}
+                    endStudy={endStudy}
+                /> : 
+                (<div className={styles.showAnswerDiv}>
+                    <button onClick={() => answerTrue()}>Show Answer</button>
+                </div>)}
+            
         </div>
     )
 }

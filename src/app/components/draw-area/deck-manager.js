@@ -161,7 +161,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             <div>
                 <button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Save Deck</button>
                 <h2>Editing Mode</h2>
-                <p className={styles.tooltip}>Select Kanji from the right to add/remove it from the deck. </p>
+                <p className={styles.tooltip}>Select Kanji from the list to add/remove it from the deck. </p>
                 <p className={styles.tooltip}>They will be <span style={{color: `${selectedDarkModeColor}`}}>highlighted</span> if they are found in the deck. </p>
                 <p className={styles.tooltip}>Click &quot;Save Deck&quot; when done</p>
             </div>

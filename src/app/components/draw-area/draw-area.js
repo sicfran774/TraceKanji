@@ -248,9 +248,9 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
         </div>
       </div>
       <div className={styles.buttons}>
-        <button type="button" onClick={toggleOverlay} className='button'>{showKanji}</button>
-        <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
-        <button type="button" onClick={undoStroke} className='button'>Undo</button>
+        <button type="button" onClick={toggleOverlay} className={styles.overlayButton}>{showKanji}</button>
+        <button type="button" onClick={resetCanvas} className={styles.resetButton}>Reset Drawing</button>
+        <button type="button" onClick={undoStroke} className={styles.undoButton}>Undo</button>
       </div>
     </div>
   )

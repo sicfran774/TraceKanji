@@ -1,14 +1,27 @@
 .main{
-    height: 270px;
+    margin-top: 20px;
+    height: 300px;
 }
 
 .info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 500px;
-    height: 175px;
+    height: 190px;
     border: 1px solid black;
     border-radius: 10px;
     margin-bottom: 10px;
     padding: 5px;
+}
+
+.hint{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid black;
+    width: 500px;
+    height: 60px;
 }
 
 .showAnswerDiv{
@@ -25,6 +38,13 @@
 
 @media (prefers-color-scheme: dark) {
     .info{
+        border-color: white;
+    }
+    .kanji{
+        filter: invert(100%) sepia(10%) saturate(16%) hue-rotate(151deg) brightness(98%) contrast(105%);
+    }
+
+    .hint{
         border-color: white;
     }
 }

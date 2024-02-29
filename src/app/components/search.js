@@ -63,6 +63,14 @@ export default function Search({kanjiAndSVG}){
     }, [recKanjiList, studying])
 
     useEffect(() => {
+        if(studying){
+            document.getElementById("listAndDrawArea").className = styles.listAndDrawAreaStudy
+        } else {
+            document.getElementById("listAndDrawArea").className = styles.listAndDrawArea
+        }
+    }, [studying])
+
+    useEffect(() => {
         setKanjiPerPage()
         //console.log(filteredList)
     }, [filteredList])
@@ -114,6 +122,7 @@ export default function Search({kanjiAndSVG}){
 
     const getKanjiBasedOnArray = () => {
         if(selectedDeck !== "default"){
+            console.log(decks)
             //Get currently selected deck
             const arr = decks[selectedDeck]
             const deck = arr.slice(1, arr.length)

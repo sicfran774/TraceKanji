@@ -8,7 +8,6 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager';
 import Snackbar from '@mui/material/Snackbar';
-import ChangelogDialog from '../changelog/changelog';
 import StudyButtons from '../study/study-buttons';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
@@ -18,7 +17,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
     const [open, setOpen] = useState(false)
-    const [openDialog, setOpenDialog] = useState(false);
     const {data, status} = useSession()
     const deckSelector = useRef()
 
@@ -115,14 +113,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setOpen(false);
     };
 
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-      };
-    
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
     return(
         <div className={styles.main}>
             {status === 'authenticated' && !studying && (<div className={styles.deckManager}>
@@ -165,20 +155,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                     <p><a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">kanjikai</a></p>
                 </div>
             </div>)}
-            <div className={styles.myInfo}>
-                <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
-                <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
-                <p>
-                    Questions or suggestions?&nbsp;
-                    <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
-                        Contact me!
-                    </a>
-                </p>
-                <p>
-                    <button onClick={handleOpenDialog}>Changelog</button>
-                    <ChangelogDialog open={openDialog} onClose={handleCloseDialog} />
-                </p>
-            </div>
             <Snackbar
                 open={open}
                 onClose={handleCloseSnack}

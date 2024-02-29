@@ -12,16 +12,24 @@
 .buttons{
     margin: 5px 0 5px 0;
     display: flex;
-    justify-content: space-around;
 }
 
 .buttons button{
     height: 40px;
-    width: 100px;
 }
 
-.buttons > * {
+.overlayButton{
+    width: 190px;
+    margin-right: 25px;
+}
+
+.resetButton{
+    width: 150px;
     margin-right: 10px;
+}
+
+.undoButton{
+    width: 120px;
 }
 
 .addToDeck{

@@ -1,7 +1,8 @@
 import styles from './page.module.css';
 import Selection from './components/selection';
-import SignIn from './components/sign-in';
 import { Analytics } from '@vercel/analytics/react'
+import Header from './components/header/header';
+import Footer from './components/footer/footer';
 
 export const metadata = {
   title: 'Trace Kanji: Kanji recognition and learning tool',
@@ -9,18 +10,14 @@ export const metadata = {
 }
 
 export default async function App() {
+
   return (
       <div className={styles.main}>
-        <div className={styles.header}>
-          <div className={styles.title}>
-            <h1>Trace Kanji</h1>
-            <span>Kanji tracer and handwriting recognition</span>
-          </div>
-          <SignIn />
-        </div>
+        <Header />
         <div className={styles.body}>
           <Selection />
         </div>
+        <Footer />
         <Analytics />
       </div>
   )

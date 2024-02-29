@@ -54,6 +54,12 @@
     margin-top: 20px;
 }
 
+.listAndDrawAreaStudy{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 
 .deckSelector {
     margin-left: 20px;
