@@ -19,7 +19,7 @@
 
 .deckList {
     margin-top: 10px;
-    height: 420px;
+    height: 410px;
     overflow-y: auto;
 }
 
@@ -41,6 +41,18 @@
 .editDeck button{
     margin-left: 10px;
     padding: 3px;
+}
+
+.editKanji{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.editKanji button{
+    margin: 0 10px 0 10px;
+    width: 30px;
+    height: 30px;
 }
 
 .deckNumbers span{
@@ -67,7 +79,7 @@
 }
 
 .kanjiInDeckList{
-    height: 300px;
+    height: 320px;
     overflow: scroll;
 }
 

@@ -29,7 +29,6 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             let settings = {interval: ["1m","10m","1d","3d"]}
             let newDecks = [...decks, [deckName, settings]]
             setDecks(newDecks)
-            console.log(newDecks)
             deckName = ""
             document.getElementById('deckName').value = "";
         }
@@ -120,20 +119,21 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                     </tr>
                 </thead>
                 <tbody>
-                    {editingDeck && (<tr><td valign='top'><EditingKanji/></td></tr>)}
+                    {editingDeck && (<tr><td valign='top'><EditingDeckKanji/></td></tr>)}
                     {confirmDeleteScreen && (<tr><td valign='top' colSpan="2"><ConfirmDelete/></td></tr>)}
                     {!confirmDeleteScreen && !editingDeck && (<tr>
                         <td align='left' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Add/Remove Kanji</button></td>
                         {/* <td align='right' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Rename Deck</button></td> */}
                     </tr>)}
                     <tr>
-                        {!confirmDeleteScreen && (<td height={20} colSpan="2" className={styles.selectedKanji}>
+                        {!confirmDeleteScreen && (<td height={30} colSpan="2" className={styles.selectedKanji}>
                             {!editingDeck ? (<ul className={styles.kanjiInDeckList}>
                                 {selectedKanji.map((kanji, index) => (
                                     <li key={index}>
-                                        <div className={styles.editDeck}>
+                                        <div className={styles.editKanji}>
                                             <h2>{kanji.kanji}</h2>
-                                            <button type="button" className='button' >Edit Kanji</button>      
+                                            <button type="button">⚙️</button>
+                                            <p>{kanji.meanings}</p>
                                         </div>
                                     </li>
                                 ))}
@@ -158,7 +158,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         )
     }
 
-    const EditingKanji = () => {
+    const EditingDeckKanji = () => {
         return (
             <div>
                 <button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Save Deck</button>

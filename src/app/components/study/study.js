@@ -3,6 +3,7 @@ import { useEffect, useState, useContext } from 'react'
 import StudyButtons from './study-buttons'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
+import { sortByDueDate } from '@/app/util/interval';
 
 export default function Study({ kanjiAndSVG, deck, setStudying }){
 
@@ -11,6 +12,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying }){
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
+        sortByDueDate(deck)
         setSharedKanji({kanji: kanjiAndSVG[kanjiIndex].info.kanji, svg: kanjiAndSVG[kanjiIndex].svg})
     }, [ , kanjiIndex])
 
@@ -27,9 +29,10 @@ export default function Study({ kanjiAndSVG, deck, setStudying }){
     }
 
     const Hint = (kanjiInfo) => {
+        console.log()
         return (
             <div className={styles.hint}>
-                {<h1>{kanjiInfo.kanjiInfo.info.heisig_en}</h1>}
+                {<h1>{kanjiInfo.kanjiInfo.meanings}</h1>}
             </div>
         )
     }
@@ -46,7 +49,9 @@ export default function Study({ kanjiAndSVG, deck, setStudying }){
         <div className={styles.main}>
             <button onClick={() => endStudy()}>End Study</button>
             <div className={styles.info}>
-                <Hint kanjiInfo={kanjiAndSVG[kanjiIndex]} />
+                {/* Sends MongoDB info for deck */}
+                <Hint kanjiInfo={deck[kanjiIndex + 2]} /> 
+                {/* Sends SVG info */}
                 {showAnswer && <Answer kanjiInfo={kanjiAndSVG[kanjiIndex]}/>}
             </div>
             {showAnswer ? 

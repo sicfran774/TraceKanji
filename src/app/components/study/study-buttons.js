@@ -1,14 +1,17 @@
 import styles from './css/study-buttons.module.css'
 import { useContext } from 'react'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
+import { addToDate } from '@/app/util/interval';
 
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, setKanjiIndex, endStudy }){
-    // Deck --> {kanji: ~, meanings: ~, interval: ~}
+    // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
 
     const nextKanji = (choice) => {
-        
+        const interval = deck[1].interval
+        addToDate(new Date("2024-02-29T05:58:37.503Z"), interval[choice])
+
         if(kanjiIndex < deck.length - 3){ //Ignore name and interval
             setKanjiIndex(kanjiIndex + 1)
             setShowAnswer(false)
@@ -16,6 +19,8 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, setKanji
             endStudy()
         }
     }
+
+    //console.log(deck)
 
     return (
         <div className={styles.main}>

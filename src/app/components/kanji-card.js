@@ -5,6 +5,7 @@ import styles from './css/kanji-card.module.css';
 import { useContext, useState, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from './shared-kanji-provider';
 import { selectedColor, selectedDarkModeColor, darkModeColor } from '../util/colors'
+import moment from 'moment';
 
 export default function KanjiCard({kanji, svg}){
     const [kanjiSVG, setKanjiSVG] = useState(false)
@@ -59,7 +60,12 @@ export default function KanjiCard({kanji, svg}){
             if(!selected){
                 setSelected(true)
                 changeCardBackground(selectedDarkModeColor, selectedColor)
-                const preparedKanji = {kanji: kanji.kanji, meanings: kanji.heisig_en, interval: []}
+                const preparedKanji = { 
+                    kanji: kanji.kanji, 
+                    meanings: kanji.heisig_en, 
+                    interval: [0, 1, 2, 3], 
+                    due: moment()
+                }
                 console.log(preparedKanji)
                 arr = [...selectedKanji, preparedKanji] //Add kanji to list
             } else {
