@@ -14,7 +14,7 @@ export default async function App() {
   return (
       <div className={styles.main}>
         <Header />
-        <div className={styles.body}>
+        <div className={styles.body} id="mainBody">
           <Selection />
         </div>
         <Footer />

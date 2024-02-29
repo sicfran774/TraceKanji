@@ -63,10 +63,15 @@ export default function Search({kanjiAndSVG}){
     }, [recKanjiList, studying])
 
     useEffect(() => {
+        const listAndDrawArea = document.getElementById("listAndDrawArea")
+        const mainBody = document.getElementById("mainBody")
         if(studying){
-            document.getElementById("listAndDrawArea").className = styles.listAndDrawAreaStudy
+            listAndDrawArea.className = styles.listAndDrawAreaStudy
+            mainBody.className = styles.bodyStudy
         } else {
-            document.getElementById("listAndDrawArea").className = styles.listAndDrawArea
+            listAndDrawArea.className = styles.listAndDrawArea
+            mainBody.className = styles.body
+            setFilter("") //Reset list
         }
     }, [studying])
 
@@ -122,10 +127,12 @@ export default function Search({kanjiAndSVG}){
 
     const getKanjiBasedOnArray = () => {
         if(selectedDeck !== "default"){
-            console.log(decks)
             //Get currently selected deck
             const arr = decks[selectedDeck]
-            const deck = arr.slice(1, arr.length)
+            //Convert from object array to only kanji
+            const deckToKanji = arr.map((obj) => obj.kanji)
+            //Remove the title and interval from array
+            const deck = deckToKanji.slice(2, arr.length)
             //Extract the SVG from the original kanjiAndSVG array
             const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
             //Send it to be loaded on page
@@ -207,7 +214,8 @@ export default function Search({kanjiAndSVG}){
         <div className={styles.main}>
             <div id="listAndDrawArea" className={styles.listAndDrawArea}>
                 {studying && doneLoading &&
-                <Study deck={fetchedKanji}
+                <Study deck={decks[selectedDeck]}
+                       kanjiAndSVG={fetchedKanji}
                        setStudying={setStudying}
                 />}
                 <KanjiInfo 
@@ -242,7 +250,7 @@ export default function Search({kanjiAndSVG}){
                     {kanjiInfo.length > 0 ? 
                     (<div className={styles.kanjiListGrid}>
                         <ul>
-                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => { 
+                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => {
                                 return (
                                     <li key={item.info.kanji}>
                                         <KanjiCard kanji={item.info} svg={item.svg}/>

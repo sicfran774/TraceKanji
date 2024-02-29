@@ -4,14 +4,14 @@ import StudyButtons from './study-buttons'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
 
-export default function Study({ deck, setStudying }){
+export default function Study({ kanjiAndSVG, deck, setStudying }){
 
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(0);
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
-        setSharedKanji({kanji: deck[kanjiIndex].info.kanji, svg: deck[kanjiIndex].svg})
+        setSharedKanji({kanji: kanjiAndSVG[kanjiIndex].info.kanji, svg: kanjiAndSVG[kanjiIndex].svg})
     }, [ , kanjiIndex])
 
     const endStudy = () => {
@@ -46,8 +46,8 @@ export default function Study({ deck, setStudying }){
         <div className={styles.main}>
             <button onClick={() => endStudy()}>End Study</button>
             <div className={styles.info}>
-                <Hint kanjiInfo={deck[kanjiIndex]} />
-                {showAnswer && <Answer kanjiInfo={deck[kanjiIndex]}/>}
+                <Hint kanjiInfo={kanjiAndSVG[kanjiIndex]} />
+                {showAnswer && <Answer kanjiInfo={kanjiAndSVG[kanjiIndex]}/>}
             </div>
             {showAnswer ? 
                 <StudyButtons 

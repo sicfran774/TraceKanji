@@ -147,8 +147,9 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                 <div>
                     <p>Kanji: {sharedKanji.kanji.kanji} {sharedKanji.kanji ? (<button type="button" className='button' onClick={() => copyKanji()}>Copy</button>) : (<></>)}</p>
                     <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
-                    <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
-                    <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
+                    <p>Heisig: {sharedKanji.kanji.heisig_en}</p>
+                    <p>Kun: {formatList(sharedKanji.kanji.kun_readings)}</p>
+                    <p>On: {formatList(sharedKanji.kanji.on_readings)}</p>
                     <p>Grade: {sharedKanji.kanji.grade}</p>
                     <p>JLPT: {sharedKanji.kanji.jlpt}</p>
                     <p><a href={"https://jisho.org/search/" + sharedKanji.kanji.kanji} target="_blank">Jisho</a></p>

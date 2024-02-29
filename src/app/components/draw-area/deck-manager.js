@@ -26,8 +26,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
 
     const createDeck = () => {
         if(deckName){
-            var newDecks = [...decks, [deckName]]
+            let settings = {interval: ["1m","10m","1d","3d"]}
+            let newDecks = [...decks, [deckName, settings]]
             setDecks(newDecks)
+            console.log(newDecks)
             deckName = ""
             document.getElementById('deckName').value = "";
         }
@@ -48,8 +50,8 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         if(!openDeck){
             setOpenDeck(true)
             setDeckIndex(index)
-            if(decks[index].length > 1){
-                setSelectedKanji(decks[index].slice(1, decks[index].length))
+            if(decks[index].length > 2){
+                setSelectedKanji(decks[index].slice(2, decks[index].length))
             }
         } else {
             setOpenDeck(false)
@@ -65,7 +67,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             //Find the deck we were editing in the decks array, then overwrite it with selectedKanji
             const arr = decks.map((item, index) => {
                 if(index === deckIndex){
-                    let temp = [item[0]]
+                    let temp = [item[0], item[1]]
                     return temp.concat(selectedKanji)
                 } else {
                     return item
@@ -130,13 +132,13 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                                 {selectedKanji.map((kanji, index) => (
                                     <li key={index}>
                                         <div className={styles.editDeck}>
-                                            {kanji}
+                                            <h2>{kanji.kanji}</h2>
                                             <button type="button" className='button' >Edit Kanji</button>      
                                         </div>
                                     </li>
                                 ))}
                             </ul>) :
-                            <>{selectedKanji}</>
+                            <>{selectedKanji.map((kanji) => { return kanji.kanji })}</>
                             }
                         </td>)}
                     </tr>
@@ -195,11 +197,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                             {deck[0]}
                             <div className={styles.editDeck}>
                                 <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{deck.length - 1}</span>
+                                    <span style={{color: "lightblue"}}>{deck.length - 2}</span>
                                     <span style={{color: "red"}}>0</span>
                                     <span style={{color: "green"}}>0</span>
                                 </div>
-                                <button type="button" className='button' onClick={() => startStudy(index)}>Start Study</button>
+                                <button type="button" className='button' onClick={() => startStudy(index)} disabled={deck.length < 3}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
                             </div>
                         </li>

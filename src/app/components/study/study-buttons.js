@@ -3,11 +3,13 @@ import { useContext } from 'react'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, setKanjiIndex, endStudy }){
+    // Deck --> {kanji: ~, meanings: ~, interval: ~}
 
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
 
     const nextKanji = (choice) => {
-        if(kanjiIndex < deck.length - 1){
+        
+        if(kanjiIndex < deck.length - 3){ //Ignore name and interval
             setKanjiIndex(kanjiIndex + 1)
             setShowAnswer(false)
         } else {

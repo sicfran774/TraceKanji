@@ -26,9 +26,9 @@ export default function KanjiCard({kanji, svg}){
 
     useEffect(() => {
         removeStrokeOrder();
-        if(selectedKanji.includes(kanji.kanji)){
+        if(containsKanji()){ // if this card is in the currently selected deck
             setSelected(true)
-            changeCardBackground(selectedDarkModeColor, selectedColor)        
+            changeCardBackground(selectedDarkModeColor, selectedColor) // highlight it
         }
 
         //Detect dark/light mode change
@@ -42,11 +42,16 @@ export default function KanjiCard({kanji, svg}){
         if(selectedKanji.length === 0){
             setSelected(false)
             changeCardBackground(darkModeColor, 'white')  
-        } else if(selectedKanji.includes(kanji.kanji)){
+        } else if(containsKanji()){
             setSelected(true)
             changeCardBackground(selectedDarkModeColor, selectedColor)
         }
     }, [selectedKanji])
+
+    // if this card is in the currently selected deck
+    function containsKanji(){
+        return selectedKanji.some(obj => obj.kanji === kanji.kanji)
+    }
 
     function onClick(){
         if(editingDeck){
@@ -54,11 +59,13 @@ export default function KanjiCard({kanji, svg}){
             if(!selected){
                 setSelected(true)
                 changeCardBackground(selectedDarkModeColor, selectedColor)
-                arr = [...selectedKanji, kanji.kanji] //Add kanji to list
+                const preparedKanji = {kanji: kanji.kanji, meanings: kanji.heisig_en, interval: []}
+                console.log(preparedKanji)
+                arr = [...selectedKanji, preparedKanji] //Add kanji to list
             } else {
                 setSelected(false)
                 changeCardBackground(darkModeColor, 'white')
-                arr = selectedKanji.filter(item => item !== kanji.kanji) //Remove that kanji from list
+                arr = selectedKanji.filter(item => item.kanji !== kanji.kanji) //Remove that kanji from list
             }
             setSelectedKanji(arr)
         } else {

@@ -5,6 +5,10 @@
 
 .body{
     display: flex;
+    justify-content: baseline;
+}
+
+.bodyStudy{
     justify-content: center;
 }
 

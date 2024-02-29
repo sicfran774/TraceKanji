@@ -1,3 +1,13 @@
+.body{
+    display: flex;
+    justify-content: baseline;
+}
+
+.bodyStudy{
+    display: flex;
+    justify-content: center;
+}
+
 .searchBox{
     display: flex;
 }
