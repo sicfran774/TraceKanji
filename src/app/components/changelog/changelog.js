@@ -20,7 +20,7 @@ const Changelog = () => {
     <div className={styles.changelog}>
       <Typography variant="h6"><u>0.3 (2/29/2024)</u></Typography>
       <ul>
-        <li>- <b>New study feature!</b> Go to Deck Manager and click "Start Study" on any of your created decks.</li>
+        <li>- <b>New study feature!</b> Go to Deck Manager and click &quot;Start Study&quot; on any of your created decks.</li>
         <li>- Spaced-repetition system, streamlining which cards to study that day</li>
         <li>- Edit cards to change the hint that appears; cards default to Heisig keywords</li>
         <li>- Reset card intervals</li>
