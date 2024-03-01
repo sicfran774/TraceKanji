@@ -1,0 +1,36 @@
+.main{
+    height: 420px;
+    border-top: 1px solid black;
+    padding-top: 8px;
+}
+
+.hintDiv{
+    margin: 20px 5px 0 5px;
+}
+
+.hintDiv * {
+    height: 25px;
+    margin-right: 5px;
+}
+
+.hintText {
+    font-size: 20px;
+}
+
+.importantButtons{
+    height: 265px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.importantButtons button{
+    height: 50px;
+    width: 100px;
+    margin-top: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    .main{
+        border-top: 1px solid white;
+    }
+}

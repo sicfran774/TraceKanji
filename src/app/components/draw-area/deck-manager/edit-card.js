@@ -33,15 +33,17 @@ export default function EditCardScreen({ kanji, startLearnStep, setOpenEditCardS
     }
 
     return(
-        <div>
+        <div className={styles.main}>
             <h2>Kanji Settings</h2>
-            <h1>{kanji.kanji}</h1>
-            <div>
+            <h1 className={styles.kanjiAndMeaning}>{kanji.kanji}</h1>
+            <h3>{kanji.meanings}</h3>
+            <div className={styles.hintDiv}>
+                <p className={styles.hintText}>Hint</p>
                 <input type="text" id="hintInput" className={styles.hintInput} defaultValue={kanji.meanings} name="hintInput" placeholder="Hint" onChange={e => hintInput = e.target.value}></input>
                 <button type="button" className={styles.deckNameButton} onClick={() => resetToDefaultHint()}>Undo</button>
             </div>
             
-            <div>
+            <div className={styles.importantButtons}>
                 <button onClick={() => resetCard()}>Reset Interval</button>
                 <button onClick={() => saveAndQuit()}>Save Changes</button>
             </div>
