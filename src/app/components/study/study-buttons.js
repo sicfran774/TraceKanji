@@ -1,7 +1,7 @@
 import styles from './css/study-buttons.module.css'
 import { useContext, useEffect } from 'react'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { addToDate, multiplyInterval, sortByDueDate } from '@/app/util/interval';
+import { addToDate, multiplyInterval, sortByDueDate, resetCard } from '@/app/util/interval';
 import moment from "moment"
 
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, setDueKanji}){
@@ -9,12 +9,21 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
 
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
     const deckSettings = deck[1]
-    const learningSteps = [...deckSettings.learningSteps, deckSettings.graduatingInterval]
+    const learningSteps = [...deckSettings.learningSteps]
 
-    const resetCard = (index) => {
-        deck[index].graduated = false
-        deck[index].learning = true
-        deck[index].learningIndex = 0
+    let goodLabel = "", easyLabel = ""
+
+    //console.log(deck[kanjiIndex].learningIndex + " length: " + learningSteps.length)
+    if(!deck[kanjiIndex].graduated){
+        if(deck[kanjiIndex].learningIndex >= learningSteps.length - 1){
+            goodLabel = deckSettings.graduatingInterval
+        } else {
+            goodLabel = learningSteps[deck[kanjiIndex].learningIndex + 1]
+        }
+        easyLabel = deckSettings.easyInterval
+    } else {
+        goodLabel = multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease)))
+        easyLabel = multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease) + Number(deckSettings.easy)))
     }
 
     const nextKanji = (choice) => {
@@ -22,45 +31,44 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         setShowAnswer(false)
 
         // console.log("learningSteps:" + learningSteps)
-        const offsetIndex = kanjiIndex
-        let newInterval = deck[offsetIndex].interval // This is what we add to the date
+        let newInterval = deck[kanjiIndex].interval // This is what we add to the date
 
         // New card to learning (I did this for "New Card" tracking)
-        if(!deck[offsetIndex].graduated && !deck[offsetIndex].learning) deck[offsetIndex].learning = true
-        if(deck[offsetIndex].learning){
+        if(!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning) deck[kanjiIndex].learning = true
+        if(deck[kanjiIndex].learning){
             // Clamp to at least 0 (if said "Again" on first step, don't go to a "negative" step)
-            const learningIndex = Math.max(0, choice + deck[offsetIndex].learningIndex)
+            const learningIndex = Math.max(0, choice + deck[kanjiIndex].learningIndex)
             
             // console.log("learningIndex: " + learningIndex)
             if(choice < 0){
                 newInterval = learningSteps[0]
-                deck[offsetIndex].learningIndex = 0
-            } else if(learningIndex < learningSteps.length){ // If still within step length
+                deck[kanjiIndex].learningIndex = 0
+            } else if(choice < 2 && learningIndex < learningSteps.length){ // If still within step length
                 newInterval = learningSteps[learningIndex]
-                deck[offsetIndex].learningIndex = learningIndex
-            } else { // Graduate the card (which will go into next "if" block below)
+                deck[kanjiIndex].learningIndex = learningIndex
+            } else {
                 console.log("graduated")
-                deck[offsetIndex].learning = false;
-                deck[offsetIndex].graduated = true;
-                // Go straight to last step
-                newInterval = deckSettings.graduatingInterval
+                deck[kanjiIndex].learningIndex = learningIndex
+                deck[kanjiIndex].learning = false;
+                deck[kanjiIndex].graduated = true;
+                newInterval = (choice == 1) ? deckSettings.graduatingInterval : deckSettings.easyInterval
             }
-        }
-        if(deck[offsetIndex].graduated){
+        } else if(deck[kanjiIndex].graduated){
             if(choice > 0){ //If user picked "Good" or "Easy"
-                let multiplier = deckSettings.ease
+                let multiplier = Number(deckSettings.ease)
                 if(choice == 2){ //If user chose "Easy"
-                    multiplier += deckSettings.easy // Add easy multiplier
+                    multiplier += Number(deckSettings.easy) // Add easy multiplier
                 }
                 newInterval = multiplyInterval(newInterval, multiplier)
+                
             } else if(choice < 0){
-                resetCard(offsetIndex)
+                resetCard(deck[kanjiIndex])
                 newInterval = deckSettings.learningSteps[0]
             }
         }
 
-        deck[offsetIndex].interval = newInterval // Update new interval to card info
-        deck[offsetIndex].due = addToDate(moment(), newInterval) // Update new due date
+        deck[kanjiIndex].interval = newInterval // Update new interval to card info
+        deck[kanjiIndex].due = addToDate(moment(), newInterval) // Update new due date
 
         const updatedDueDeck = sortByDueDate(deck)
         setDueKanji(updatedDueDeck)
@@ -79,19 +87,19 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         <div className={styles.main}>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(-1)}>Again</button>
-                <p>{learningSteps[0]}</p>
+                <p>&lt;{learningSteps[0]}</p>
             </div>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(0)}>Hard</button>
-                <p>{learningSteps[deck[kanjiIndex].learningIndex]}</p>
+                <p>{deck[kanjiIndex].interval}</p>
             </div>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(1)}>Good</button>
-                <p>{learningSteps[deck[kanjiIndex].learningIndex + 1]}</p>
+                <p>{goodLabel}</p>
             </div>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(2)}>Easy</button>
-                <p>{learningSteps[deck[kanjiIndex].learningIndex + 2]}</p>
+                <p>{easyLabel}</p>
             </div>
         </div>
     )

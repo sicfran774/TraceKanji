@@ -2,8 +2,19 @@ import moment from "moment"
 
 export const cardCounts = (deck) => {
     let counts = [0, 0, 0]
-    if(deck[0]){
-        deck.forEach(kanji => {
+    const now = moment()
+    const arr = deck.slice(2, deck.length)
+    const dueKanji = arr.map(obj => {
+        const kanjiDueDate = moment(obj.due)
+        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){
+            return obj
+        } else {
+            return undefined
+        }
+    }).filter(kanji => kanji !== undefined)
+
+    if(dueKanji[0]){
+        dueKanji.forEach(kanji => {
             if(kanji.learning) counts[1]++
             else if(kanji.graduated) counts[2]++
             else counts[0]++
@@ -43,8 +54,10 @@ export const sortByDueDate = (deck) => {
 export const multiplyInterval = (interval, multiplier) => {
     const timeAmount = interval.slice(0, -1)
     const timeType = interval[interval.length - 1]
+    //console.log("interval: " + interval + "multiplier: " + multiplier)
 
     const newTime = timeAmount * multiplier
+    //console.log(`${newTime}${timeType}`)
     return `${newTime}${timeType}`
 }
 
@@ -68,6 +81,12 @@ export const addToDate = (date, time) => {
 
     //console.log(date.toISOString())
     return date
+}
+
+export const resetCard = (card) => {
+    card.graduated = false
+    card.learning = true
+    card.learningIndex = 0
 }
 
 /**

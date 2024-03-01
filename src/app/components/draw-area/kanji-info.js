@@ -6,7 +6,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { useSession } from 'next-auth/react';
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import DrawArea from './draw-area';
-import DeckManager from './deck-manager';
+import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 import StudyButtons from '../study/study-buttons';
 
@@ -117,7 +117,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         <div className={styles.main}>
             {status === 'authenticated' && !studying && (<div className={styles.deckManager}>
                 <div className={styles.deckManagerButtons}>
-                    <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
+                    <button type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                     <div className={styles.deckSelector}>
                         <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
                             <option value="default">All Kanji</option>

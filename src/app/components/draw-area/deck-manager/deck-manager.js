@@ -2,7 +2,7 @@
 
 import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
-import { SharedKanjiProvider } from '../shared-kanji-provider';
+import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 import { cardCounts, sortByDueDate, updateDecksInDB } from '@/app/util/interval';
 import moment from "moment"
@@ -23,7 +23,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     }, [decks])
 
     useEffect(() => {
-        studying ? closeDeckManager() : openDeckManager()
+        if(studying){
+            closeDeckManager()
+        } else {
+            openDeckManager()
+        }
     }, [studying])
 
     const createDeck = () => {
@@ -184,11 +188,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                             {deck[0]}
                             <div className={styles.editDeck}>
                                 <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{cardCounts(sortByDueDate(deck))[0]}</span>
-                                    <span style={{color: "red"}}>{cardCounts(sortByDueDate(deck))[1]}</span>
-                                    <span style={{color: "green"}}>{cardCounts(sortByDueDate(deck))[2]}</span>
+                                    <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
+                                    <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
+                                    <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
                                 </div>
-                                <button type="button" className='button' onClick={() => startStudy(index)} disabled={deck.length < 3}>Start Study</button>
+                                <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
                             </div>
                         </li>
