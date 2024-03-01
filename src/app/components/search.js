@@ -5,6 +5,7 @@ import {useState, useEffect} from "react";
 import KanjiCard from './kanji-card';
 import KanjiInfo from './draw-area/kanji-info';
 import { CircularProgress } from '@mui/material';
+import Study from './study/study';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
 const ITEMS_PER_FETCH = 100;
@@ -20,6 +21,10 @@ export default function Search({kanjiAndSVG}){
     const [fetchedKanji, setFetchedKanji] = useState(null)
     const [filteredList, setFilteredList] = useState([]) // If filter is applied, this will take from fetchedKanji
     const [kanjiInfo, setKanjiInfo] = useState([]) // [[Page 1 Kanji], [Page 2 Kanji], [...], ...]
+
+    // Gets passed to deck manager and when kanji list gets replaced with study screen
+    const [studying, setStudying] = useState(false)
+    const [deckIndex, setDeckIndex] = useState() //Index is saved on what deck is being edited
 
     const [filter, setFilter] = useState("")
     
@@ -51,9 +56,29 @@ export default function Search({kanjiAndSVG}){
     }, [fetchedKanji, filter])
 
     useEffect(() => {
-        setSelectedDeck("default")
-        if(doneLoading && decks.length > 0) document.getElementById("decks").selectedIndex = 0
-    }, [recKanjiList])
+        if(!studying){
+            setSelectedDeck("default")
+            if(doneLoading && decks.length > 0) document.getElementById("decks").selectedIndex = 0
+        }
+    }, [recKanjiList, studying])
+
+    useEffect(() => {
+        const deckButton = document.getElementById("openDeckManagerButton")
+        if(doneLoading && !studying && deckButton) deckButton.click() //Don't change this
+    }, [studying])
+
+    useEffect(() => {
+        const listAndDrawArea = document.getElementById("listAndDrawArea")
+        const mainBody = document.getElementById("mainBody")
+        if(studying){
+            listAndDrawArea.className = styles.listAndDrawAreaStudy
+            mainBody.className = styles.bodyStudy
+        } else {
+            listAndDrawArea.className = styles.listAndDrawArea
+            mainBody.className = styles.body
+            setFilter("") //Reset list
+        }
+    }, [studying])
 
     useEffect(() => {
         setKanjiPerPage()
@@ -103,6 +128,27 @@ export default function Search({kanjiAndSVG}){
             diff = page
         }
         setPage(diff)
+    }
+
+    const getKanjiBasedOnArray = () => {
+        if(selectedDeck !== "default"){
+            //Get currently selected deck
+            const arr = decks[selectedDeck]
+            //Convert from object array to only kanji
+            const deckToKanji = arr.map((obj) => obj.kanji)
+            //Remove the title and interval from array
+            const deck = deckToKanji.slice(2, arr.length)
+            //Extract the SVG from the original kanjiAndSVG array
+            const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
+            //Send it to be loaded on page
+            fetchDataInBatches(deckKanjiWithSVG, deck)
+        } else if (recognizeKanji){
+            const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
+            //recognizedKanjiWithSVG.sort((a, b) => recKanjiList.indexOf(a.kanji) - recKanjiList.indexOf(b.kanji))
+            fetchDataInBatches(recognizedKanjiWithSVG, recKanjiList)
+        } else {
+            fetchDataInBatches(kanjiAndSVG)
+        }
     }
 
     // Fetches Kanji info from KanjiAPI
@@ -169,27 +215,15 @@ export default function Search({kanjiAndSVG}){
         }
     }
 
-    const getKanjiBasedOnArray = () => {
-        if(selectedDeck !== "default"){
-            //Get currently selected deck
-            const arr = decks[selectedDeck]
-            const deck = arr.slice(1, arr.length)
-            //Extract the SVG from the original kanjiAndSVG array
-            const deckKanjiWithSVG = kanjiAndSVG.filter(item => deck.includes(item.kanji))
-            //Send it to be loaded on page
-            fetchDataInBatches(deckKanjiWithSVG)
-        } else if (recognizeKanji){
-            const recognizedKanjiWithSVG = kanjiAndSVG.filter(item => recKanjiList.includes(item.kanji))
-            //recognizedKanjiWithSVG.sort((a, b) => recKanjiList.indexOf(a.kanji) - recKanjiList.indexOf(b.kanji))
-            fetchDataInBatches(recognizedKanjiWithSVG, recKanjiList)
-        } else {
-            fetchDataInBatches(kanjiAndSVG)
-        }
-    }
-
     return(
         <div className={styles.main}>
-            <div className={styles.listAndDrawArea}>
+            <div id="listAndDrawArea" className={styles.listAndDrawArea}>
+                {studying && doneLoading &&
+                <Study deck={decks[selectedDeck]}
+                       kanjiAndSVG={fetchedKanji}
+                       setStudying={setStudying}
+                       allDecks={decks}
+                />}
                 <KanjiInfo 
                     decks={decks} 
                     setDecks={setDecks} 
@@ -198,7 +232,13 @@ export default function Search({kanjiAndSVG}){
                     recognizeKanji={recognizeKanji} 
                     setRecognizeKanji={setRecognizeKanji}
                     setRecKanjiList={setRecKanjiList}
+                    studying={studying}
+                    setStudying={setStudying}
+                    deckIndex={deckIndex}
+                    setDeckIndex={setDeckIndex}
                 />
+                {!studying &&
+                (
                 <div className={styles.kanjiList}>
                     <div className={styles.searchBox}>
                         <div className={styles.searchText}>
@@ -216,7 +256,7 @@ export default function Search({kanjiAndSVG}){
                     {kanjiInfo.length > 0 ? 
                     (<div className={styles.kanjiListGrid}>
                         <ul>
-                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => { 
+                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => {
                                 return (
                                     <li key={item.info.kanji}>
                                         <KanjiCard kanji={item.info} svg={item.svg}/>
@@ -227,13 +267,14 @@ export default function Search({kanjiAndSVG}){
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
                             (<>Start drawing to populate this list!</>) : 
-                            (decks.length > 0 && !document.getElementById('filter').value ? <>
+                            (decks.length > 0 && document.getElementById('filter') && !document.getElementById('filter').value ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))
                         }
                     </div>)}
                     {kanjiInfo.length <= 0 && !doneLoading && (<CircularProgress/>)}
                 </div>
+                )}
             </div>
         </div>
     )

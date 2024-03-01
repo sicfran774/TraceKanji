@@ -1,3 +1,13 @@
+.body{
+    display: flex;
+    justify-content: baseline;
+}
+
+.bodyStudy{
+    display: flex;
+    justify-content: center;
+}
+
 .searchBox{
     display: flex;
 }
@@ -53,6 +63,13 @@
     justify-content: space-between;
     margin-top: 20px;
 }
+
+.listAndDrawAreaStudy{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
 
 .deckSelector {
     margin-left: 20px;

@@ -11,7 +11,7 @@ import { darkModeColor } from '@/app/util/colors';
 const backgroundColor = 'black'
 const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
 
-export default function DrawArea({enableRecognition, setRecKanjiList}) {
+export default function DrawArea({enableRecognition, setRecKanjiList, studying}) {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -63,9 +63,15 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
   }, [strokes])
 
   useEffect(() => {
-    setShowOverlay(true)
-    resetCanvas()
-    setShowKanji("Hide Kanji Tracing")
+    if(!studying){
+      setShowOverlay(true)
+      resetCanvas()
+      setShowKanji("Hide Kanji Tracing")
+    } else {
+      setShowOverlay(false)
+      resetCanvas()
+      setShowKanji("Show Kanji Tracing")
+    }
   }, [sharedKanji])
 
   useEffect(() => {
@@ -212,7 +218,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     })
   }
 
-  const GridOverLay = () => {
+  const GridOverlay = () => {
     return (
       <div className={styles.grid}>
         <div className={styles.vertical}></div>
@@ -225,7 +231,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
     <div className={styles.main}>
       <div className={styles.drawArea} id='drawArea'>
         {showOverlay && <KanjiOverlay />}
-        <GridOverLay />
+        <GridOverlay />
         <div className={styles.paint}>
           <canvas
           onMouseDown={startDrawing}
@@ -242,9 +248,9 @@ export default function DrawArea({enableRecognition, setRecKanjiList}) {
         </div>
       </div>
       <div className={styles.buttons}>
-        <button type="button" onClick={toggleOverlay} className='button'>{showKanji}</button>
-        <button type="button" onClick={resetCanvas} className='button'>Reset Drawing</button>
-        <button type="button" onClick={undoStroke} className='button'>Undo</button>
+        <button type="button" onClick={toggleOverlay} className={styles.overlayButton}>{showKanji}</button>
+        <button type="button" onClick={resetCanvas} className={styles.resetButton}>Reset Drawing</button>
+        <button type="button" onClick={undoStroke} className={styles.undoButton}>Undo</button>
       </div>
     </div>
   )

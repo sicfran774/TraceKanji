@@ -19,7 +19,7 @@
 
 .deckList {
     margin-top: 10px;
-    height: 420px;
+    height: 400px;
     overflow-y: auto;
 }
 
@@ -33,12 +33,30 @@
 }
 
 .editDeck{
+    display: flex;
+    align-items: center;
     margin-left: auto;
 }
 
 .editDeck button{
     margin-left: 10px;
     padding: 3px;
+}
+
+.editKanji{
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.editKanji button{
+    margin: 0 10px 0 10px;
+    width: 30px;
+    height: 30px;
+}
+
+.deckNumbers span{
+    margin-right: 15px;
 }
 
 .editingDeck{
@@ -55,9 +73,30 @@
     width: 150px;
 }
 
+.deckNameInput, .deckNameButton{
+    height: 30px;
+    margin-right: 5px;
+    padding: 3px;
+}
+
+.backupButton{
+    height: 30px;
+    margin-left: 45px;
+}
+
 .deleteButtons{
     display: flex;
     justify-content: space-between;
+}
+
+.kanjiInDeckList{
+    height: 320px;
+    overflow: scroll;
+}
+
+.dueDateText{
+    margin-left: auto;
+    margin-right: 5px;
 }
 
 @media (prefers-color-scheme: dark) {

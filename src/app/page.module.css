@@ -1,11 +1,15 @@
 .main{
-    width: 1920px;
+    /* width: 1920px; */
     margin: auto;
 }
 
 .body{
     display: flex;
-    justify-content: space-between;
+    justify-content: baseline;
+}
+
+.bodyStudy{
+    justify-content: center;
 }
 
 .header{

@@ -11,11 +11,25 @@
 
 .buttons{
     margin: 5px 0 5px 0;
-    height: 20px;
+    display: flex;
 }
 
-.buttons > * {
+.buttons button{
+    height: 40px;
+}
+
+.overlayButton{
+    width: 190px;
+    margin-right: 25px;
+}
+
+.resetButton{
+    width: 150px;
     margin-right: 10px;
+}
+
+.undoButton{
+    width: 120px;
 }
 
 .addToDeck{

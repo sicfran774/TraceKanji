@@ -6,19 +6,16 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { useSession } from 'next-auth/react';
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import DrawArea from './draw-area';
-import DeckManager from './deck-manager';
+import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
-import ChangelogDialog from '../changelog/changelog';
-import { green } from '@mui/material/colors';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
     const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
     const [open, setOpen] = useState(false)
-    const [openDialog, setOpenDialog] = useState(false);
     const {data, status} = useSession()
     const deckSelector = useRef()
 
@@ -51,7 +48,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             try{
                 let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
                 if(!decks) decks = []
-                console.log(decks)
                 setDecks(decks)
             } catch (e){
                 console.error(e)
@@ -69,8 +65,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         if(openDeckManager){
             closeDeckManager()
         } else {
-            setOpenDeckManager(true)
-            setDeckManagerMsg("Close Deck Manager")
+            openDeckManagerFunc()
         }
     }
 
@@ -81,15 +76,28 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setDeckManagerMsg("Open Deck Manager")
     }
 
+    const openDeckManagerFunc = () => {
+        setOpenDeckManager(true)
+        setDeckManagerMsg("Close Deck Manager")
+    }
+
     const toggleRecognizeKanji = () => {
         if(recognizeKanji){
-            setRecognizeKanji(false)
-            setSelectedKanji([])
-            setRecKanjiMsg("Enable Kanji Recognition")
+            disableRecognizeKanji()
         } else {
-            setRecognizeKanji(true)
-            setRecKanjiMsg("Disable Kanji Recognition")
+            enableRecognizeKanji()
         }
+    }
+
+    const enableRecognizeKanji = () => {
+        setRecognizeKanji(true)
+        setRecKanjiMsg("Disable Kanji Recognition")
+    }
+
+    const disableRecognizeKanji = () => {
+        setRecognizeKanji(false)
+        setSelectedKanji([])
+        setRecKanjiMsg("Enable Kanji Recognition")
     }
 
     const copyKanji = () => {
@@ -104,19 +112,11 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setOpen(false);
     };
 
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-      };
-    
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
     return(
         <div className={styles.main}>
-            {status === 'authenticated' && (<div className={styles.deckManager}>
+            {status === 'authenticated' && !studying && (<div className={styles.deckManager}>
                 <div className={styles.deckManagerButtons}>
-                    <button type="button" className='button' onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
+                    <button type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                     <div className={styles.deckSelector}>
                         <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
                             <option value="default">All Kanji</option>
@@ -132,37 +132,29 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                 <span>Sign in to create your own Kanji decks!</span>
                 <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
-            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}/>}
-            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList}/>}
-            <div className={styles.kanjiInfo}>
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} 
+                                    deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
+                                    studying={studying} setStudying={setStudying}
+                                    deckIndex={deckIndex} setDeckIndex={setDeckIndex}
+                                    closeDeckManager={closeDeckManager} openDeckManager={openDeckManagerFunc}
+                                    disableRecognizeKanji={disableRecognizeKanji}/>}
+            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList} studying={studying}/>}
+            {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
                     <SVG src={sharedKanji.svg}/>
                 </div>
                 <div>
                     <p>Kanji: {sharedKanji.kanji.kanji} {sharedKanji.kanji ? (<button type="button" className='button' onClick={() => copyKanji()}>Copy</button>) : (<></>)}</p>
                     <p>Meanings: {formatList(sharedKanji.kanji.meanings)}</p>
-                    <p>Kunyomi: {formatList(sharedKanji.kanji.kun_readings)}</p>
-                    <p>Onyomi: {formatList(sharedKanji.kanji.on_readings)}</p>
+                    <p>Heisig: {sharedKanji.kanji.heisig_en}</p>
+                    <p>Kun: {formatList(sharedKanji.kanji.kun_readings)}</p>
+                    <p>On: {formatList(sharedKanji.kanji.on_readings)}</p>
                     <p>Grade: {sharedKanji.kanji.grade}</p>
                     <p>JLPT: {sharedKanji.kanji.jlpt}</p>
                     <p><a href={"https://jisho.org/search/" + sharedKanji.kanji.kanji} target="_blank">Jisho</a></p>
                     <p><a href={"https://kai.kanjiapi.dev/#!/" + sharedKanji.kanji.kanji} target="_blank">kanjikai</a></p>
                 </div>
-            </div>
-            <div className={styles.myInfo}>
-                <p>Created by <a href={"https://github.com/sicfran774"} target="_blank">sicfran</a> 🤓</p>
-                <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
-                <p>
-                    Questions or suggestions?&nbsp;
-                    <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
-                        Contact me!
-                    </a>
-                </p>
-                <p>
-                    <button onClick={handleOpenDialog}>Changelog</button>
-                    <ChangelogDialog open={openDialog} onClose={handleCloseDialog} />
-                </p>
-            </div>
+            </div>)}
             <Snackbar
                 open={open}
                 onClose={handleCloseSnack}

@@ -1,0 +1,18 @@
+.header{
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+@media only screen and (min-width: 1560px) and (max-width: 1919px) {
+    .header{
+        width: 1660px;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1559px) {
+    .main, .header{
+        width: 1360px;
+    }
+}
