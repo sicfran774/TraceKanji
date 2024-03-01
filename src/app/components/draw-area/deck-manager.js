@@ -4,6 +4,8 @@ import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
+import { cardCounts, sortByDueDate, updateDecksInDB } from '@/app/util/interval';
+import moment from "moment"
 
 export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, openDeckManager, disableRecognizeKanji}){
 
@@ -17,7 +19,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
-        updateDecksInDB()
+        updateDecksInDB(email, decks)
     }, [decks])
 
     useEffect(() => {
@@ -26,7 +28,13 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
 
     const createDeck = () => {
         if(deckName){
-            let settings = {interval: ["1m","10m","1d","3d"]}
+            const settings = {
+                learningSteps: ["1m","10m","1d","3d"], //If user chooses Good, go up one. Easy --> up 2
+                graduatingInterval: "4d", // If user hits good, it will graduate and be susceptible to ease.
+                easyInterval: "7d", // Instantly graduate card.
+                ease: "2", //Multiplier after graduating
+                easy: "0.5" //Add to ease multiplier if user hits easy
+            }
             let newDecks = [...decks, [deckName, settings]]
             setDecks(newDecks)
             deckName = ""
@@ -80,23 +88,6 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setConfirmDeleteScreen(!confirmDeleteScreen)
     }
 
-    const updateDecksInDB = async () => {
-        try{
-            const result = await fetch(`api/mongodb/${email}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    updatedDecks: decks
-                })
-            })
-            return result
-        } catch (e){
-            console.error(e)
-        }
-    }
-
     const startStudy = (index) => {
         setStudying(true)
         setDeckManagerTitle(decks[index][0])
@@ -104,11 +95,6 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setSelectedDeck(index)
         disableRecognizeKanji()
     }
-
-    // const endStudy = (index) => {
-    //     setStudying(false)
-    //     setDeckManagerTitle("Manage Decks")
-    // }
 
     const DeckEditor = () => {
         return (
@@ -134,6 +120,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                                             <h2>{kanji.kanji}</h2>
                                             <button type="button">⚙️</button>
                                             <p>{kanji.meanings}</p>
+                                            <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
                                         </div>
                                     </li>
                                 ))}
@@ -197,9 +184,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                             {deck[0]}
                             <div className={styles.editDeck}>
                                 <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{deck.length - 2}</span>
-                                    <span style={{color: "red"}}>0</span>
-                                    <span style={{color: "green"}}>0</span>
+                                    <span style={{color: "lightblue"}}>{cardCounts(sortByDueDate(deck))[0]}</span>
+                                    <span style={{color: "red"}}>{cardCounts(sortByDueDate(deck))[1]}</span>
+                                    <span style={{color: "green"}}>{cardCounts(sortByDueDate(deck))[2]}</span>
                                 </div>
                                 <button type="button" className='button' onClick={() => startStudy(index)} disabled={deck.length < 3}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>

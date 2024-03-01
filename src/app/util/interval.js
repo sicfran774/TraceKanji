@@ -1,16 +1,51 @@
 import moment from "moment"
 
+export const cardCounts = (deck) => {
+    let counts = [0, 0, 0]
+    if(deck[0]){
+        deck.forEach(kanji => {
+            if(kanji.learning) counts[1]++
+            else if(kanji.graduated) counts[2]++
+            else counts[0]++
+        })
+    }
+
+    return counts
+}
+
 export const sortByDueDate = (deck) => {
+    const now = moment()
     const readDeck = deck.slice(2, deck.length)
     const dueKanji = readDeck.map(obj => {
-        const now = new Date()
-        const kanjiDueDate = new Date(obj.due)
-        if(kanjiDueDate < now){
-            return obj.kanji
+        const kanjiDueDate = moment(obj.due)
+        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){
+            return {kanji: obj.kanji, date: kanjiDueDate}
+        } else {
+            return undefined
         }
+    }).filter(kanji => kanji !== undefined)
+
+    //Sort by date so that you don't get repeats
+    dueKanji.sort((a, b) => {
+        return a.date.diff(b.date)
     })
-    console.log(dueKanji)
-    return dueKanji
+    const sorted = dueKanji.map(item => item.kanji)
+    return sorted
+}
+
+/**
+ * Multiplies the interval ("1d", "2m", "1M")
+ * For example, multiplyInterval("2d", 2) will return 4d.
+ * @param {string} interval - Interval to be multiplied by.
+ * @param {number} multipler - Multiplier.
+ * @returns {string} The resulting interval.
+ */
+export const multiplyInterval = (interval, multiplier) => {
+    const timeAmount = interval.slice(0, -1)
+    const timeType = interval[interval.length - 1]
+
+    const newTime = timeAmount * multiplier
+    return `${newTime}${timeType}`
 }
 
 /**
@@ -22,36 +57,38 @@ export const sortByDueDate = (deck) => {
 export const addToDate = (date, time) => {
     const timeAmount = time.slice(0, -1)
     const timeType = time[time.length - 1]
-    console.log("time: " + timeAmount + " type: " +  timeType)
-    console.log("before:" + date.toISOString())
+    // console.log("time: " + timeAmount + " type: " +  timeType)
+    // console.log("before:" + date.toISOString())
 
-    switch(timeType){
-        case 's':
-            date = moment(date).add(timeAmount, 'seconds')
-            break
-        case 'm':
-            date = moment(date).add(timeAmount, 'minutes')
-            break
-        case 'h':
-            date = moment(date).add(timeAmount, 'hours')
-            console.log("haour")
-            break
-        case 'd':
-            date = moment(date).add(timeAmount, 'days')
-            console.log("days")
-            break
-        case 'M':
-            date = moment(date).add(timeAmount, 'months')
-            console.log("months")
-            break
-        case 'y':
-            date = moment(date).add(timeAmount, 'years')
-            console.log("years")
-            break
-        default:
-            console.log("Interval error")
+    try{
+        date = moment(date).add(timeAmount, timeType)
+    } catch (e){
+        console.log(e)
     }
 
-    console.log(date.toISOString())
+    //console.log(date.toISOString())
     return date
+}
+
+/**
+ * Updates decks into MongoDB.
+ * @param {string} email - Email of user.
+ * @param {Array} decks - Entire array of all of the user's decks
+ * @returns {result} The resulting status.
+ */
+export const updateDecksInDB = async (email, decks) => {
+    try{
+        const result = await fetch(`api/mongodb/${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                updatedDecks: decks
+            })
+        })
+        return result
+    } catch (e){
+        console.error(e)
+    }
 }

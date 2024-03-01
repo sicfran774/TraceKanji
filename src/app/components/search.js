@@ -217,6 +217,7 @@ export default function Search({kanjiAndSVG}){
                 <Study deck={decks[selectedDeck]}
                        kanjiAndSVG={fetchedKanji}
                        setStudying={setStudying}
+                       allDecks={decks}
                 />}
                 <KanjiInfo 
                     decks={decks} 

@@ -83,6 +83,11 @@
     overflow: scroll;
 }
 
+.dueDateText{
+    margin-left: auto;
+    margin-right: 5px;
+}
+
 @media (prefers-color-scheme: dark) {
     .main{
         border-color: white;

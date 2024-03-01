@@ -63,10 +63,13 @@ export default function KanjiCard({kanji, svg}){
                 const preparedKanji = { 
                     kanji: kanji.kanji, 
                     meanings: kanji.heisig_en, 
-                    interval: [0, 1, 2, 3], 
+                    learningIndex: 0,
+                    learning: false,
+                    graduated: false,
+                    interval: "1m",
                     due: moment()
                 }
-                console.log(preparedKanji)
+                //console.log(preparedKanji)
                 arr = [...selectedKanji, preparedKanji] //Add kanji to list
             } else {
                 setSelected(false)
