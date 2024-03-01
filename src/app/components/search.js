@@ -63,6 +63,11 @@ export default function Search({kanjiAndSVG}){
     }, [recKanjiList, studying])
 
     useEffect(() => {
+        const deckButton = document.getElementById("openDeckManagerButton")
+        if(doneLoading && !studying && deckButton) deckButton.click() //Don't change this
+    }, [studying])
+
+    useEffect(() => {
         const listAndDrawArea = document.getElementById("listAndDrawArea")
         const mainBody = document.getElementById("mainBody")
         if(studying){

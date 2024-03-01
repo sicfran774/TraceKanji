@@ -19,7 +19,7 @@
 
 .deckList {
     margin-top: 10px;
-    height: 410px;
+    height: 400px;
     overflow-y: auto;
 }
 
@@ -71,6 +71,17 @@
 .deckButton{
     height: 30px;
     width: 150px;
+}
+
+.deckNameInput, .deckNameButton{
+    height: 30px;
+    margin-right: 5px;
+    padding: 3px;
+}
+
+.backupButton{
+    height: 30px;
+    margin-left: 45px;
 }
 
 .deleteButtons{

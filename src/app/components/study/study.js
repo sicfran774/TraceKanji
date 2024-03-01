@@ -67,7 +67,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
 
     return (
         <div className={styles.main}>
-            <button onClick={() => endStudy()}>End Study</button>
+            <div className={styles.quitDiv}><button className={styles.quitButton} onClick={() => endStudy()}>Quit</button></div>
             <div className={styles.info}>
                 {/* Sends MongoDB info for deck */}
                 <Hint kanjiInfo={deck[kanjiIndex]} />

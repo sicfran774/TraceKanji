@@ -8,7 +8,6 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import DrawArea from './draw-area';
 import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
-import StudyButtons from '../study/study-buttons';
 
 export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)

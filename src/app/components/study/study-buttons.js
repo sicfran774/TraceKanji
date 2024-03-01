@@ -1,7 +1,7 @@
 import styles from './css/study-buttons.module.css'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { addToDate, multiplyInterval, sortByDueDate, resetCard } from '@/app/util/interval';
+import { addToDate, multiplyInterval, sortByDueDate } from '@/app/util/interval';
 import moment from "moment"
 
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, setDueKanji}){
@@ -11,19 +11,34 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
     const deckSettings = deck[1]
     const learningSteps = [...deckSettings.learningSteps]
 
-    let goodLabel = "", easyLabel = ""
+    const [easyLabel, setEasyLabel] = useState("")
+    const [goodLabel, setGoodLabel] = useState("")
+    const [hardLabel, setHardLabel] = useState(deck[kanjiIndex].interval)
 
-    //console.log(deck[kanjiIndex].learningIndex + " length: " + learningSteps.length)
-    if(!deck[kanjiIndex].graduated){
-        if(deck[kanjiIndex].learningIndex >= learningSteps.length - 1){
-            goodLabel = deckSettings.graduatingInterval
+    useEffect(() => {
+        updateLabels()
+    }, [])
+
+    const updateLabels = () => {
+        setHardLabel(deck[kanjiIndex].interval)
+        if(!deck[kanjiIndex].graduated){
+            if(deck[kanjiIndex].learningIndex >= learningSteps.length - 1){
+                setGoodLabel(deckSettings.graduatingInterval)
+            } else {
+                setGoodLabel(learningSteps[deck[kanjiIndex].learningIndex + 1])
+            }
+            setEasyLabel(deckSettings.easyInterval)
         } else {
-            goodLabel = learningSteps[deck[kanjiIndex].learningIndex + 1]
+            setGoodLabel(multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease))))
+            setEasyLabel(multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease) + Number(deckSettings.easy))))
         }
-        easyLabel = deckSettings.easyInterval
-    } else {
-        goodLabel = multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease)))
-        easyLabel = multiplyInterval(deck[kanjiIndex].interval, (Number(deckSettings.ease) + Number(deckSettings.easy)))
+    }
+    //console.log(deck[kanjiIndex].learningIndex + " length: " + learningSteps.length)
+    
+    const resetCard = (index) => {
+        deck[index].graduated = false
+        deck[index].learning = true
+        deck[index].learningIndex = 0
     }
 
     const nextKanji = (choice) => {
@@ -62,7 +77,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
                 newInterval = multiplyInterval(newInterval, multiplier)
                 
             } else if(choice < 0){
-                resetCard(deck[kanjiIndex])
+                resetCard(kanjiIndex)
                 newInterval = deckSettings.learningSteps[0]
             }
         }
@@ -72,7 +87,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
 
         const updatedDueDeck = sortByDueDate(deck)
         setDueKanji(updatedDueDeck)
-        
+        updateLabels()
 
         if(updatedDueDeck.length === 0){
             endStudy()
@@ -91,7 +106,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             </div>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(0)}>Hard</button>
-                <p>{deck[kanjiIndex].interval}</p>
+                <p>{hardLabel}</p>
             </div>
             <div className={styles.buttonDiv}>
                 <button onClick={() => nextKanji(1)}>Good</button>

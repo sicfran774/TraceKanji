@@ -6,6 +6,7 @@ import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 import { cardCounts, sortByDueDate, updateDecksInDB } from '@/app/util/interval';
 import moment from "moment"
+import EditCardScreen from './edit-card';
 
 export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, openDeckManager, disableRecognizeKanji}){
 
@@ -14,6 +15,8 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
 
     const [confirmDeleteScreen, setConfirmDeleteScreen] = useState(false)
     const [deckManagerTitle, setDeckManagerTitle] = useState("Manage Decks")
+    const [openEditCardScreen, setOpenEditCardScreen] = useState(false)
+    const [kanjiIndex, setKanjiIndex] = useState()
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -100,6 +103,24 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         disableRecognizeKanji()
     }
 
+    const createBackup = (filename) => {
+        const jsonString = JSON.stringify(decks)
+        const blob = new Blob([jsonString], { type: "application/json" })
+        const url = window.URL.createObjectURL(blob)
+
+        const a = document.createElement("a")
+        a.style.display = "none"
+        a.href = url
+        a.download = filename + "-traceKanjiDeckBackup.json"
+
+        document.body.appendChild(a)
+
+        a.click()
+
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+    }
+
     const DeckEditor = () => {
         return (
             <table className={styles.editingDeck}>
@@ -122,7 +143,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                                     <li key={index}>
                                         <div className={styles.editKanji}>
                                             <h2>{kanji.kanji}</h2>
-                                            <button type="button">⚙️</button>
+                                            <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true)}}>⚙️</button>
                                             <p>{kanji.meanings}</p>
                                             <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
                                         </div>
@@ -176,11 +197,20 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const DeckScreen = () => {
         return (
             <>
-            {!openDeck && (<div className={styles.createDeck}>
-                <input type="text" id="deckName" name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
-                <button type="button" className='button' onClick={() => createDeck()}>Create New Deck</button>
+            {!openEditCardScreen && !openDeck && (<div className={styles.createDeck}>
+                <input type="text" id="deckName" className={styles.deckNameInput} name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
+                <button type="button"className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
+                <button type="button"className={styles.backupButton} onClick={() => createBackup(email)}>Backup Data 💾🔄</button>
             </div>)}
-            {openDeck && <DeckEditor/>}
+            {!openEditCardScreen && openDeck && <DeckEditor/>}
+            {openEditCardScreen && 
+            <EditCardScreen 
+                kanji={decks[deckIndex][kanjiIndex+2]}
+                startLearnStep={decks[deckIndex][1].learningSteps[0]}
+                setOpenEditCardScreen={setOpenEditCardScreen}
+                email={email}
+                allDecks={decks}
+            />}
             {!openDeck && (<div className={styles.deckList}>
                 <ul>
                     {decks.map((deck, index) => (

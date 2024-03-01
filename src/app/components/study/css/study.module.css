@@ -3,6 +3,18 @@
     height: 300px;
 }
 
+.quitDiv{
+    display: flex;
+
+}
+
+.quitButton{
+    margin-left: auto;
+    margin-right: 15px;
+    width: 100px;
+    height: 25px;
+}
+
 .info{
     display: flex;
     flex-direction: column;
