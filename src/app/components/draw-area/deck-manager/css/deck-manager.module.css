@@ -91,7 +91,7 @@
 
 .kanjiInDeckList{
     height: 320px;
-    overflow: scroll;
+    overflow-y: auto;
 }
 
 .dueDateText{

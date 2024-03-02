@@ -214,7 +214,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
     })
     .then(data => {
       setRecKanjiList(data)
-      //console.log(data)
+      
     })
   }
 

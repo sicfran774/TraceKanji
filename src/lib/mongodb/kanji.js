@@ -39,7 +39,8 @@ export async function getDecks(email){
 async function createAccount(email){
     const newAccount = {
         email: email,
-        decks: []
+        decks: [],
+        subscribed: true
     }
     const result = await accounts.insertOne(newAccount)
     return result;
@@ -66,5 +67,22 @@ export async function getKanji(characters) {
     } catch (e) {
         console.log(e)
         return {error: 'Failed to fetch kanji'}
+    }
+}
+
+export async function getAllSubscribedEmails(){
+    try{
+        if(!accounts) await init()
+
+        const emails = await accounts.find()
+        const subbed = emails.map(account => {
+            if(account.subscribed) return account
+        })
+
+        console.log(subbed)
+        return deckList
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to fetch emails'}
     }
 }

@@ -33,7 +33,10 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
         //console.log(deck[kanjiIndex])
         const svgIndex = kanjiAndSVG.findIndex(obj => obj.info.kanji === deck[kanjiIndex].kanji);
         //console.log(svgIndex)
-        setSharedKanji({kanji: deck[kanjiIndex].kanji, svg: kanjiAndSVG[svgIndex].svg})
+        if(svgIndex >= 0){
+            setSharedKanji({kanji: deck[kanjiIndex].kanji, svg: kanjiAndSVG[svgIndex].svg})
+        }
+        
     }, [kanjiIndex])
 
     const endStudy = () => {

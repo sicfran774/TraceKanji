@@ -7,6 +7,7 @@ import { selectedDarkModeColor } from '@/app/util/colors';
 import { cardCounts, sortByDueDate, updateDecksInDB } from '@/app/util/interval';
 import moment from "moment"
 import EditCardScreen from './edit-card';
+import EditDeckScreen from './edit-deck';
 
 export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, openDeckManager, disableRecognizeKanji}){
 
@@ -16,6 +17,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const [confirmDeleteScreen, setConfirmDeleteScreen] = useState(false)
     const [deckManagerTitle, setDeckManagerTitle] = useState("Manage Decks")
     const [openEditCardScreen, setOpenEditCardScreen] = useState(false)
+    const [editDeckScreen, setEditDeckScreen] = useState(false)
     const [kanjiIndex, setKanjiIndex] = useState()
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
@@ -103,6 +105,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         disableRecognizeKanji()
     }
 
+    const toggleDeckSettingScreen = () => {
+        setEditDeckScreen(!editDeckScreen)
+    }
+
     const createBackup = (filename) => {
         const jsonString = JSON.stringify(decks)
         const blob = new Blob([jsonString], { type: "application/json" })
@@ -134,7 +140,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                     {confirmDeleteScreen && (<tr><td valign='top' colSpan="2"><ConfirmDelete/></td></tr>)}
                     {!confirmDeleteScreen && !editingDeck && (<tr>
                         <td align='left' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Add/Remove Kanji</button></td>
-                        {/* <td align='right' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Rename Deck</button></td> */}
+                        <td align='right' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleDeckSettingScreen()}>Deck Settings</button></td>
                     </tr>)}
                     <tr>
                         {!confirmDeleteScreen && (<td height={30} colSpan="2" className={styles.selectedKanji}>
@@ -199,10 +205,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             <>
             {!openEditCardScreen && !openDeck && (<div className={styles.createDeck}>
                 <input type="text" id="deckName" className={styles.deckNameInput} name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
-                <button type="button"className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
-                <button type="button"className={styles.backupButton} onClick={() => createBackup(email)}>Backup Data 💾🔄</button>
+                <button type="button" className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
+                <button type="button" className={styles.backupButton} onClick={() => createBackup(email)}>Backup Data 💾🔄</button>
             </div>)}
-            {!openEditCardScreen && openDeck && <DeckEditor/>}
+            {!editDeckScreen && !openEditCardScreen && openDeck && <DeckEditor/>}
             {openEditCardScreen && 
             <EditCardScreen 
                 kanji={decks[deckIndex][kanjiIndex+2]}
@@ -210,6 +216,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 setOpenEditCardScreen={setOpenEditCardScreen}
                 email={email}
                 allDecks={decks}
+            />}
+            {editDeckScreen && <EditDeckScreen
+                toggleScreen={toggleDeckSettingScreen}
+            
             />}
             {!openDeck && (<div className={styles.deckList}>
                 <ul>
