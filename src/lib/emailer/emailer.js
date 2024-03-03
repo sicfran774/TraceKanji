@@ -102,12 +102,12 @@ async function sendEmail(email, htmlString){
         html: htmlString
     }
 
-    await transporter.sendMail(mailOptions, function(e, info){
-        if(e){
-            console.log(e)
-            return {error: 'Failed to send email'}
+    transporter.sendMail(mailOptions, function (e, info) {
+        if (e) {
+            console.log(e);
+            return { error: 'Failed to send email' };
         } else {
-            console.log("Email sent to " + email)
+            console.log("Email sent to " + email);
         }
     })
 }
