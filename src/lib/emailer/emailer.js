@@ -30,8 +30,9 @@ const emailFooter = `
 `
 
 export async function separateAccounts(){
+    console.log("Sending emails.")
     const now = moment.utc()
-    if(now.hours() === 13){ //If it's during our cron job
+    if(now.hours() === 18){ //If it's during our cron job
         try{
         
             const emails = await getAllSubscribedEmails()
