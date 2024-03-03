@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 export const dynamic = 'force-dynamic'
 export async function GET(request) {
 
-    const response = separateAccounts()
+    const response = await separateAccounts()
 
     return NextResponse.json({response})
   }

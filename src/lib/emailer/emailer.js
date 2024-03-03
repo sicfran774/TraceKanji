@@ -30,37 +30,31 @@ const emailFooter = `
 `
 
 export async function separateAccounts(){
-    console.log("Sending emails.")
-    const now = moment.utc()
-    if(now.hours() === 18){ //If it's during our cron job
-        try{
+    try{
+        console.log("Fetching emails.")
+        const emails = await getAllSubscribedEmails()
         
-            const emails = await getAllSubscribedEmails()
-            
-            emails.forEach(account => {
-                const email = account.email
-                const decks = account.decks.map(deck => {
-                    return [deck[0], sortByDueDate(deck)]
-                })
-                const counts = account.decks.map(deck => {
-                    return cardCounts(deck)
-                })
-                createEmailHTML(email, decks, counts)
-            });
-    
-    
-        } catch (e){
-            console.log(e)
-            return {error: 'Failed to separate accounts for email preparation'}
-        }
-    } else{
-        const error = 'Tried to send email at wrong time'
-        return {error: error}
+        emails.forEach(account => {
+            const email = account.email
+            const decks = account.decks.map(deck => {
+                return [deck[0], sortByDueDate(deck)]
+            })
+            const counts = account.decks.map(deck => {
+                return cardCounts(deck)
+            })
+            createEmailHTML(email, decks, counts)
+        });
+
+
+    } catch (e){
+        console.log(e)
+        return {error: 'Failed to separate accounts for email preparation'}
     }
 }
 
 async function createEmailHTML(email, decks, counts){
     try{
+        console.log("Creating email HTMLs.")
         let deckString = "<div>"
 
         decks.forEach((deck, index) => {
