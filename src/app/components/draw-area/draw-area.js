@@ -9,7 +9,6 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { darkModeColor } from '@/app/util/colors';
 
 const backgroundColor = 'black'
-const flaskEndpoint = process.env.NEXT_PUBLIC_FLASK_ENDPOINT
 
 export default function DrawArea({enableRecognition, setRecKanjiList, studying}) {
   const canvasRef = useRef(null);
@@ -202,20 +201,16 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
   }
 
   async function predictKanji(){
-    await fetch(flaskEndpoint, {
+    setRecKanjiList(await fetch(`api/recognize`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({data: canvasRef.current.toDataURL()})
-    })
-    .then(response => {
-      return response.json()
-    })
-    .then(data => {
-      setRecKanjiList(data)
-      
-    })
+        body: JSON.stringify({data: canvasRef.current.toDataURL()})
+      })
+      .then(response => {
+        return response.json()
+    }))
   }
 
   const GridOverlay = () => {

@@ -2,15 +2,14 @@ import { getAllSubscribedEmails } from "../mongodb/kanji";
 import { sortByDueDate, cardCounts } from "@/app/util/interval";
 
 const nodeMailer = require('nodemailer')
-const sender = process.env.NEXT_PUBLIC_EMAIL_ADDRESS
 
 let transporter = nodeMailer.createTransport({
     host: "smtp.zoho.com",
     secure: true,
     port: 465,
     auth: {
-        user: sender,
-        pass: process.env.NEXT_PUBLIC_APP_PASSWORD
+        user: process.env.EMAIL_ADDRESS,
+        pass: process.env.APP_PASSWORD
     }
 })
 
@@ -97,7 +96,7 @@ async function createEmailHTML(email, decks, counts){
 
 async function sendEmail(email, htmlString){
     const mailOptions = {
-        from: sender,
+        from: process.env.EMAIL_ADDRESS,
         to: email,
         subject: "Don't forget to study your kanji!",
         html: htmlString
