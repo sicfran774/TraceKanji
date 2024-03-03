@@ -54,7 +54,8 @@ export async function separateAccounts(){
             return {error: 'Failed to separate accounts for email preparation'}
         }
     } else{
-        return {error: 'Tried to send email at wrong time'}
+        const error = 'Tried to send email at wrong time'
+        return {error: error}
     }
 }
 
