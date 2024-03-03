@@ -34,7 +34,7 @@ export async function separateAccounts(){
         console.log("Fetching emails.")
         const emails = await getAllSubscribedEmails()
         
-        emails.forEach(account => {
+        emails.forEach(async account => {
             const email = account.email
             const decks = account.decks.map(deck => {
                 return [deck[0], sortByDueDate(deck)]
@@ -42,7 +42,7 @@ export async function separateAccounts(){
             const counts = account.decks.map(deck => {
                 return cardCounts(deck)
             })
-            createEmailHTML(email, decks, counts)
+            await createEmailHTML(email, decks, counts)
         });
 
 
@@ -54,7 +54,7 @@ export async function separateAccounts(){
 
 async function createEmailHTML(email, decks, counts){
     try{
-        console.log("Creating email HTMLs.")
+        //console.log("Creating email HTMLs.")
         let deckString = "<div>"
 
         decks.forEach((deck, index) => {
@@ -89,7 +89,7 @@ async function createEmailHTML(email, decks, counts){
         `
 
         //console.log(html)
-        sendEmail(email, html)
+        await sendEmail(email, html)
 
     } catch (e){
         console.log(e)
@@ -105,12 +105,12 @@ async function sendEmail(email, htmlString){
         html: htmlString
     }
 
-    transporter.sendMail(mailOptions, function (e, info) {
+    console.log("Sending email to " + email)
+
+    await transporter.sendMail(mailOptions, function (e, info) {
         if (e) {
             console.log(e);
             return { error: 'Failed to send email' };
-        } else {
-            console.log("Email sent to " + email);
         }
     })
 }
