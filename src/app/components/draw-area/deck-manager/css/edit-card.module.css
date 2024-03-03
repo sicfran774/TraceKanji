@@ -4,6 +4,17 @@
     padding-top: 8px;
 }
 
+.title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.settings{
+    overflow-y: auto;
+    height: 270px;
+}
+
 .hintDiv{
     margin: 20px 5px 0 5px;
 }
@@ -14,16 +25,22 @@
 }
 
 .hintText {
-    font-size: 20px;
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+.sureButton{
+    width: 80px;
+    height: 30px;
+    margin-right: 10px;
 }
 
 .importantButtons{
-    height: 250px;
     display: flex;
     justify-content: space-between;
 }
 
-.importantButtons button{
+.importantButtonsButton{
     height: 50px;
     width: 100px;
     margin-top: auto;

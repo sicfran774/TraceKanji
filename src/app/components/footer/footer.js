@@ -22,7 +22,7 @@ export default function Footer(){
         <p><a href={"https://www.buymeacoffee.com/sicfran"} target="_blank">Buy me a coffee ☕</a></p>
         <p>
             Questions or suggestions?&nbsp;
-            <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
+            <a href = "mailto:study@tracekanji.com?subject=Trace Kanji Feedback">
                 Contact me!
             </a>
         </p>
