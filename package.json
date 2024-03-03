@@ -21,10 +21,10 @@
     "next": "^13.4.19",
     "next-auth": "^4.22.3",
     "next-connect": "^1.0.0",
+    "nodemailer": "^6.9.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-inlinesvg": "^3.0.2",
-    "zohocrm": "^0.1.5"
+    "react-inlinesvg": "^3.0.2"
   },
   "devDependencies": {
     "@types/react": "18.2.18"

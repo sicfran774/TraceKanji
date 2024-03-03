@@ -74,13 +74,9 @@ export async function getAllSubscribedEmails(){
     try{
         if(!accounts) await init()
 
-        const emails = await accounts.find()
-        const subbed = emails.map(account => {
-            if(account.subscribed) return account
-        })
-
-        console.log(subbed)
-        return deckList
+        const emails = await accounts.find({ subscribed: true }).toArray()
+        
+        return emails
     } catch (e) {
         console.log(e)
         return {error: 'Failed to fetch emails'}
