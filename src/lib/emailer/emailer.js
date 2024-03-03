@@ -1,5 +1,6 @@
 import { getAllSubscribedEmails } from "../mongodb/kanji";
 import { sortByDueDate, cardCounts } from "@/app/util/interval";
+import moment from "moment";
 
 const nodeMailer = require('nodemailer')
 
@@ -29,24 +30,30 @@ const emailFooter = `
 `
 
 export async function separateAccounts(){
-    try{
-        const emails = await getAllSubscribedEmails()
+    const now = moment.utc()
+    if(now.hours() === 13){ //If it's during our cron job
+        try{
         
-        emails.forEach(account => {
-            const email = account.email
-            const decks = account.decks.map(deck => {
-                return [deck[0], sortByDueDate(deck)]
-            })
-            const counts = account.decks.map(deck => {
-                return cardCounts(deck)
-            })
-            createEmailHTML(email, decks, counts)
-        });
-
-
-    } catch (e){
-        console.log(e)
-        return {error: 'Failed to separate accounts for email preparation'}
+            const emails = await getAllSubscribedEmails()
+            
+            emails.forEach(account => {
+                const email = account.email
+                const decks = account.decks.map(deck => {
+                    return [deck[0], sortByDueDate(deck)]
+                })
+                const counts = account.decks.map(deck => {
+                    return cardCounts(deck)
+                })
+                createEmailHTML(email, decks, counts)
+            });
+    
+    
+        } catch (e){
+            console.log(e)
+            return {error: 'Failed to separate accounts for email preparation'}
+        }
+    } else{
+        return {error: 'Tried to send email at wrong time'}
     }
 }
 
