@@ -34,7 +34,7 @@ export async function separateAccounts(){
         console.log("Fetching emails.")
         const emails = await getAllSubscribedEmails()
         
-        emails.forEach(async account => {
+        emails.forEach(account => {
             const email = account.email
             const decks = account.decks.map(deck => {
                 return [deck[0], sortByDueDate(deck)]
@@ -42,7 +42,7 @@ export async function separateAccounts(){
             const counts = account.decks.map(deck => {
                 return cardCounts(deck)
             })
-            await createEmailHTML(email, decks, counts)
+            createEmailHTML(email, decks, counts)
         });
 
 
@@ -111,6 +111,8 @@ async function sendEmail(email, htmlString){
         if (e) {
             console.log(e);
             return { error: 'Failed to send email' };
+        } else {
+            console.log('Success.')
         }
     })
 }
