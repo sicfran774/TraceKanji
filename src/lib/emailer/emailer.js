@@ -36,8 +36,17 @@ export async function separateAccounts(){
         const emails = await new Promise((resolve, reject) => {
             getAllSubscribedEmails(function (err, info) {
                 if (err) {
+                    let attempts = 0, maxAttempts = 5;
                     console.log(error);
-                    reject(new Error('Failed to separate accounts for email preparation'));
+
+                    if (attempts < maxAttempts){
+                        setTimeout(() => {
+                            console.log("Fetch failed. Retrying...")
+                            separateAccounts().then(resolve).catch(reject);
+                        }, 3000); // Add a delay of 3000 milliseconds (3 seconds)
+                    } else {
+                        reject(new Error(`Max attempts (${maxAttempts}) reached. Unable to fetch.`));
+                    }
                 } else {
                     console.log("Successfully fetched emails. " + info);
                     resolve(info);
@@ -56,8 +65,17 @@ export async function separateAccounts(){
             await new Promise((resolve, reject) => {
                 createEmailHTML(email, decks, counts, function (error, info) {
                     if (error) {
+                        let attempts = 0, maxAttempts = 5;
                         console.log(error);
-                        reject(new Error('Failed to create email HTML'));
+
+                        if (attempts < maxAttempts){
+                            setTimeout(() => {
+                                console.log("HTML creation failed. Retrying...")
+                                createEmailHTML(email, decks, counts).then(resolve).catch(reject);
+                            }, 3000); // Add a delay of 3000 milliseconds (3 seconds)
+                        } else {
+                            reject(new Error(`Max attempts (${maxAttempts}) reached. Unable to create HTML.`));
+                        }
                     } else {
                         console.log("Successfully created HTML: " + info);
                         resolve(info);
@@ -112,8 +130,17 @@ async function createEmailHTML(email, decks, counts){
         await new Promise((resolve, reject) => {
             verifyConnection(email, html, function (err, info) {
                 if (err) {
-                    console.log(err);
-                    reject(new Error('Failed to create HTML.'));
+                    let attempts = 0, maxAttempts = 5;
+                        console.log(error);
+
+                        if (attempts < maxAttempts){
+                            setTimeout(() => {
+                                console.log("Verifying failed. Retrying...")
+                                verifyConnection(email, html).then(resolve).catch(reject);
+                            }, 3000); // Add a delay of 3000 milliseconds (3 seconds)
+                        } else {
+                            reject(new Error(`Max attempts (${maxAttempts}) reached. Failed to verify.`));
+                        }
                 } else {
                     console.log("Successfully created HTML. " + info);
                     resolve(info);
@@ -157,7 +184,7 @@ async function verifyConnection(email, html){
                 console.log(err);
                 reject(new Error('Failed to send email.'));
             } else {
-                console.log("Successfully sent email. " + info);
+                console.log("Successfully sent. " + info);
                 resolve(info);
             }
         })
