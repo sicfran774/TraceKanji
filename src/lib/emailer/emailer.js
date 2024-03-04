@@ -89,7 +89,7 @@ async function createEmailHTML(email, decks, counts){
         `
 
         //console.log(html)
-        return 
+        await verifyConnection(email, html)
 
     } catch (e){
         console.log(e)
