@@ -5,7 +5,7 @@ import { resolve } from "styled-jsx/css";
 
 const nodeMailer = require('nodemailer')
 
-let transporter = nodeMailer.createTransport({
+const transporter = nodeMailer.createTransport({
     host: process.env.EMAIL_HOST,
     secure: true,
     port: process.env.EMAIL_PORT,
@@ -33,7 +33,17 @@ const emailFooter = `
 export async function separateAccounts(){
     try{
         console.log("Fetching emails.")
-        const emails = await getAllSubscribedEmails()
+        const emails = await new Promise((resolve, reject) => {
+            getAllSubscribedEmails(function (err, info) {
+                if (err) {
+                    console.log(error);
+                    reject(new Error('Failed to separate accounts for email preparation'));
+                } else {
+                    console.log("Successfully fetched emails. " + info);
+                    resolve(info);
+                }
+            })
+        })
         
         emails.forEach(async account => {
             const email = account.email
@@ -43,7 +53,17 @@ export async function separateAccounts(){
             const counts = account.decks.map(deck => {
                 return cardCounts(deck)
             })
-            await createEmailHTML(email, decks, counts)
+            await new Promise((resolve, reject) => {
+                createEmailHTML(email, decks, counts, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                        reject(new Error('Failed to create email HTML'));
+                    } else {
+                        console.log("Successfully created HTML: " + info);
+                        resolve(info);
+                    }
+                })
+            })
         });
     } catch (e){
         console.log(e)
@@ -88,8 +108,18 @@ async function createEmailHTML(email, decks, counts){
             </div>
         `
 
-        //console.log(html)
-        await verifyConnection(email, html)
+        console.log(html)
+        await new Promise((resolve, reject) => {
+            verifyConnection(email, html, function (err, info) {
+                if (err) {
+                    console.log(err);
+                    reject(new Error('Failed to create HTML.'));
+                } else {
+                    console.log("Successfully created HTML. " + info);
+                    resolve(info);
+                }
+            })
+        })
 
     } catch (e){
         console.log(e)
@@ -98,15 +128,17 @@ async function createEmailHTML(email, decks, counts){
 }
 
 async function verifyConnection(email, html){
-    let attempts = 0, maxAttempts = 10;
+    let attempts = 0, maxAttempts = 5;
     await new Promise((resolve, reject) => {
+        console.log("Attempting to verify connection...")
         // verify connection configuration
         transporter.verify(function (error, success) {
             if (error) {
                 console.log(error);
 
-                if (attempts < maxAttempts - 1){
+                if (attempts < maxAttempts){
                     setTimeout(() => {
+                        console.log("Connection failed. Retrying...")
                         verifyConnection(email, html).then(resolve).catch(reject);
                     }, 3000); // Add a delay of 3000 milliseconds (3 seconds)
                 } else {
@@ -119,7 +151,18 @@ async function verifyConnection(email, html){
         });
     });
 
-    await sendEmail(email, html)
+    await new Promise((resolve, reject) => {
+        sendEmail(email, html, function (err, info) {
+            if (err) {
+                console.log(err);
+                reject(new Error('Failed to send email.'));
+            } else {
+                console.log("Successfully sent email. " + info);
+                resolve(info);
+            }
+        })
+    })
+    
 }
 
 async function sendEmail(email, htmlString){
