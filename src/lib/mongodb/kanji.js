@@ -1,6 +1,7 @@
+import moment from "moment";
 import clientPromise from ".";
 
-let client, database, kanji, accounts
+let client, database, kanji, accounts, backup
 
 async function init(){
     //Already initialized
@@ -11,6 +12,7 @@ async function init(){
         database = client.db('trace-kanji')
         kanji = database.collection('kvg-v1')
         accounts = database.collection('accounts')
+        backup = database.collection('backup')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }
@@ -80,5 +82,25 @@ export async function getAllSubscribedEmails(){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to fetch emails'}
+    }
+}
+
+export async function backupAccountData(){
+    try{
+        if(!accounts || !backup) await init()
+
+        const data = await accounts.find().toArray()
+
+        const newBackup = {
+            date: moment(),
+            data: data
+        }
+
+        const result = await backup.insertOne(newBackup)
+
+        return result
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to backup account data.'}
     }
 }

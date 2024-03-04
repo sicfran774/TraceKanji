@@ -46,12 +46,19 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     const fetchDecks = async () => {
         if(status === 'authenticated'){
             try{
-                let decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
-                if(!decks) decks = []
-                setDecks(decks)
+                const decks = (await fetch(`api/mongodb/${data.user.email}`).then(result => result.json())).decks
+                //if(!decks) decks = [] (This line ERASES DATA. BAD BAD!)
+                if(decks){
+                    setDecks(decks)
+                } else {
+                    throw new Error("Failed to load decks for user, trying again")
+                }
             } catch (e){
                 console.error(e)
+                await fetchDecks()
             }
+        } else if (status === 'loading'){
+            console.log("Loading decks...")
         } else {
             console.log("Sign in to create your own kanji decks!")
         }
