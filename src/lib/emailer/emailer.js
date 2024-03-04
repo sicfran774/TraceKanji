@@ -89,7 +89,7 @@ async function createEmailHTML(email, decks, counts){
         `
 
         //console.log(html)
-        return await sendEmail(email, html)
+        return 
 
     } catch (e){
         console.log(e)
@@ -97,31 +97,51 @@ async function createEmailHTML(email, decks, counts){
     }
 }
 
-async function sendEmail(email, htmlString){
-    try {
-        console.log("Sending to " + email)
-        const mailOptions = {
-            from: process.env.EMAIL_ADDRESS,
-            to: email,
-            subject: "Don't forget to study your kanji!",
-            html: htmlString
-        }
+async function verifyConnection(email, html){
+    let attempts = 0, maxAttempts = 10;
+    await new Promise((resolve, reject) => {
+        // verify connection configuration
+        transporter.verify(function (error, success) {
+            if (error) {
+                console.log(error);
 
-        const result = await new Promise((resolve, reject) => {
-            transporter.sendMail(mailOptions, (err, info) => {
-                if(err){
-                    console.error(err)
-                    reject(err)
+                if (attempts < maxAttempts - 1){
+                    setTimeout(() => {
+                        verifyConnection(email, html).then(resolve).catch(reject);
+                    }, 3000); // Add a delay of 3000 milliseconds (3 seconds)
                 } else {
-                    console.log(info)
-                    resolve(info)
+                    reject(new Error(`Max attempts (${maxAttempts}) reached. Unable to verify connection.`));
                 }
-            })
-        })
+            } else {
+                console.log("Server is ready to take our messages");
+                resolve(success);
+            }
+        });
+    });
 
-        return result
-    } catch (e) {
-        console.log(e)
-        return {error: 'Failed to send email.'}
+    await sendEmail(email, html)
+}
+
+async function sendEmail(email, htmlString){
+    console.log("Sending to " + email)
+    const mailOptions = {
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Don't forget to study your kanji!",
+        html: htmlString
     }
+
+    const result = await new Promise((resolve, reject) => {
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err){
+                console.error(err)
+                reject(err)
+            } else {
+                console.log(info)
+                resolve(info)
+            }
+        })
+    })
+
+    return result
 }
