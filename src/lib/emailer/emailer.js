@@ -5,9 +5,9 @@ import moment from "moment";
 const nodeMailer = require('nodemailer')
 
 let transporter = nodeMailer.createTransport({
-    host: "smtp.zoho.com",
+    host: process.env.EMAIL_HOST,
     secure: true,
-    port: 465,
+    port: process.env.EMAIL_PORT,
     auth: {
         user: process.env.EMAIL_ADDRESS,
         pass: process.env.APP_PASSWORD
@@ -88,7 +88,7 @@ async function createEmailHTML(email, decks, counts){
         `
 
         //console.log(html)
-        await sendEmail(email, html)
+        return await sendEmail(email, html)
 
     } catch (e){
         console.log(e)
@@ -97,16 +97,17 @@ async function createEmailHTML(email, decks, counts){
 }
 
 async function sendEmail(email, htmlString){
-    const mailOptions = {
-        from: process.env.EMAIL_ADDRESS,
-        to: email,
-        subject: "Don't forget to study your kanji!",
-        html: htmlString
-    }
-
     try {
         console.log("Sending to " + email)
-        return await transporter.sendMail(mailOptions)
+        const mailOptions = {
+            from: process.env.EMAIL_ADDRESS,
+            to: email,
+            subject: "Don't forget to study your kanji!",
+            html: htmlString
+        }
+        const result = await transporter.sendMail(mailOptions)
+        console.log(result)
+        return result
     } catch (e) {
         console.log(e)
         return {error: 'Failed to send email.'}
