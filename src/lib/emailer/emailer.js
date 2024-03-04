@@ -44,8 +44,6 @@ export async function separateAccounts(){
             })
             await createEmailHTML(email, decks, counts)
         });
-
-
     } catch (e){
         console.log(e)
         return {error: 'Failed to separate accounts for email preparation'}
@@ -54,6 +52,7 @@ export async function separateAccounts(){
 
 async function createEmailHTML(email, decks, counts){
     try{
+        console.log(email, decks, counts)
         console.log("Creating email HTMLs.")
         let deckString = "<div>"
 
@@ -106,6 +105,7 @@ async function sendEmail(email, htmlString){
     }
 
     try {
+        console.log("Sending to " + email)
         return await transporter.sendMail(mailOptions)
     } catch (e) {
         console.log(e)

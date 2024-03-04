@@ -1,7 +1,6 @@
 import { getKanji } from "@/lib/mongodb/kanji"
 import styles from './css/selection.module.css';
 import Search from "./search";
-import { backupAccountData } from "@/lib/mongodb/kanji";
 
 //                       -------------Search-----------------------------
 //                      /                                                \
