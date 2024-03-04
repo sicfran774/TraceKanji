@@ -13,6 +13,7 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.5",
     "@react-oauth/google": "^0.11.1",
+    "@sendgrid/mail": "^8.1.1",
     "@vercel/analytics": "^1.0.2",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.12",
