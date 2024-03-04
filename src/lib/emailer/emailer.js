@@ -1,3 +1,7 @@
 export async function sendEmails(){
-    return await fetch(process.env.FLASK_ENDPOINT + "api/emailer")
+    const result = await fetch(process.env.FLASK_ENDPOINT + "api/emailer", {
+        method: "GET"
+    })
+    console.log(result)
+    return result
 }
