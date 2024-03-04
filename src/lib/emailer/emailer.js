@@ -1,6 +1,7 @@
 import { getAllSubscribedEmails } from "../mongodb/kanji";
 import { sortByDueDate, cardCounts } from "@/app/util/interval";
 import moment from "moment";
+import { resolve } from "styled-jsx/css";
 
 const nodeMailer = require('nodemailer')
 
@@ -105,8 +106,19 @@ async function sendEmail(email, htmlString){
             subject: "Don't forget to study your kanji!",
             html: htmlString
         }
-        const result = await transporter.sendMail(mailOptions)
-        console.log(result)
+
+        const result = await new Promise((resolve, reject) => {
+            transporter.sendMail(mailOptions, (err, info) => {
+                if(err){
+                    console.error(err)
+                    reject(err)
+                } else {
+                    console.log(info)
+                    resolve(info)
+                }
+            })
+        })
+
         return result
     } catch (e) {
         console.log(e)
