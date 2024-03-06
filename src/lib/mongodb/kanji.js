@@ -49,8 +49,16 @@ async function createAccount(email){
 }
 
 export async function updateDecks(updatedDecks, email){
-    const result = await accounts.updateOne({email: email}, {$set:{decks: updatedDecks}})
-    return result
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{decks: updatedDecks}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save decks'}
+    }
 }
 
 export async function getKanji(characters) {
