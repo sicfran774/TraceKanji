@@ -69,6 +69,8 @@ export default function EditCardScreen({ kanji, startLearnStep, setOpenEditCardS
                     <p>{kanji.interval}</p>
                 </div>
             </div>
+
+            <div className={styles.area}></div>
             
             <div className={styles.importantButtons}>
                 {areYouSure && 

@@ -10,6 +10,10 @@
     margin: 3px;
 }
 
+.card:hover{
+    cursor: pointer;
+}
+
 .kanji{
     width: 100px;
     height: 100px;

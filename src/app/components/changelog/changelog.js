@@ -7,7 +7,7 @@ const ContactInfo = () => {
     <div className={styles.contactInfo}>
         <p>
             Questions or suggestions?&nbsp;
-            <a href = "mailto:sicfran.774@gmail.com?subject=Trace Kanji Feedback">
+            <a href = "mailto:study@tracekanji.com?subject=Trace Kanji Feedback">
                 Contact me!
             </a>
         </p>
@@ -18,6 +18,12 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.1 (3/5/2024)</u></Typography>
+      <ul>
+        <li>- <b>Added feature:</b> Change deck settings</li>
+        <li>- Edit name, learning interval, ease, and more.</li>
+        <li>- Bug fixes</li>
+      </ul>
       <Typography variant="h6"><u>0.3 (2/29/2024)</u></Typography>
       <ul>
         <li>- <b>New study feature!</b> Go to Deck Manager and click &quot;Start Study&quot; on any of your created decks.</li>

@@ -219,7 +219,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             />}
             {editDeckScreen && <EditDeckScreen
                 toggleScreen={toggleDeckSettingScreen}
-            
+                deck={decks[deckIndex]}
+                allDecks={decks}
+                email={email}
             />}
             {!openDeck && (<div className={styles.deckList}>
                 <ul>
