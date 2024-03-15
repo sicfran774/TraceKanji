@@ -42,7 +42,7 @@ async function createAccount(email){
     const newAccount = {
         email: email,
         decks: [],
-        subscribed: true
+        subscribed: false
     }
     const result = await accounts.insertOne(newAccount)
     return result;

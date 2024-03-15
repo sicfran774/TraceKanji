@@ -49,7 +49,11 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         let newInterval = deck[kanjiIndex].interval // This is what we add to the date
 
         // New card to learning (I did this for "New Card" tracking)
-        if(!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning) deck[kanjiIndex].learning = true
+        if(!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning){
+            deck[kanjiIndex].learning = true
+            // This is a new card, so increment newCardCount in deck (see interval.js => dueKanjiFromList())
+            deck[1].newCardCount++
+        }
         if(deck[kanjiIndex].learning){
             // Clamp to at least 0 (if said "Again" on first step, don't go to a "negative" step)
             const learningIndex = Math.max(0, choice + deck[kanjiIndex].learningIndex)
@@ -61,8 +65,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             } else if(choice < 2 && learningIndex < learningSteps.length){ // If still within step length
                 newInterval = learningSteps[learningIndex]
                 deck[kanjiIndex].learningIndex = learningIndex
-            } else {
-                console.log("graduated")
+            } else { // Card graduated
                 deck[kanjiIndex].learningIndex = learningIndex
                 deck[kanjiIndex].learning = false;
                 deck[kanjiIndex].graduated = true;
@@ -82,8 +85,15 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             }
         }
 
+        const now = moment()
         deck[kanjiIndex].interval = newInterval // Update new interval to card info
-        deck[kanjiIndex].due = addToDate(moment(), newInterval) // Update new due date
+        const newDate = addToDate(now, newInterval) // Update new due date
+        deck[kanjiIndex].due = newDate
+
+        // If that card is a review card and is due after today
+        if((deck[kanjiIndex].learning || deck[kanjiIndex].graduated) && newDate.isAfter(now, 'day')){
+            deck[1].reviewCount++ //increment reviewCount in deck (see interval.js => dueKanjiFromList())
+        }
 
         const updatedDueDeck = sortByDueDate(deck)
         setDueKanji(updatedDueDeck)

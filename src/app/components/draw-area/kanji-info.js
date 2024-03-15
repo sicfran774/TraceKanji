@@ -91,20 +91,22 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     const toggleRecognizeKanji = () => {
         if(recognizeKanji){
             disableRecognizeKanji()
+            document.getElementById("toggleRecognize").className = ""
         } else {
             enableRecognizeKanji()
+            document.getElementById("toggleRecognize").className = styles.recognitionText
         }
     }
 
     const enableRecognizeKanji = () => {
         setRecognizeKanji(true)
-        setRecKanjiMsg("Disable Kanji Recognition")
+        setRecKanjiMsg("Kanji Recognition Enabled!")
     }
 
     const disableRecognizeKanji = () => {
         setRecognizeKanji(false)
         setSelectedKanji([])
-        setRecKanjiMsg("Enable Kanji Recognition")
+        setRecKanjiMsg("Kanji Recognition Disabled")
     }
 
     const copyKanji = () => {
@@ -137,8 +139,11 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             </div>)}
             {status !== 'authenticated' && (<div className={styles.notSignedIn}>
                 <span>Sign in to create your own Kanji decks!</span>
-                <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" onClick={() => toggleRecognizeKanji()}>
+                    <span className={styles.recognitionText} id="toggleRecognize">{recKanjiMsg}</span>
+                </button>
             </div>)}
+            
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} 
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
                                     studying={studying} setStudying={setStudying}

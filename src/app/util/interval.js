@@ -2,16 +2,7 @@ import moment from "moment"
 
 export const cardCounts = (deck) => {
     let counts = [0, 0, 0]
-    const now = moment()
-    const arr = deck.slice(2, deck.length)
-    const dueKanji = arr.map(obj => {
-        const kanjiDueDate = moment(obj.due)
-        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){
-            return obj
-        } else {
-            return undefined
-        }
-    }).filter(kanji => kanji !== undefined)
+    const dueKanji = dueKanjiFromList(deck)
 
     if(dueKanji[0]){
         dueKanji.forEach(kanji => {
@@ -25,16 +16,10 @@ export const cardCounts = (deck) => {
 }
 
 export const sortByDueDate = (deck) => {
-    const now = moment()
-    const readDeck = deck.slice(2, deck.length)
-    const dueKanji = readDeck.map(obj => {
-        const kanjiDueDate = moment(obj.due)
-        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){
-            return {kanji: obj.kanji, date: kanjiDueDate}
-        } else {
-            return undefined
-        }
+    const dueKanji = dueKanjiFromList(deck).map(obj => {
+        return {kanji: obj.kanji, date: moment(obj.due)}
     }).filter(kanji => kanji !== undefined)
+    //console.log(dueKanji)
 
     //Sort by date so that you don't get repeats
     dueKanji.sort((a, b) => {
@@ -42,6 +27,31 @@ export const sortByDueDate = (deck) => {
     })
     const sorted = dueKanji.map(item => item.kanji)
     return sorted
+}
+
+const dueKanjiFromList = (deck) => {
+    const deckSettings = deck[1]
+    let newCardCount = deckSettings.newCardCount, reviewCount = deckSettings.reviewCount
+
+    const now = moment()
+    const arr = deck.slice(2, deck.length)
+    const dueKanji = arr.map(obj => {
+        const kanjiDueDate = moment(obj.due)
+        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
+            if((!obj.learning && !obj.graduated) && newCardCount < deckSettings.maxNewCards){ //If it's a new card
+                newCardCount++
+            } else if ((obj.learning || obj.graduated) && reviewCount < deckSettings.maxReviews){ //If it's a learning/graduated card
+                reviewCount++
+            } else { // If here, amount of new cards/review cards have exceeded for today.
+                return undefined
+            }
+            return obj
+        } else {
+            return undefined
+        }
+    }).filter(kanji => kanji !== undefined)
+
+    return dueKanji
 }
 
 /**
@@ -87,6 +97,11 @@ export const resetCard = (card) => {
     card.graduated = false
     card.learning = true
     card.learningIndex = 0
+}
+
+export const resetCardCounts = (deck) => {
+    deck[1].newCardCount = 0
+    deck[1].reviewCount = 0
 }
 
 /**

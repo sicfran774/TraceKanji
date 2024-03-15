@@ -4,7 +4,7 @@ import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
-import { cardCounts, sortByDueDate, updateDecksInDB } from '@/app/util/interval';
+import { cardCounts, updateDecksInDB, resetCardCounts } from '@/app/util/interval';
 import moment from "moment"
 import EditCardScreen from './edit-card';
 import EditDeckScreen from './edit-deck';
@@ -22,6 +22,23 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
+
+    useEffect(() => {
+        if(decks){
+            // Deck first puts the date it was created.
+            // If the user logs in and the deck's date is at least a day before,
+            // reset the card counts (which)
+            const now = moment()
+            decks.forEach(deck => {
+                if(now.isAfter(deck[1].dateReset, 'day')){
+                    console.log("First login today. Resetting daily card limits")
+                    resetCardCounts(deck)
+                    deck[1].dateReset = now
+                }
+            })
+            updateDecksInDB(email, decks)
+        }
+    }, [])
 
     useEffect(() => {
         updateDecksInDB(email, decks)
@@ -42,7 +59,13 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 graduatingInterval: "4d", // If user hits good, it will graduate and be susceptible to ease.
                 easyInterval: "7d", // Instantly graduate card.
                 ease: "2", //Multiplier after graduating
-                easy: "0.5" //Add to ease multiplier if user hits easy
+                easy: "0.5", //Add to ease multiplier if user hits easy
+                maxNewCards: 20,
+                maxReviews: 200,
+                newCardCount: 0,
+                reviewCount: 0,
+                dateReset: moment(),
+                sequential: true
             }
             let newDecks = [...decks, [deckName, settings]]
             setDecks(newDecks)
@@ -230,9 +253,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                             {deck[0]}
                             <div className={styles.editDeck}>
                                 <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
-                                    <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
-                                    <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+                                    <span style={{color: "lightblue"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[0]}</span>
+                                    <span style={{color: "red"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[1]}</span>
+                                    <span style={{color: "green"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[2]}</span>
                                 </div>
                                 <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>

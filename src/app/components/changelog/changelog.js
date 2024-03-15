@@ -18,6 +18,14 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.2 (3/15/2024)</u></Typography>
+      <ul>
+        <li>- Change deck max cards/day and max reviews/day</li>
+        <li>- Reduce the amount of cards due everyday to your own pace</li>
+        <li>- Added Jinmeiyō kanji</li>
+        <li>- Forced zoom out on mobile</li>
+        <li>- Bug fixes</li>
+      </ul>
       <Typography variant="h6"><u>0.3.1 (3/5/2024)</u></Typography>
       <ul>
         <li>- <b>Added feature:</b> Change deck settings</li>

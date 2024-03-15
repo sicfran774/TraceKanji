@@ -5,8 +5,8 @@ import { useState } from "react"
 
 export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } ){
 
-    const originals = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy]
-    const inputs = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy]
+    const originals = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews]
+    const inputs = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews]
 
     const [openDialog, setOpenDialog] = useState(false);
     const [infoIndex, setInfoIndex] = useState(0);
@@ -36,6 +36,8 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
         deck[1].easyInterval = inputs[3]
         deck[1].ease = inputs[4]
         deck[1].easy = inputs[5]
+        deck[1].maxNewCards = Number(inputs[6])
+        deck[1].maxReviews = Number(inputs[7])
     }
 
     const saveAndQuit = () => {
@@ -55,6 +57,30 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
                     <p className={styles.hintText}>Deck name</p>
                     <input type="text" id="deckNameInput" className={styles.hintInput} defaultValue={originals[0]} name="deckNameInput" placeholder="Name" onChange={e => inputs[0] = e.target.value}></input>
                     <button type="button" className={styles.deckNameButton} onClick={() => undoInput(0, document.getElementById("deckNameInput"))}>Undo</button>
+                </div>
+                <div className={styles.hintDiv}>
+                    <p className={styles.hintText}>New cards/day</p>
+                    <div className={styles.titleDiv}>
+                        <input type="text" id="maxCardsInput" className={styles.hintInput} defaultValue={originals[6]} name="maxCardsInput" placeholder="Cards" onChange={e => inputs[6] = e.target.value}></input>
+                        <button type="button" className={styles.deckNameButton} onClick={() => undoInput(6, document.getElementById("maxCardsInput"))}>Undo</button>
+                        <p onClick={() => handleOpenDialog(5)}>ⓘ</p>
+                    </div>
+                </div>
+                <div className={styles.hintDiv}>
+                    <p className={styles.hintText}>Max reviews/day</p>
+                    <div className={styles.titleDiv}>
+                        <input type="text" id="maxReviewsInput" className={styles.hintInput} defaultValue={originals[7]} name="maxReviewsInput" placeholder="Cards" onChange={e => inputs[7] = e.target.value}></input>
+                        <button type="button" className={styles.deckNameButton} onClick={() => undoInput(7, document.getElementById("maxReviewsInput"))}>Undo</button>
+                        <p onClick={() => handleOpenDialog(6)}>ⓘ</p>
+                    </div>
+                </div>
+                <div className={styles.hintDiv}>
+                    <p className={styles.hintText}>Learning interval</p>
+                    <div className={styles.titleDiv}>
+                        <input type="text" id="intervalInput" className={styles.hintInput} defaultValue={originals[1]} name="intervalInput" placeholder="Interval" onChange={e => inputs[1] = e.target.value}></input>
+                        <button type="button" className={styles.deckNameButton} onClick={() => undoInput(1, document.getElementById("intervalInput"))}>Undo</button>
+                        <p onClick={() => handleOpenDialog(0)}>ⓘ</p>
+                    </div>
                 </div>
                 <div className={styles.hintDiv}>
                     <p className={styles.hintText}>Learning interval</p>
