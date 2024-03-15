@@ -49,10 +49,27 @@ const Easy = () => {
     );
 };
 
-const sections = [DeckInterval(), GradInterval(), EasyInterval(), Ease(), Easy()]
+const NewCards = () => {
+  return (
+    <div className={styles.changelog}>
+      <p className={styles.tooltip}>The maximum amount of new cards that will appear. Set this number lower or to 0 if you are struggling with remembering your current cards.</p>
+      <p className={styles.tooltip}>This number is represented in <span style={{color: "lightblue"}}>blue</span>.</p>
+    </div>
+  );
+};
+
+const MaxCards = () => {
+  return (
+    <div className={styles.changelog}>
+      <p className={styles.tooltip}>The maximum amount of reviews you can do per day. This is indicated in <span style={{color: "red"}}>red</span> (learning) and <span style={{color: "green"}}>green</span> (graduated).</p>
+    </div>
+  );
+};
+
+const sections = [DeckInterval(), GradInterval(), EasyInterval(), Ease(), Easy(), NewCards(), MaxCards()]
 
 export default function DeckInfoDialog({ open, onClose, section }){
-    const titles = ["Learning interval", "Graduating interval", "Easy interval", "Ease", "Easy factor"]
+    const titles = ["Learning interval", "Graduating interval", "Easy interval", "Ease", "Easy factor", "New cards/day", "Max reviews/day"]
 
     return (
         <Dialog open={open} onClose={onClose} className={styles.dialog} scroll='paper'>

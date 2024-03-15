@@ -266,7 +266,7 @@ export default function Search({kanjiAndSVG}){
                     </div>) : 
                     (<div className={styles.noKanjiFound}>
                         {recognizeKanji ? 
-                            (<>Start drawing to populate this list!</>) : 
+                            (<><span style={{color: 'yellow'}}>Kanji Recognition Enabled!</span> Start drawing in the draw area to populate this list!</>) : 
                             (decks.length > 0 && document.getElementById('filter') && !document.getElementById('filter').value ? <>
                                 No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))

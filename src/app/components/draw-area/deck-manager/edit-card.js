@@ -31,7 +31,7 @@ export default function EditCardScreen({ kanji, startLearnStep, setOpenEditCardS
 
     const saveAndQuit = () => {
         changeHint()
-        updateDecksInDB(email, allDecks)
+        updateDecksInDB(email, allDecks, "editcard saveAndQuit")
         setOpenEditCardScreen(false)
     }
 

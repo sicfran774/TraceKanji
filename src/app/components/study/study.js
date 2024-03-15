@@ -15,17 +15,20 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
     const {data, status} = useSession() // data.user.email
 
     useEffect(() => {
+        //console.log(deckSettings.maxNewCards)
         setDueKanji(sortByDueDate(deck))
         //console.log(kanjiAndSVG)
     }, [])
 
     useEffect(() => {
-        updateDecksInDB(data.user.email, allDecks)
+        updateDecksInDB(data.user.email, allDecks, "dueKanji useEffect")
         if(dueKanji.length > 0){ //If there are due kanji
             //Look for it in deck
             const index = deck.findIndex(obj => obj.kanji === dueKanji[0]);
             //console.log("current: " + deck[index].meanings)
             setKanjiIndex(index)
+        } else {
+            //endStudy()
         }
     }, [dueKanji])
 
@@ -80,12 +83,11 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
             {showAnswer ? 
                 <StudyButtons
                     deck={deck}
-                    dueKanji={dueKanji}
-                    setDueKanji={setDueKanji}
                     setShowAnswer={setShowAnswer}
                     kanjiIndex={kanjiIndex}
-                    setKanjiIndex={setKanjiIndex}
                     endStudy={endStudy}
+                    setDueKanji={setDueKanji}
+                    dueKanji={dueKanji}
                 /> : 
                 (<div className={styles.showAnswerDiv}>
                     <button onClick={() => answerTrue()}>Show Answer</button>

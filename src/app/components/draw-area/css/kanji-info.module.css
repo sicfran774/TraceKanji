@@ -38,6 +38,11 @@
     margin-bottom: 3px;
 }
 
+.recognitionText{
+    color: yellow;
+    font-weight: bold;
+}
+
 @media only screen and (max-width: 768px) {
     .main{
         margin: 0px 0px 0px 0px;
