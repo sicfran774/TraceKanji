@@ -24,7 +24,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
-        if(decks){
+        if(decks.length > 0){
             // Deck first puts the date it was created.
             // If the user logs in and the deck's date is at least a day before,
             // reset the card counts (which)
@@ -36,12 +36,15 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                     deck[1].dateReset = now
                 }
             })
-            updateDecksInDB(email, decks)
+            updateDecksInDB(email, decks, "beginning use effect")
         }
     }, [])
 
     useEffect(() => {
-        updateDecksInDB(email, decks)
+        //TODO: Make a better solution for this (if ever the user wants to delete all decks i guess)
+        if(decks.length > 0){
+            updateDecksInDB(email, decks, "useEffect decks")
+        }
     }, [decks])
 
     useEffect(() => {

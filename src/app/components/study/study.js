@@ -21,7 +21,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
     }, [])
 
     useEffect(() => {
-        updateDecksInDB(data.user.email, allDecks)
+        updateDecksInDB(data.user.email, allDecks, "dueKanji useEffect")
         if(dueKanji.length > 0){ //If there are due kanji
             //Look for it in deck
             const index = deck.findIndex(obj => obj.kanji === dueKanji[0]);

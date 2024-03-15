@@ -110,7 +110,7 @@ export const resetCardCounts = (deck) => {
  * @param {Array} decks - Entire array of all of the user's decks
  * @returns {result} The resulting status.
  */
-export const updateDecksInDB = async (email, decks) => {
+export const updateDecksInDB = async (email, decks, msg) => {
     try{
         const result = await fetch(`api/mongodb/${email}`, {
             method: 'POST',

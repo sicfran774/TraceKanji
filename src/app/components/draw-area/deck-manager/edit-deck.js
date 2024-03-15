@@ -42,7 +42,7 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
 
     const saveAndQuit = () => {
         saveInputs()
-        updateDecksInDB(email, allDecks)
+        updateDecksInDB(email, allDecks, "edit deck saveAndQuit")
         toggleScreen()
     }
 
