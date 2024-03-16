@@ -10,12 +10,11 @@ import { darkModeColor } from '@/app/util/colors';
 
 const backgroundColor = 'black'
 
-export default function DrawArea({enableRecognition, setRecKanjiList, studying}) {
+export default function DrawArea({enableRecognition, setRecKanjiList, studying, showOverlay, setShowOverlay}) {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
-  const [showKanji, setShowKanji] = useState("Hide Kanji Tracing")
+  const [showKanji, setShowKanji] = useState("Toggle Kanji Tracing")
   const [strokes, setStrokes] = useState(null)
   let { sharedKanji } = useContext(SharedKanjiProvider)
 
@@ -65,11 +64,9 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
     if(!studying){
       setShowOverlay(true)
       resetCanvas()
-      setShowKanji("Hide Kanji Tracing")
     } else {
       setShowOverlay(false)
       resetCanvas()
-      setShowKanji("Show Kanji Tracing")
     }
   }, [sharedKanji])
 
@@ -124,8 +121,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
   };
 
   function toggleOverlay(){
-    setShowOverlay(!showOverlay);
-    setShowKanji((showOverlay) ? "Show Kanji Tracing" : "Hide Kanji Tracing")
+    setShowOverlay(!showOverlay)
   }
 
   const addStroke = () => {
@@ -243,9 +239,9 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying})
         </div>
       </div>
       <div className={styles.buttons}>
-        <button type="button" onClick={toggleOverlay} className={styles.overlayButton}>{showKanji}</button>
-        <button type="button" onClick={resetCanvas} className={styles.resetButton}>Reset Drawing</button>
-        <button type="button" onClick={undoStroke} className={styles.undoButton}>Undo</button>
+        <button type="button" id="showOverlayButton" onClick={toggleOverlay} className={styles.overlayButton}>{showKanji}</button>
+        <button type="button" id="resetDrawingButton" onClick={resetCanvas} className={styles.resetButton}>Reset Drawing</button>
+        <button type="button" id="undoButton" onClick={undoStroke} className={styles.undoButton}>Undo</button>
       </div>
     </div>
   )
