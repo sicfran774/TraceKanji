@@ -32,13 +32,13 @@ export default function SignIn() {
     };
 
     const toggleMenu = () => {
-        console.log("toggle")
+        //console.log("toggle")
         setProfilePicWindow(!profilePicWindow)
     }
 
     const handleBlur = (event) => {
         if (!pfpAndMenuRef.current.contains(event.relatedTarget)) {
-            console.log("blur")
+            //console.log("blur")
             setProfilePicWindow(false);
         }
     };
@@ -146,6 +146,7 @@ export default function SignIn() {
                 <div
                     id="profilePic" 
                     className={styles.welcome}
+                    style={{padding: "10px", width: "80px"}}
                 >
                     Sign In
                 </div>
