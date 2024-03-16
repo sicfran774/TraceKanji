@@ -4,7 +4,7 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { addToDate, multiplyInterval, sortByDueDate } from '@/app/util/interval';
 import moment from "moment"
 
-export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, setDueKanji}){
+export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, setDueKanji, setShowOverlay}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
     let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
@@ -44,6 +44,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
     const nextKanji = (choice) => {
 
         setShowAnswer(false)
+        
 
         // console.log("learningSteps:" + learningSteps)
         let newInterval = deck[kanjiIndex].interval // This is what we add to the date
@@ -101,6 +102,9 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
 
         if(updatedDueDeck.length === 0){
             endStudy()
+        } else {
+            document.getElementById("resetDrawingButton").click()
+            setShowOverlay(false)
         }
         // console.log("Calculated next step:" + newInterval)
         // console.log(deck)

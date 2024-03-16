@@ -9,7 +9,7 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
@@ -150,7 +150,13 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                                     deckIndex={deckIndex} setDeckIndex={setDeckIndex}
                                     closeDeckManager={closeDeckManager} openDeckManager={openDeckManagerFunc}
                                     disableRecognizeKanji={disableRecognizeKanji}/>}
-            {!openDeckManager && <DrawArea enableRecognition={recognizeKanji} setRecKanjiList={setRecKanjiList} studying={studying}/>}
+            {!openDeckManager && <DrawArea 
+                                    enableRecognition={recognizeKanji} 
+                                    setRecKanjiList={setRecKanjiList} 
+                                    studying={studying}
+                                    showOverlay={showOverlay}
+                                    setShowOverlay={setShowOverlay}
+                                    />}
             {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
                     <SVG src={sharedKanji.svg}/>

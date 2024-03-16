@@ -39,6 +39,8 @@ export default function Search({kanjiAndSVG}){
     const [recognizeKanji, setRecognizeKanji] = useState(false)
     const [recKanjiList, setRecKanjiList] = useState([])
 
+    const [showOverlay, setShowOverlay] = useState(true);
+
     useEffect(() => {
         /*  A new AbortController is created everytime a deck is selected.
             If there is already an abort controller, we abort it to cancel
@@ -223,6 +225,7 @@ export default function Search({kanjiAndSVG}){
                        kanjiAndSVG={fetchedKanji}
                        setStudying={setStudying}
                        allDecks={decks}
+                       setShowOverlay={setShowOverlay}
                 />}
                 <KanjiInfo 
                     decks={decks} 
@@ -236,6 +239,8 @@ export default function Search({kanjiAndSVG}){
                     setStudying={setStudying}
                     deckIndex={deckIndex}
                     setDeckIndex={setDeckIndex}
+                    showOverlay={showOverlay}
+                    setShowOverlay={setShowOverlay}
                 />
                 {!studying &&
                 (

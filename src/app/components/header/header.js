@@ -10,7 +10,7 @@ export default function Header(){
 
     return(
         <div className={styles.header}>
-            <div className={styles.title} onClick={() => onClick()}>
+            <div className={styles.title} onClick={() => {}}>
                 <h1>Trace Kanji</h1>
                 <span>Kanji tracer and handwriting recognition</span>
             </div>

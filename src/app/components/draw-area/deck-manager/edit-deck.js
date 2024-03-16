@@ -83,14 +83,6 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
                     </div>
                 </div>
                 <div className={styles.hintDiv}>
-                    <p className={styles.hintText}>Learning interval</p>
-                    <div className={styles.titleDiv}>
-                        <input type="text" id="intervalInput" className={styles.hintInput} defaultValue={originals[1]} name="intervalInput" placeholder="Interval" onChange={e => inputs[1] = e.target.value}></input>
-                        <button type="button" className={styles.deckNameButton} onClick={() => undoInput(1, document.getElementById("intervalInput"))}>Undo</button>
-                        <p onClick={() => handleOpenDialog(0)}>ⓘ</p>
-                    </div>
-                </div>
-                <div className={styles.hintDiv}>
                     <p className={styles.hintText}>Graduating interval</p>
                     <div className={styles.titleDiv}>
                         <input type="text" id="gradInput" className={styles.hintInput} defaultValue={originals[2]} name="gradInput" placeholder="Graduating interval" onChange={e => inputs[2] = e.target.value}></input>

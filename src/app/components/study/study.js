@@ -6,7 +6,7 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
 import { sortByDueDate, updateDecksInDB } from '@/app/util/interval';
 
-export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
+export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setShowOverlay }){
     
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
@@ -51,6 +51,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
     }
 
     const answerTrue = () => {
+        setShowOverlay(true)
         setShowAnswer(true)
     }
 
@@ -88,6 +89,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks }){
                     endStudy={endStudy}
                     setDueKanji={setDueKanji}
                     dueKanji={dueKanji}
+                    setShowOverlay={setShowOverlay}
                 /> : 
                 (<div className={styles.showAnswerDiv}>
                     <button onClick={() => answerTrue()}>Show Answer</button>
