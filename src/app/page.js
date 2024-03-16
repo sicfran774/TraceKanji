@@ -17,7 +17,7 @@ export default async function App() {
         <div className={styles.body} id="mainBody">
           <Selection />
         </div>
-        <Footer />
+        {/* <Footer /> */}
         <Analytics />
       </div>
   )
