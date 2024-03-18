@@ -10,25 +10,31 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
 
     const [sliderValue, setSliderValue] = useState(userSettings.penWidth)
     const [autoShowTracing, setAutoShowTracing] = useState(userSettings.autoShowTracing)
+    const [subscribed, setSubscribed] = useState(userSettings.subscribed)
 
     useEffect(() => {
         setSliderValue(userSettings.penWidth)
         setAutoShowTracing(userSettings.autoShowTracing)
+        setSubscribed(userSettings.subscribed)
     }, [userSettings])
 
     const changePenWidth = (event, value) => {
         setSliderValue(value)
-        //console.log(userSettings)
     }
 
     const changeAutoShowTracing = (event) => {
         setAutoShowTracing(event.target.checked)
     }
 
+    const changeSubscribed = (event) => {
+        setSubscribed(event.target.checked)
+    }
+
     const saveSettingsAndQuit = () => {
         const newUserSettings = {
             penWidth: sliderValue,
-            autoShowTracing: autoShowTracing
+            autoShowTracing: autoShowTracing,
+            subscribed: subscribed
         }
         setUserSettings(newUserSettings)
         const result = updateSettingsInDB(email, newUserSettings)
@@ -64,8 +70,14 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
                                     />} 
                                     label="Auto show kanji tracing after hitting &quot;Show Answer&quot;" 
                                 />
-                                
-                                
+                                <FormControlLabel 
+                                    control={
+                                    <Checkbox 
+                                        checked={subscribed} 
+                                        onChange={changeSubscribed}
+                                    />} 
+                                    label="Get daily email reminders to study due kanji in your decks" 
+                                />
                             </div>
                         </FormGroup>
                     </FormControl>

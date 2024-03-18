@@ -16,7 +16,6 @@
     position: absolute;
     padding: 10px;
     width: 200px;
-    height: 250px;
     background-color: white;
     border: 2px solid black;
     border-radius: 20px;
@@ -30,10 +29,13 @@
     align-content: center;
     color: black;
     list-style: none;
+}
+
+.menuButton{
     cursor: pointer;
 }
 
-.menu li:hover{
+.menuButton:hover{
     background-color: rgb(169, 169, 169);
 }
 
@@ -52,6 +54,10 @@
     height: 30px;
     transform: translateY(23px);
     margin-right: 5px;
+}
+
+.helloName{
+    border-bottom: 1px solid black;
 }
 
 @media only screen and (max-width: 768px) {

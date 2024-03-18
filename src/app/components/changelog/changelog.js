@@ -18,10 +18,14 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
-      <Typography variant="h6"><u>0.3.3 (3/ /2024)</u></Typography>
+      <Typography variant="h6"><u>0.3.3 (3/18/2024)</u></Typography>
       <ul>
+        <li>- <b>Added feature:</b> Change user settings</li>
+        <li>- <b>Added feature:</b> Daily kanji reminder</li>
+        <li>- Edit drawing pen width, change study settings, and get daily kanji reminders to your email</li>
         <li>- Correct dialog themes based on light/dark mode</li>
         <li>- Fixed light/dark mode switching errors</li>
+        <li>- Added help info on usage of deck features and study tool</li>
       </ul>
       <Typography variant="h6"><u>0.3.2 (3/15/2024)</u></Typography>
       <ul>

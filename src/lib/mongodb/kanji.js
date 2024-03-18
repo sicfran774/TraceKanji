@@ -38,16 +38,17 @@ export async function getDecks(email){
     }
 }
 
+// ACCOUNT DEFAULT VALUES
 async function createAccount(email){
     const newAccount = {
         email: email,
         decks: [],
-        subscribed: false,
         lastLoggedIn: moment(),
         dateRecord: [],
         settings: {
             penWidth: 10,
             autoShowTracing: true,
+            subscribed: true
         }
     }
     const result = await accounts.insertOne(newAccount)

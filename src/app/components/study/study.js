@@ -62,7 +62,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         console.log()
         return (
             <div className={styles.hint}>
-                {<h1>{kanjiInfo.kanjiInfo.meanings}</h1>}
+                {<p>{kanjiInfo.kanjiInfo.meanings}</p>}
             </div>
         )
     }
