@@ -6,7 +6,7 @@ import styles from './css/draw-area.module.css';
 import KanjiOverlay from './kanji-overlay'
 import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { darkModeColor } from '@/app/util/colors';
+import { darkModeBackgroundColor, darkModeColor } from '@/app/util/colors';
 
 const backgroundColor = 'black'
 
@@ -16,14 +16,14 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
   const [isDrawing, setIsDrawing] = useState(false);
   const [showKanji, setShowKanji] = useState("Toggle Kanji Tracing")
   const [strokes, setStrokes] = useState(null)
-  let { sharedKanji } = useContext(SharedKanjiProvider)
+  let { sharedKanji, userSettings } = useContext(SharedKanjiProvider)
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineJoin = "round";
-    context.lineWidth = 5;
+    context.lineWidth = userSettings.penWidth;
     contextRef.current = context;
     
     setStrokes([canvasRef.current.toDataURL()])
@@ -47,12 +47,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
 
     //Detect dark/light mode change
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) { 
-      resetCanvas()
-      if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        context.strokeStyle = "black";
-      } else {
-        context.strokeStyle = "white";
-      }
+      redrawBackground()
     })
   }, []);
 
@@ -73,6 +68,10 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
   useEffect(() => {
     resetCanvas()
   }, [enableRecognition])
+
+  useEffect(() => {
+    contextRef.current.lineWidth = userSettings.penWidth
+  }, [userSettings])
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();
@@ -169,6 +168,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
 
   function redrawBackground(){
     const canvas = canvasRef.current;
+    if(!canvas) return
     const context = canvas.getContext("2d");
     if(enableRecognition){
       if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -179,8 +179,10 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
     } else {
       if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.getElementById('drawArea').style.backgroundColor = 'white'
+        
         context.strokeStyle = "black";
       } else {
+        document.getElementById('drawArea').style.backgroundColor = darkModeBackgroundColor
         context.strokeStyle = "white";
       }
       context.clearRect(0, 0, canvas.width, canvas.height)

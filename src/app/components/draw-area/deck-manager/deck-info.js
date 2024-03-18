@@ -1,5 +1,8 @@
 import { Dialog, DialogTitle, DialogContent, Typography, DialogActions, Button } from '@mui/material';
 import styles from '../../changelog/css/changelog.module.css'
+import { ThemeProvider } from '@mui/material/styles';
+import { darkTheme, lightTheme } from '@/app/util/colors';
+import { useEffect, useState } from 'react';
 
 const DeckInterval = () => {
     return (
@@ -71,7 +74,22 @@ const sections = [DeckInterval(), GradInterval(), EasyInterval(), Ease(), Easy()
 export default function DeckInfoDialog({ open, onClose, section }){
     const titles = ["Learning interval", "Graduating interval", "Easy interval", "Ease", "Easy factor", "New cards/day", "Max reviews/day"]
 
+    const [theme, setTheme] = useState(lightTheme)
+
+    useEffect(() => {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme(darkTheme)
+        } else {
+            setTheme(lightTheme)
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            setTheme(event.matches ? darkTheme : lightTheme)
+        })
+    }, [])
+
     return (
+      <ThemeProvider theme={theme}>
         <Dialog open={open} onClose={onClose} className={styles.dialog} scroll='paper'>
         <DialogTitle>{titles[section]}</DialogTitle>
         <DialogContent>
@@ -83,5 +101,6 @@ export default function DeckInfoDialog({ open, onClose, section }){
             </Button>
         </DialogActions>
         </Dialog>
+      </ThemeProvider>
     );
 };

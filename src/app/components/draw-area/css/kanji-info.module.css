@@ -39,7 +39,7 @@
 }
 
 .recognitionText{
-    color: yellow;
+    color: cyan;
 }
 
 @media only screen and (max-width: 768px) {

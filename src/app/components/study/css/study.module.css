@@ -33,7 +33,14 @@
     align-items: center;
     border-bottom: 1px solid black;
     width: 500px;
-    height: 60px;
+    height: 80px;
+    padding: 10px;
+}
+
+.hint p{
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
 }
 
 .showAnswerDiv{

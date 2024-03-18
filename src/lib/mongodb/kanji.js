@@ -38,13 +38,18 @@ export async function getDecks(email){
     }
 }
 
+// ACCOUNT DEFAULT VALUES
 async function createAccount(email){
     const newAccount = {
         email: email,
         decks: [],
-        subscribed: false,
         lastLoggedIn: moment(),
-        record: []
+        dateRecord: [],
+        settings: {
+            penWidth: 10,
+            autoShowTracing: true,
+            subscribed: true
+        }
     }
     const result = await accounts.insertOne(newAccount)
     return result;
@@ -62,6 +67,50 @@ export async function updateDecks(updatedDecks, email){
         return {error: 'Failed to save decks'}
     }
 }
+
+export async function getSettings(email){
+    try{
+        if(!accounts) await init()
+
+        let settings = await accounts.findOne({email: email})
+
+        //create new document if email doesn't exist in DB
+        if(!settings) throw new Error("New account. Creating settings.")
+
+        return settings
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to fetch user settings' + e}
+    }
+}
+
+export async function updateSettings(updatedSettings, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{settings: updatedSettings}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save settings'}
+    }
+}
+
+export async function updateLastLoggedIn(date, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{lastLoggedIn: date}})
+        const result2 = await accounts.updateOne({email: email}, {$push:{dateRecord: date}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save date'}
+    }
+}
+
 
 export async function getKanji(characters) {
     try{
