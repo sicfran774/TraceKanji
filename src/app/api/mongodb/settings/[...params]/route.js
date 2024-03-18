@@ -1,4 +1,4 @@
-import { getSettings, updateSettings } from '@/lib/mongodb/kanji'
+import { getSettings, updateSettings, updateLastLoggedIn } from '@/lib/mongodb/kanji'
 import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
@@ -18,10 +18,16 @@ export async function POST(request, { params }) {
 
     //Get updated settings from body of request
     const body = await request.json()
+    let result
 
-    const settings = body.updatedSettings
-
-    const result = await updateSettings(settings, email)
+    if(body.lastLoggedIn){
+        const date = body.lastLoggedIn
+        result = await updateLastLoggedIn(date, email)
+    } else {
+        const settings = body.updatedSettings
+        result = await updateSettings(settings, email)
+    }
+    
 
     return NextResponse.json({result})
 }

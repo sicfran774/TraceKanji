@@ -97,6 +97,21 @@ export async function updateSettings(updatedSettings, email){
     }
 }
 
+export async function updateLastLoggedIn(date, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{lastLoggedIn: date}})
+        const result2 = await accounts.updateOne({email: email}, {$push:{dateRecord: date}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save date'}
+    }
+}
+
+
 export async function getKanji(characters) {
     try{
         if(!kanji) await init()
