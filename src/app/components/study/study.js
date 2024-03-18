@@ -11,7 +11,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
     const [dueKanji, setDueKanji] = useState([])
-    let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
+    let { setSharedKanji, sharedKanji, userSettings } = useContext(SharedKanjiProvider)
     const {data, status} = useSession() // data.user.email
 
     useEffect(() => {
@@ -51,7 +51,10 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     }
 
     const answerTrue = () => {
-        setShowOverlay(true)
+        if(userSettings.autoShowTracing){
+            setShowOverlay(true)
+        }
+        
         setShowAnswer(true)
     }
 

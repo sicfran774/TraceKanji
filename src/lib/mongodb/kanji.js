@@ -46,7 +46,7 @@ async function createAccount(email){
         lastLoggedIn: moment(),
         dateRecord: [],
         settings: {
-            penWidth: 5,
+            penWidth: 10,
             autoShowTracing: true,
         }
     }
@@ -64,6 +64,22 @@ export async function updateDecks(updatedDecks, email){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to save decks'}
+    }
+}
+
+export async function getSettings(email){
+    try{
+        if(!accounts) await init()
+
+        let settings = await accounts.findOne({email: email})
+
+        //create new document if email doesn't exist in DB
+        if(!settings) throw new Error("New account. Creating settings.")
+
+        return settings
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to fetch user settings' + e}
     }
 }
 

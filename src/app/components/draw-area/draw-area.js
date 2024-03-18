@@ -16,14 +16,14 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
   const [isDrawing, setIsDrawing] = useState(false);
   const [showKanji, setShowKanji] = useState("Toggle Kanji Tracing")
   const [strokes, setStrokes] = useState(null)
-  let { sharedKanji } = useContext(SharedKanjiProvider)
+  let { sharedKanji, userSettings } = useContext(SharedKanjiProvider)
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineJoin = "round";
-    context.lineWidth = 5;
+    context.lineWidth = userSettings.penWidth;
     contextRef.current = context;
     
     setStrokes([canvasRef.current.toDataURL()])
@@ -68,6 +68,10 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
   useEffect(() => {
     resetCanvas()
   }, [enableRecognition])
+
+  useEffect(() => {
+    contextRef.current.lineWidth = userSettings.penWidth
+  }, [userSettings])
 
   const startDrawing = (e) => {
     contextRef.current.beginPath();

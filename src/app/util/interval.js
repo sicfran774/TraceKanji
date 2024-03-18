@@ -126,3 +126,20 @@ export const updateDecksInDB = async (email, decks, msg) => {
         console.error(e)
     }
 }
+
+export const updateSettingsInDB = async (email, settings, msg) => {
+    try{
+        const result = await fetch(`api/mongodb/settings/${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                updatedSettings: settings
+            })
+        })
+        return result
+    } catch (e){
+        console.error(e)
+    }
+}

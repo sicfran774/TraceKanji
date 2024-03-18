@@ -2,7 +2,8 @@
 
 import styles from './css/sign-in.module.css'
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { darkTheme, lightTheme } from '@/app/util/colors';
 import ChangelogDialog from '../changelog/changelog';
@@ -21,6 +22,8 @@ export default function SignIn() {
 
     const [theme, setTheme] = useState(lightTheme)
 
+    let { userSettings, setUserSettings } = useContext(SharedKanjiProvider)
+
     useEffect(() => {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             setTheme(darkTheme)
@@ -32,6 +35,10 @@ export default function SignIn() {
             setTheme(event.matches ? darkTheme : lightTheme)
         })
     }, [])
+
+    useEffect(() => {
+        if(status === "authenticated") fetchUserSettings()
+    }, [status])
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -60,6 +67,21 @@ export default function SignIn() {
     const toggleMenu = () => {
         //console.log("toggle")
         setProfilePicWindow(!profilePicWindow)
+    }
+
+    const fetchUserSettings = async () => {
+        try{
+            const settings = (await fetch(`api/mongodb/settings/${data.user.email}`).then(result => result.json())).settings
+            
+            if(settings){
+                setUserSettings(settings)
+            } else {
+                throw new Error("Failed to fetch settings for user.")
+            }
+        } catch (e){
+            console.error(e)
+            await fetchUserSettings()
+        }
     }
 
     const handleBlur = (event) => {
@@ -158,7 +180,14 @@ export default function SignIn() {
                     }
                     </div>
                     <AboutDialog/>
-                    <SettingsPage open={openSettings} onClose={handleCloseSettings} theme={theme}/>
+                    <SettingsPage 
+                        open={openSettings} 
+                        onClose={handleCloseSettings} 
+                        theme={theme} 
+                        userSettings={userSettings}
+                        setUserSettings={setUserSettings}
+                        email={data.user.email}
+                    />
                 </div>
             </ThemeProvider>
         )
@@ -176,9 +205,9 @@ export default function SignIn() {
                     <div
                         id="profilePic" 
                         className={styles.welcome}
-                        style={{padding: "10px", width: "80px"}}
+                        style={{padding: "10px", width: "100px"}}
                     >
-                        Sign In
+                        ☰ Menu
                     </div>
                     {profilePicWindow &&
                     <div className={styles.menu} style={{height: "160px"}} tabIndex={0}>

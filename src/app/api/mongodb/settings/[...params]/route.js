@@ -1,26 +1,27 @@
-import { getDecks, getKanji, updateDecks } from '@/lib/mongodb/kanji'
+import { getSettings, updateSettings } from '@/lib/mongodb/kanji'
 import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
-    const slug = params.params //Should be email, then deck
+    const slug = params.params
     
     //Get account in database based on email
-    const accountInfo = await getDecks(slug[0])
+    const accountInfo = await getSettings(slug[0])
     
-    const decks = accountInfo.decks;
+    const settings = accountInfo.settings;
   
-    return NextResponse.json({decks})
-  }
+    return NextResponse.json({settings})
+}
   
-  export async function POST(request, { params }) {
+export async function POST(request, { params }) {
     const slug = params.params
     const email = slug[0]
-  
-    //Get updated decks from body of request
+
+    //Get updated settings from body of request
     const body = await request.json()
-    const decks = body.updatedDecks
-  
-    const result = await updateDecks(decks, email)
-  
+
+    const settings = body.updatedSettings
+
+    const result = await updateSettings(settings, email)
+
     return NextResponse.json({result})
-  }
+}
