@@ -18,6 +18,11 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.3 (3/ /2024)</u></Typography>
+      <ul>
+        <li>- Correct dialog themes based on light/dark mode</li>
+        <li>- Fixed light/dark mode switching errors</li>
+      </ul>
       <Typography variant="h6"><u>0.3.2 (3/15/2024)</u></Typography>
       <ul>
         <li>- Change deck max cards/day and max reviews/day</li>

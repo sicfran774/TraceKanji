@@ -44,7 +44,11 @@ async function createAccount(email){
         decks: [],
         subscribed: false,
         lastLoggedIn: moment(),
-        record: []
+        dateRecord: [],
+        settings: {
+            penWidth: 5,
+            autoShowTracing: true,
+        }
     }
     const result = await accounts.insertOne(newAccount)
     return result;
@@ -60,6 +64,19 @@ export async function updateDecks(updatedDecks, email){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to save decks'}
+    }
+}
+
+export async function updateSettings(updatedSettings, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{settings: updatedSettings}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save settings'}
     }
 }
 

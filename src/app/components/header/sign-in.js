@@ -1,18 +1,37 @@
 'use client'
 
 import styles from './css/sign-in.module.css'
-import {useSession, signIn, signOut} from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { darkTheme, lightTheme } from '@/app/util/colors';
 import ChangelogDialog from '../changelog/changelog';
+import { ThemeProvider } from '@mui/material/styles'
+import SettingsPage from './settings';
 
 export default function SignIn() {
+
     const {data, status} = useSession()
     const [profilePicWindow, setProfilePicWindow] = useState(false)
     const pfpAndMenuRef = useRef(null);
 
     const [openDialog, setOpenDialog] = useState(false)
     const [openAbout, setOpenAbout] = useState(false)
+    const [openSettings, setOpenSettings] = useState(false)
+
+    const [theme, setTheme] = useState(lightTheme)
+
+    useEffect(() => {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            setTheme(darkTheme)
+        } else {
+            setTheme(lightTheme)
+        }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            setTheme(event.matches ? darkTheme : lightTheme)
+        })
+    }, [])
 
     const handleOpenDialog = () => {
         setOpenDialog(true);
@@ -23,12 +42,19 @@ export default function SignIn() {
     };
 
     const handleOpenAbout = () => {
-        console.log("?/")
         setOpenAbout(true);
     };
 
     const handleCloseAbout = () => {
         setOpenAbout(false);
+    };
+
+    const handleOpenSettings = () => {
+        setOpenSettings(true);
+    };
+
+    const handleCloseSettings = () => {
+        setOpenSettings(false);
     };
 
     const toggleMenu = () => {
@@ -45,7 +71,7 @@ export default function SignIn() {
 
     const AboutDialog = () => {
         return (
-          <Dialog open={openAbout} onClose={handleCloseAbout} scroll='paper'>
+          <Dialog className={styles.aboutDialog} open={openAbout} onClose={handleCloseAbout} scroll='paper'>
             <DialogTitle>About Trace Kanji</DialogTitle>
             <DialogContent>
               <div className={styles.main}>
@@ -94,6 +120,51 @@ export default function SignIn() {
   
     if(status === 'authenticated'){
         return (
+            <ThemeProvider theme={theme}>
+                <div className={styles.signIn}>
+                    <div
+                        ref={pfpAndMenuRef}
+                        className={styles.pfpAndMenu}
+                        onClick={() => setProfilePicWindow(true)}
+                        onBlur={handleBlur}
+                        tabIndex={0}
+                    >
+                        <img
+                            id="profilePic" 
+                            className={styles.welcome} 
+                            src={data.user.image}
+                        />
+                        {profilePicWindow &&
+                        <div className={styles.menu} tabIndex={0}>
+                            <ul>
+                                <li>
+                                    <p>📈</p>
+                                    <p>Coming Soon</p>
+                                </li>
+                                <li onClick={() => handleOpenSettings()}>
+                                    <p>⚙️</p>
+                                    <p>Settings</p>
+                                </li>
+                                <li onClick={() => handleOpenAbout()}>
+                                    <p style={{marginLeft: "5px", marginRight: "10px"}}>🛈</p>
+                                    <p>Help/About</p>
+                                </li>
+                                <li onClick={() => signOut()}>
+                                    <p>🚪🏃</p>
+                                    <p>Log Out</p>
+                                </li>
+                            </ul>
+                        </div>
+                    }
+                    </div>
+                    <AboutDialog/>
+                    <SettingsPage open={openSettings} onClose={handleCloseSettings} theme={theme}/>
+                </div>
+            </ThemeProvider>
+        )
+    }
+    return (
+        <ThemeProvider theme={theme}>
             <div className={styles.signIn}>
                 <div
                     ref={pfpAndMenuRef}
@@ -102,29 +173,23 @@ export default function SignIn() {
                     onBlur={handleBlur}
                     tabIndex={0}
                 >
-                    <img
+                    <div
                         id="profilePic" 
-                        className={styles.welcome} 
-                        src={data.user.image}
-                    />
+                        className={styles.welcome}
+                        style={{padding: "10px", width: "80px"}}
+                    >
+                        Sign In
+                    </div>
                     {profilePicWindow &&
-                    <div className={styles.menu} tabIndex={0}>
+                    <div className={styles.menu} style={{height: "160px"}} tabIndex={0}>
                         <ul>
-                            <li>
-                                <p>📈</p>
-                                <p>Coming Soon</p>
-                            </li>
-                            <li>
-                                <p>⚙️</p>
-                                <p>Coming Soon</p>
-                            </li>
                             <li onClick={() => handleOpenAbout()}>
                                 <p style={{marginLeft: "5px", marginRight: "10px"}}>🛈</p>
-                                <p>Help/About</p>
+                                <p>About</p>
                             </li>
-                            <li onClick={() => signOut()}>
-                                <p>🚪🏃</p>
-                                <p>Log Out</p>
+                            <li onClick={() => signIn('google')}>
+                                <img className={styles.google} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"/>
+                                <p>Sign In with Google</p>
                             </li>
                         </ul>
                     </div>
@@ -132,41 +197,7 @@ export default function SignIn() {
                 </div>
                 <AboutDialog/>
             </div>
-        )
-    }
-    return (
-        <div className={styles.signIn}>
-            <div
-                ref={pfpAndMenuRef}
-                className={styles.pfpAndMenu}
-                onClick={() => setProfilePicWindow(true)}
-                onBlur={handleBlur}
-                tabIndex={0}
-            >
-                <div
-                    id="profilePic" 
-                    className={styles.welcome}
-                    style={{padding: "10px", width: "80px"}}
-                >
-                    Sign In
-                </div>
-                {profilePicWindow &&
-                <div className={styles.menu} style={{height: "160px"}} tabIndex={0}>
-                    <ul>
-                        <li onClick={() => handleOpenAbout()}>
-                            <p style={{marginLeft: "5px", marginRight: "10px"}}>🛈</p>
-                            <p>About</p>
-                        </li>
-                        <li onClick={() => signIn('google')}>
-                            <img className={styles.google} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"/>
-                            <p>Sign In with Google</p>
-                        </li>
-                    </ul>
-                </div>
-            }
-            </div>
-            <AboutDialog/>
-        </div>
+        </ThemeProvider>
     )
 }
 
