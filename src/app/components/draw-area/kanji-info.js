@@ -20,6 +20,10 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
     const deckSelector = useRef()
 
     useEffect(() => {
+        document.getElementById("toggleRecognize").className = ""
+    }, [])
+
+    useEffect(() => {
         const fetchData = async () => {
             await fetchDecks()
         }
@@ -94,7 +98,12 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
             document.getElementById("toggleRecognize").className = ""
         } else {
             enableRecognizeKanji()
-            document.getElementById("toggleRecognize").className = styles.recognitionText
+            if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.getElementById("toggleRecognize").className = styles.recognitionTextLight
+            } else {
+                document.getElementById("toggleRecognize").className = styles.recognitionText
+            }
+            
         }
     }
 
@@ -135,10 +144,10 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                         </select>
                     </div>
                 </div>
-                <button type="button" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" className="" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
             {status !== 'authenticated' && (<div className={styles.notSignedIn}>
-                <span>Sign in to create your own Kanji decks!</span>
+                <span></span>
                 <button type="button" onClick={() => toggleRecognizeKanji()}>
                     <span className={styles.recognitionText} id="toggleRecognize">{recKanjiMsg}</span>
                 </button>

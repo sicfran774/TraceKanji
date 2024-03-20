@@ -1,5 +1,5 @@
 .main{
-    margin-top: 20px;
+    margin-top: 10px;
     height: 300px;
 }
 
@@ -53,6 +53,19 @@
 .showAnswerDiv button{
     width: 200px;
     height: 50px;
+}
+
+.cardCounts{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width: 500px;
+    transform: translate(-5px, 630px);
+    padding-bottom: 20px;
+}
+
+.cardCounts span{
+    margin: 0 7px;
 }
 
 @media (prefers-color-scheme: dark) {

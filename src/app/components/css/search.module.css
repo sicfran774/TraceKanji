@@ -1,6 +1,6 @@
 .body{
     display: flex;
-    justify-content: baseline;
+    justify-content: center;
 }
 
 .bodyStudy{
@@ -61,7 +61,7 @@
 .listAndDrawArea {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .listAndDrawAreaStudy{
@@ -80,6 +80,10 @@
         display: flex;
         width: 500px;
         flex-direction: column;
+    }
+
+    .kanjiListGrid{
+        transform: translateX(-5px);
     }
 
     .searchBox{

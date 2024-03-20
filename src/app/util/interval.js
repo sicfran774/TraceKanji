@@ -15,8 +15,10 @@ export const cardCounts = (deck) => {
     return counts
 }
 
-export const sortByDueDate = (deck) => {
+export const sortByDueDate = (deck, previous = []) => {
+    let allNotNew = true
     const dueKanji = dueKanjiFromList(deck).map(obj => {
+        if(!obj.learning && !obj.graduated) allNotNew = false
         return {kanji: obj.kanji, date: moment(obj.due)}
     }).filter(kanji => kanji !== undefined)
     //console.log(dueKanji)
@@ -26,6 +28,15 @@ export const sortByDueDate = (deck) => {
         return a.date.diff(b.date)
     })
     const sorted = dueKanji.map(item => item.kanji)
+    //if(sorted && allNotNew) return shuffleArray(sorted)
+
+    // Avoid repeats when current card is always the soonest due
+    if(previous.length > 1 && sorted.length > 1 && sorted[0] === previous[0]){
+        let t = sorted[0];
+        sorted[0] = sorted[1];
+        sorted[1] = t;
+    }
+
     return sorted
 }
 
@@ -52,6 +63,24 @@ const dueKanjiFromList = (deck) => {
     }).filter(kanji => kanji !== undefined)
 
     return dueKanji
+}
+
+const shuffleArray = (array) => {
+    let m = array.length, t, i;
+  
+    // While there remain elements to shuffle…
+    while (m) {
+  
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * m--);
+  
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+  
+    return array;
 }
 
 /**

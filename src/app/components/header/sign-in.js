@@ -9,6 +9,8 @@ import { darkTheme, lightTheme } from '@/app/util/colors';
 import ChangelogDialog from '../changelog/changelog';
 import { ThemeProvider } from '@mui/material/styles'
 import SettingsPage from './settings';
+import moment from 'moment';
+import { updateLogInDB } from '@/app/util/interval';
 
 export default function SignIn() {
 
@@ -37,7 +39,10 @@ export default function SignIn() {
     }, [])
 
     useEffect(() => {
-        if(status === "authenticated") fetchUserSettings()
+        if(status === "authenticated"){
+            fetchUserSettings()
+            updateLogInDB(data.user.email, moment())
+        }
     }, [status])
 
     const handleOpenDialog = () => {
@@ -192,6 +197,7 @@ export default function SignIn() {
                             id="profilePic" 
                             className={styles.welcome} 
                             src={data.user.image}
+                            alt='☰ Menu'
                         />
                         {profilePicWindow &&
                         <div className={styles.menu} tabIndex={0}>
