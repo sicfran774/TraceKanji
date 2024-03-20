@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import StudyButtons from './study-buttons'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
-import { sortByDueDate, updateDecksInDB } from '@/app/util/interval';
+import { sortByDueDate, cardCounts, updateDecksInDB } from '@/app/util/interval';
 
 export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setShowOverlay }){
     
@@ -67,7 +67,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         )
     }
 
-    const Answer = (kanjiInfo) => {
+    const Answer = () => {
         return (
             <div className={styles.answer}>
                 {<SVG src={sharedKanji.svg} className={styles.kanji}/>}
@@ -84,6 +84,20 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                 {/* Sends SVG info */}
                 {showAnswer && <Answer/>}
             </div>
+            <div className={styles.cardCounts}>
+                {!deck[kanjiIndex].learning && !deck[kanjiIndex].graduated ?
+                    <span id="cardCountNew" style={{color: "lightblue", textDecoration: "underline"}}>{cardCounts(deck)[0]}</span> : 
+                    <span id="cardCountNew" style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
+                }
+                {deck[kanjiIndex].learning ? 
+                    <span id="cardCountLearn" style={{color: "red", textDecoration: "underline"}}>{cardCounts(deck)[1]}</span> :
+                    <span id="cardCountLearn" style={{color: "red"}}>{cardCounts(deck)[1]}</span>
+                }
+                {deck[kanjiIndex].graduated ?
+                    <span id="cardCountGrad" style={{color: "green", textDecoration: "underline"}}>{cardCounts(deck)[2]}</span> :
+                    <span id="cardCountGrad" style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+                }
+            </div>
             {showAnswer ? 
                 <StudyButtons
                     deck={deck}
@@ -96,8 +110,8 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                 /> : 
                 (<div className={styles.showAnswerDiv}>
                     <button onClick={() => answerTrue()}>Show Answer</button>
-                </div>)}
-            
+                </div>)
+            }
         </div>
     )
 }

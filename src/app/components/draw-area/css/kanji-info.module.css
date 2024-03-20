@@ -42,6 +42,10 @@
     color: cyan;
 }
 
+.recognitionTextLight{
+    color: darkcyan;
+}
+
 @media only screen and (max-width: 768px) {
     .main{
         margin: 0px 0px 0px 0px;

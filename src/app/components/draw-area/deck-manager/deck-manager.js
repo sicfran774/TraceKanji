@@ -4,7 +4,7 @@ import styles from './css/deck-manager.module.css'
 import { useState, useContext, useEffect } from "react";
 import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
-import { cardCounts, updateDecksInDB, updateLogInDB, resetCardCounts } from '@/app/util/interval';
+import { cardCounts, updateDecksInDB, resetCardCounts } from '@/app/util/interval';
 import moment from "moment"
 import EditCardScreen from './edit-card';
 import EditDeckScreen from './edit-deck';
@@ -38,7 +38,6 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             })
             updateDecksInDB(email, decks, "beginning use effect")
         }
-        updateLogInDB(email, now)
     }, [])
 
     useEffect(() => {
@@ -257,9 +256,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                             {deck[0]}
                             <div className={styles.editDeck}>
                                 <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[0]}</span>
-                                    <span style={{color: "red"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[1]}</span>
-                                    <span style={{color: "green"}}>{cardCounts(deck, deck[1].maxNewCards, deck[1].maxReviews)[2]}</span>
+                                    <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
+                                    <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
+                                    <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
                                 </div>
                                 <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
                                 <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>

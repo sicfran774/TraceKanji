@@ -18,6 +18,12 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.4 (3/19/2024)</u></Typography>
+      <ul>
+        <li>- Show card counts during study session</li>
+        <li>- Prevent cards from repeating when it&apos;s the soonest due card</li>
+        <li>- Fixed website alignment issues</li>
+      </ul>
       <Typography variant="h6"><u>0.3.3 (3/18/2024)</u></Typography>
       <ul>
         <li>- <b>Added feature:</b> Change user settings</li>
