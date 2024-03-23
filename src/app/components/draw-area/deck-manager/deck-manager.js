@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './css/deck-manager.module.css'
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 import { cardCounts, updateDecksInDB, resetCardCounts } from '@/app/util/interval';
@@ -28,7 +28,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         if(decks.length > 0){
             // Deck first puts the date it was created.
             // If the user logs in and the deck's date is at least a day before,
-            // reset the card counts (which)
+            // reset the card counts
             decks.forEach(deck => {
                 if(now.isAfter(deck[1].dateReset, 'day')){
                     console.log("First login today. Resetting daily card limits")

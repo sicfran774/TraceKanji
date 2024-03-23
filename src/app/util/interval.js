@@ -15,9 +15,9 @@ export const cardCounts = (deck) => {
     return counts
 }
 
-export const sortByDueDate = (deck, previous = []) => {
+export const sortByDueDate = (deck, previous = [], firstTime = false) => {
     let allNotNew = true
-    const dueKanji = dueKanjiFromList(deck).map(obj => {
+    const dueKanji = dueKanjiFromList(deck, firstTime).map(obj => {
         if(!obj.learning && !obj.graduated) allNotNew = false
         return {kanji: obj.kanji, date: moment(obj.due)}
     }).filter(kanji => kanji !== undefined)
@@ -40,7 +40,7 @@ export const sortByDueDate = (deck, previous = []) => {
     return sorted
 }
 
-const dueKanjiFromList = (deck) => {
+const dueKanjiFromList = (deck, firstTime = false) => {
     const deckSettings = deck[1]
     let newCardCount = deckSettings.newCardCount, reviewCount = deckSettings.reviewCount
 
@@ -56,11 +56,20 @@ const dueKanjiFromList = (deck) => {
             } else { // If here, amount of new cards/review cards have exceeded for today.
                 return undefined
             }
+            if(firstTime){
+                obj.due = now   
+                //This prevents cards repeating too much. If you say again,
+                //that card will appear before any other card because it's
+                //technically the most soonest card always.
+            }
+            
             return obj
         } else {
             return undefined
         }
     }).filter(kanji => kanji !== undefined)
+
+    //console.log(dueKanji)
 
     return dueKanji
 }

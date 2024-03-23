@@ -16,7 +16,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
 
     useEffect(() => {
         //console.log(deckSettings.maxNewCards)
-        setDueKanji(sortByDueDate(deck))
+        setDueKanji(sortByDueDate(deck, [], true))
         //console.log(kanjiAndSVG)
     }, [])
 
