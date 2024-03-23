@@ -1,6 +1,6 @@
 .body{
     display: flex;
-    justify-content: center;
+    justify-content: baseline;
 }
 
 .bodyStudy{
@@ -76,6 +76,10 @@
 }
 
 @media only screen and (max-width: 768px) {
+    .body{
+        justify-content: center;
+    }
+
     .listAndDrawArea {
         display: flex;
         width: 500px;
