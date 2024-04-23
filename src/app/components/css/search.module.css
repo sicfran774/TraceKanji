@@ -105,8 +105,8 @@
         flex-direction: column;
     }
 
-    .kanjiListGrid{
-        transform: translateX(-5px);
+    .searchText{
+        margin: 0px;
     }
 
     .searchBox{
@@ -115,8 +115,18 @@
         width: 500px;
     }
 
+    .deckSelector select {
+        height: 28px;
+        width: auto;
+        margin: 0px 0px;
+    }
+
+    .pageButtons{
+        margin: 0px;
+    }
+
     .pageButtons > * {
-        margin-right: 5px;
+        margin-right: 0px;
     }
 
     .pageButtons button{
