@@ -9,12 +9,15 @@ An extensive study tool for Japanese learners, specifically in the meanings and 
 - Handwritten kanji recognition to make it easy to find out what that kanji means. Stroke order does not matter!
 - After signing in, you are able to create your own decks of kanji to facilitate and organize your study
 - Spaced-repetition system implemented to streamline study sessions and remember more Kanji
-- Information on all [Jōyō kanji](https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji) (2,136 kanji): basic meanings, kunyomi/onyomi readings, grade, JLPT level, and words that use the kanji. This information is retrieved from [KanjiAPI](https://github.com/onlyskin/kanjiapi.dev), an excellent API of thousands of kanji.
+- Information on all [Jōyō kanji](https://en.wikipedia.org/wiki/J%C5%8Dy%C5%8D_kanji) (2,136 kanji) and [Jinmeiyō kanji](https://en.wikipedia.org/wiki/Jinmeiy%C5%8D_kanji) (863 kanji): basic meanings, kunyomi/onyomi readings, grade, JLPT level, and words that use the kanji. This information is retrieved from [KanjiAPI](https://github.com/onlyskin/kanjiapi.dev), an excellent API of thousands of kanji.
 - Stroke orders/images of each kanji, courtesy of SVG files from the [KanjiVG project](https://kanjivg.tagaini.net/)
 - Search filter to find specific kanji. Meanings, kanji, and kunyomi/onyomi readings can simply be typed into the search bar. Grades and JLPT levels can be filtered using ```grade:[level]``` and ```jlpt:[level]``` respectively.
 - Simplistic and clear design, dark/light mode, desktop and mobile friendly
 
-![image](https://github.com/sicfran774/TraceKanji/assets/1214993/73cbd4e7-af53-41e1-ba53-d54414f3f178)
+![image](https://i.gyazo.com/d37db4d59f9d3b7f4de809301aaed10d.png)
+
+### SRS
+![image](https://i.gyazo.com/322ebca394b9e4a905c2d8106c51cc3d.png)
 
 ---
 
