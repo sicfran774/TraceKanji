@@ -9,15 +9,17 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelector, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
-    const [deckManagerMsg, setDeckManagerMsg] = useState("Open Deck Manager")
+    const [deckManagerMsg, setDeckManagerMsg] = useState("Start Studying")
     const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
+
+    const [userEmail, setUserEmail] = useState("")
+
     const [open, setOpen] = useState(false)
     const {data, status} = useSession()
-    const deckSelector = useRef()
 
     useEffect(() => {
         document.getElementById("toggleRecognize").className = ""
@@ -27,6 +29,8 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         const fetchData = async () => {
             await fetchDecks()
         }
+
+        
 
         fetchData().catch(console.error)
     }, [status])
@@ -57,6 +61,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
                 } else {
                     throw new Error("Failed to load decks for user, trying again")
                 }
+                setUserEmail(data.user.email)
             } catch (e){
                 console.error(e)
                 await fetchDecks()
@@ -66,10 +71,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         } else {
             console.log("Sign in to create your own kanji decks!")
         }
-    }
-
-    const changeDeck = (e) => {
-        setSelectedDeck(e.target.value)
     }
 
     const toggleDeckManager = () => {
@@ -84,7 +85,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
         setOpenDeckManager(false)
         setEditingDeck(false)
         setSelectedKanji([])
-        setDeckManagerMsg("Open Deck Manager")
+        setDeckManagerMsg("Start Studying")
     }
 
     const openDeckManagerFunc = () => {
@@ -132,28 +133,20 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, recognizeKa
 
     return(
         <div className={styles.main}>
-            {status === 'authenticated' && !studying && (<div className={styles.deckManager}>
+            {!studying && (<div className={styles.deckManager}>
                 <div className={styles.deckManagerButtons}>
-                    <button type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
-                    <div className={styles.deckSelector}>
-                        <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
-                            <option value="default">All Kanji</option>
-                            {decks.map((deck, index) => (
-                                <option key={index} value={index}>{deck[0]}</option>
-                            ))}
-                        </select>
-                    </div>
+                    <button className={styles.toggleDeckManagerButton} type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 </div>
-                <button type="button" className="" onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" className={styles.toggleRecognizeButton} onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
             </div>)}
-            {status !== 'authenticated' && (<div className={styles.notSignedIn}>
+            {/* {status !== 'authenticated' && (<div className={styles.notSignedIn}>
                 <span></span>
                 <button type="button" onClick={() => toggleRecognizeKanji()}>
                     <span className={styles.recognitionText} id="toggleRecognize">{recKanjiMsg}</span>
                 </button>
-            </div>)}
+            </div>)} */}
             
-            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={data.user.email} 
+            {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={userEmail} 
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
                                     studying={studying} setStudying={setStudying}
                                     deckIndex={deckIndex} setDeckIndex={setDeckIndex}

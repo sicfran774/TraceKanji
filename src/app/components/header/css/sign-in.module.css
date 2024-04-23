@@ -31,6 +31,10 @@
     list-style: none;
 }
 
+.menu p{
+    font-family: 'UDDigitalKyokasho';
+}
+
 .menuButton{
     cursor: pointer;
 }

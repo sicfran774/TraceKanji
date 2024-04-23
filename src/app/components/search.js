@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './css/search.module.css';
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import KanjiCard from './kanji-card';
 import KanjiInfo from './draw-area/kanji-info';
 import { CircularProgress } from '@mui/material';
@@ -40,6 +40,8 @@ export default function Search({kanjiAndSVG}){
     const [recKanjiList, setRecKanjiList] = useState([])
 
     const [showOverlay, setShowOverlay] = useState(true);
+
+    const deckSelector = useRef()
 
     useEffect(() => {
         /*  A new AbortController is created everytime a deck is selected.
@@ -94,6 +96,12 @@ export default function Search({kanjiAndSVG}){
         const lowercase = filter.toLowerCase()
         //Go through each kanji, look at their meanings and see if it starts with filter
         const sameMeanings = fetchedKanji.filter(kanji => (kanji.info.meanings.some((meaning) => meaning.startsWith(lowercase)) || lowercase === ''))
+        //Heisig
+        const sameHeisig = fetchedKanji.filter(kanji => {
+            if(kanji.info.heisig_en){
+                return kanji.info.heisig_en.startsWith(lowercase)
+            }
+        })
         //Same for kun readings
         const sameKun = fetchedKanji.filter(kanji => (kanji.info.kun_readings.some((meaning) => meaning.startsWith(lowercase))))
         //Same for on readings
@@ -117,8 +125,10 @@ export default function Search({kanjiAndSVG}){
             setFilteredList(sameGrade)
         } else if(sameJLPT.length > 0){
             setFilteredList(sameJLPT)
-        } else{
+        } else if(sameMeanings.length > 0){
             setFilteredList(sameMeanings)
+        } else {
+            setFilteredList(sameHeisig)
         }
     }
     
@@ -216,6 +226,10 @@ export default function Search({kanjiAndSVG}){
             setDoneLoading(true)
         }
     }
+    
+    const changeDeck = (e) => {
+        setSelectedDeck(e.target.value)
+    }
 
     return(
         <div className={styles.main}>
@@ -228,10 +242,11 @@ export default function Search({kanjiAndSVG}){
                        setShowOverlay={setShowOverlay}
                 />}
                 <KanjiInfo 
-                    decks={decks} 
+                    decks={decks}
                     setDecks={setDecks} 
                     selectedDeck={selectedDeck} 
-                    setSelectedDeck={setSelectedDeck} 
+                    setSelectedDeck={setSelectedDeck}
+                    deckSelector={deckSelector}
                     recognizeKanji={recognizeKanji} 
                     setRecognizeKanji={setRecognizeKanji}
                     setRecKanjiList={setRecKanjiList}
@@ -252,10 +267,18 @@ export default function Search({kanjiAndSVG}){
                                 placeholder="jlpt:1, grade:4, kana" />
                         </div>
                         <div className={styles.pageButtons}>
-                            <button type="button" onClick={() => changePage(-1)} className='button'>Prev</button>
-                            <div>Page {page + 1}/{kanjiInfo.length}</div>
-                            <button type="button" onClick={() => changePage(1)} className='button'>Next</button>
-                            {!doneLoadingKanji && (<div className={styles.loading}>Loading Kanji... <CircularProgress size="15px"/></div>)}
+                            <button type="button" onClick={() => changePage(-1)} className='button'>&lt;</button>
+                            <div className={styles.pageNumber}><span>Page {page + 1}/{kanjiInfo.length}</span></div>
+                            <button type="button" onClick={() => changePage(1)} className='button'>&gt;</button>
+                        </div>
+                        <div className={styles.deckSelector}>
+                            <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>
+                                <option value="default">All Kanji</option>
+                                {decks.map((deck, index) => (
+                                    <option key={index} value={index}>{deck[0]}</option>
+                                ))}
+                            </select>
+                            {!doneLoadingKanji && (<div className={styles.loading}><CircularProgress size="24px"/></div>)}
                         </div>
                     </div>
                     {kanjiInfo.length > 0 ? 
@@ -273,7 +296,7 @@ export default function Search({kanjiAndSVG}){
                         {recognizeKanji ? 
                             (<><span style={{color: 'darkcyan'}}>Kanji Recognition Enabled!</span> Start drawing in the draw area to populate this list!</>) : 
                             (decks.length > 0 && document.getElementById('filter') && !document.getElementById('filter').value ? <>
-                                No kanji found! Select &quot;All Kanji&quot; in the deck list and Open Deck Manager to add Kanji to this deck</> : 
+                                <span style={{fontWeight: "bold"}}>No kanji found!</span> Select &quot;All Kanji&quot; in the deck list and <span style={{fontWeight: "bold"}}>Start Studying</span> to add Kanji to this deck</> : 
                                 (doneLoading ? <>No kanji found!</> : <></>))
                         }
                     </div>)}

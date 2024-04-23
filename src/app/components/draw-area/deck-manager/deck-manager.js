@@ -5,6 +5,7 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { SharedKanjiProvider } from '../../shared-kanji-provider';
 import { selectedDarkModeColor } from '@/app/util/colors';
 import { cardCounts, updateDecksInDB, resetCardCounts } from '@/app/util/interval';
+import { useSession, signIn } from 'next-auth/react';
 import moment from "moment"
 import EditCardScreen from './edit-card';
 import EditDeckScreen from './edit-deck';
@@ -19,6 +20,8 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const [openEditCardScreen, setOpenEditCardScreen] = useState(false)
     const [editDeckScreen, setEditDeckScreen] = useState(false)
     const [kanjiIndex, setKanjiIndex] = useState()
+
+    const {data, status} = useSession()
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -135,30 +138,12 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         setEditDeckScreen(!editDeckScreen)
     }
 
-    const createBackup = (filename) => {
-        const jsonString = JSON.stringify(decks)
-        const blob = new Blob([jsonString], { type: "application/json" })
-        const url = window.URL.createObjectURL(blob)
-
-        const a = document.createElement("a")
-        a.style.display = "none"
-        a.href = url
-        a.download = filename + "-traceKanjiDeckBackup.json"
-
-        document.body.appendChild(a)
-
-        a.click()
-
-        window.URL.revokeObjectURL(url)
-        document.body.removeChild(a)
-    }
-
     const DeckEditor = () => {
         return (
             <table className={styles.editingDeck}>
                 <thead>
                     <tr>
-                        <td valign='top' height={30}><h2>{decks[deckIndex][0]}</h2></td>
+                        <td valign='top' height={30}><h2 className={styles.deckTitle}>{decks[deckIndex][0]}</h2></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -227,53 +212,61 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     }
 
     const DeckScreen = () => {
-        return (
-            <>
-            {!openEditCardScreen && !openDeck && (<div className={styles.createDeck}>
-                <input type="text" id="deckName" className={styles.deckNameInput} name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
-                <button type="button" className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
-                <button type="button" className={styles.backupButton} onClick={() => createBackup(email)}>Backup Data 💾🔄</button>
-            </div>)}
-            {!editDeckScreen && !openEditCardScreen && openDeck && <DeckEditor/>}
-            {openEditCardScreen && 
-            <EditCardScreen 
-                kanji={decks[deckIndex][kanjiIndex+2]}
-                startLearnStep={decks[deckIndex][1].learningSteps[0]}
-                setOpenEditCardScreen={setOpenEditCardScreen}
-                email={email}
-                allDecks={decks}
-            />}
-            {editDeckScreen && <EditDeckScreen
-                toggleScreen={toggleDeckSettingScreen}
-                deck={decks[deckIndex]}
-                allDecks={decks}
-                email={email}
-            />}
-            {!openDeck && (<div className={styles.deckList}>
-                <ul>
-                    {decks.map((deck, index) => (
-                        <li key={index}>
-                            {deck[0]}
-                            <div className={styles.editDeck}>
-                                <div className={styles.deckNumbers}>
-                                    <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
-                                    <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
-                                    <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+        if(status === "authenticated"){
+            return (
+                <>
+                {!openEditCardScreen && !openDeck && (<div className={styles.createDeck}>
+                    <input type="text" id="deckName" className={styles.deckNameInput} name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
+                    <button type="button" className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
+                    <button type="button" disabled={true} className={styles.backupButton} onClick={() => {}}>Pre-made Decks 📚</button>
+                </div>)}
+                {!editDeckScreen && !openEditCardScreen && openDeck && <DeckEditor/>}
+                {openEditCardScreen && 
+                <EditCardScreen 
+                    kanji={decks[deckIndex][kanjiIndex+2]}
+                    startLearnStep={decks[deckIndex][1].learningSteps[0]}
+                    setOpenEditCardScreen={setOpenEditCardScreen}
+                    email={email}
+                    allDecks={decks}
+                />}
+                {editDeckScreen && <EditDeckScreen
+                    toggleScreen={toggleDeckSettingScreen}
+                    deck={decks[deckIndex]}
+                    allDecks={decks}
+                    email={email}
+                />}
+                {!openDeck && (<div className={styles.deckList}>
+                    <ul>
+                        {decks.map((deck, index) => (
+                            <li key={index}>
+                                {deck[0]}
+                                <div className={styles.editDeck}>
+                                    <div className={styles.deckNumbers}>
+                                        <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
+                                        <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
+                                        <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+                                    </div>
+                                    <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
+                                    <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
                                 </div>
-                                <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
-                                <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>)}
-            </>
-        )
+                            </li>
+                        ))}
+                    </ul>
+                </div>)}
+                </>
+            )
+        } else {
+            return (
+                <div className={styles.bamboozle}>
+                    <button onClick={() => signIn('google')}>Sign in</button> <span>to access deck creation, study features, stats, and more!</span>
+                </div>
+            )
+        }
     }
 
     return (
         <div className={styles.main}>
-            <h2>{deckManagerTitle}</h2>
+            <h2 className={styles.deckManagerTitle}>{deckManagerTitle}</h2>
             <div className={styles.interchangable}>
                 <DeckScreen/>
             </div>
