@@ -10,11 +10,18 @@
 
 .searchBox{
     display: flex;
+    height: 30px;
+    align-items: center;
 }
 
 .searchText{
     margin-right: 5px;
     display: flex;
+    align-items: center;
+}
+
+.searchText input{
+    height: 25px;
 }
 
 .searchText p {
@@ -28,7 +35,6 @@
 .kanjiList{
     height: 100%;
     margin-left: auto;
-    margin-top: 15px;
 }
 
 .kanjiList ul{
@@ -48,10 +54,16 @@
 .pageButtons {
     margin-left: 10px;
     display: flex;
+    align-items: center;
 }
 
 .pageButtons > * {
     margin-right: 10px;
+}
+
+.pageButtons button{
+    width: 40px;
+    height: 25px;
 }
 
 .loading{
@@ -70,9 +82,16 @@
     justify-content: center;
 }
 
+.deckSelector{
+    margin-left: 5px;
+    display: flex;
+    align-items: center;
+}
 
-.deckSelector {
-    margin-left: 20px;
+.deckSelector select {
+    height: 28px;
+    width: 100px;
+    margin-right: 15px;
 }
 
 @media only screen and (max-width: 768px) {
@@ -92,12 +111,25 @@
 
     .searchBox{
         justify-content: space-between;
+        align-items: baseline;
         width: 500px;
+    }
+
+    .pageButtons > * {
+        margin-right: 5px;
+    }
+
+    .pageButtons button{
+        width: 22px;
+    }
+
+    .pageNumber{
+        width: 85px;
     }
 
     .loading{
         position: absolute;
-        width: 100px;
-        transform: translate(-70px, -17px);
+        width: 150px;
+        transform: translate(-90px, 0px);
     }
 }

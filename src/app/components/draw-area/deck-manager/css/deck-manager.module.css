@@ -4,12 +4,16 @@
     border: 2px black solid;
     border-radius: 10px;
     padding: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
 }
 
 .interchangable{
     margin-top: 10px;
     height: 430px;
+}
+
+.deckManagerTitle{
+    font-family: 'UDDigitalKyokasho';
 }
 
 .tooltip{
@@ -30,6 +34,11 @@
     border-radius: 5px;
     margin: 3px 5px 8px 5px;
     padding: 5px;
+}
+
+.deckTitle{
+    font-family: 'UDDigitalKyokasho';
+    font-weight: bold;
 }
 
 .editDeck{
@@ -97,6 +106,27 @@
 .dueDateText{
     margin-left: auto;
     margin-right: 5px;
+}
+
+.bamboozle{
+    display: flex;
+    height: 100px;
+    justify-content: center;
+    align-items: center;
+}
+
+.bamboozle span{
+    margin-left: 10px;
+    font-family: 'UDDigitalKyokasho';
+    font-weight: bold;
+}
+
+.bamboozle button{
+    height: 50px;
+    width: 70px;
+    font-family: 'UDDigitalKyokasho';
+    font-weight: bold;
+    border-radius: 20px;
 }
 
 @media (prefers-color-scheme: dark) {

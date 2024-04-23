@@ -41,6 +41,25 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
         onClose()
     }
 
+    const createBackup = async (email) => {
+        const decks = (await fetch(`api/mongodb/${email}`).then(result => result.json())).decks
+        const jsonString = JSON.stringify(decks)
+        const blob = new Blob([jsonString], { type: "application/json" })
+        const url = window.URL.createObjectURL(blob)
+
+        const a = document.createElement("a")
+        a.style.display = "none"
+        a.href = url
+        a.download = email + "-traceKanjiDeckBackup.json"
+
+        document.body.appendChild(a)
+
+        a.click()
+
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <Dialog className={styles.aboutDialog} open={open} onClose={onClose} scroll='paper'>
@@ -78,6 +97,10 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
                                     />} 
                                     label="Get daily email reminders to study due kanji in your decks" 
                                 />
+                            </div>
+                            <h3>Other</h3>
+                            <div>
+                                <button type="button" className={styles.backupButton} onClick={() => createBackup(email)}>Backup Data 💾🔄</button>
                             </div>
                         </FormGroup>
                     </FormControl>

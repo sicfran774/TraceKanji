@@ -153,6 +153,7 @@ export default function SignIn() {
 
                 <br/><hr/><br/><br/>
                 <h3>Credits</h3>
+                <p>Logo and UI/UX designed by <a href={"https://jemrra.artstation.com"} target="_blank">Jemrra</a></p>
                 <p>Kanji SVGs and stroke orders provided by <a href={"https://kanjivg.tagaini.net/"} target="_blank">KanjiVG</a></p>
                 <p>Kanji info provided by <a href={"https://kanjiapi.dev/"} target="_blank">kanjiapi.dev</a></p>
                 <p>Kanji recognition courtesy of <a href={"https://github.com/CaptainDario/DaKanji-Single-Kanji-Recognition"} target="_blank">CaptainDario&apos;s Kanji recognition machine learning model</a></p>
@@ -256,7 +257,7 @@ export default function SignIn() {
                         className={styles.welcome}
                         style={{padding: "10px", width: "100px"}}
                     >
-                        ☰ Menu
+                        <span style={{fontFamily: 'UDDigitalKyokasho', fontSize: "18px"}}>☰ Menu</span>
                     </div>
                     {profilePicWindow &&
                     <div className={styles.menu} style={{height: "160px"}} tabIndex={0}>

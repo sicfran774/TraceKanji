@@ -40,6 +40,11 @@
   --card-border-rgb: 131, 134, 135;
 }
 
+@font-face{
+  font-family: 'UDDigitalKyokasho';
+  src: url('/fonts/UDDigiKyokashoNP-R.ttf');
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -71,6 +76,40 @@
     --card-rgb: 100, 100, 100;
     --card-border-rgb: 200, 200, 200;
   }
+}
+
+::-webkit-scrollbar{
+
+  -webkit-appearance: none;
+  width: 7px;
+
+}
+
+::-webkit-scrollbar-thumb {
+
+  border-radius: 4px;
+  background-color: rgba(0,0,0,.5); 
+  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
+
+::-webkit-scrollbar {
+width: 5px;
+}
+
+::-webkit-scrollbar-track {
+background: black;
+}
+
+::-webkit-scrollbar-thumb {
+background: #707070;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: #355cc9;
+}
+::-webkit-overflow-scrolling:touch {
+  background:#707070;
+  width: 5px;
 }
 
 * {

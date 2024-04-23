@@ -18,6 +18,12 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.5 (4/22/2024)</u></Typography>
+      <ul>
+        <li>- Added logo (designed by <a href={"https://jemrra.artstation.com"} target="_blank">Jemrra</a>) and changed font</li>
+        <li>- Website design changes and larger buttons</li>
+        <li>- Moved  <button>Backup Data 💾🔄</button> button to user settings</li>
+      </ul>
       <Typography variant="h6"><u>0.3.4 (3/19/2024)</u></Typography>
       <ul>
         <li>- Show card counts during study session</li>
