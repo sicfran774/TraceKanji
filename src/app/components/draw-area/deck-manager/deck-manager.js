@@ -9,6 +9,7 @@ import { useSession, signIn } from 'next-auth/react';
 import moment from "moment"
 import EditCardScreen from './edit-card';
 import EditDeckScreen from './edit-deck';
+import PremadeDeck from './premade-decks';
 
 export default function DeckManager({decks, setDecks, email, deckSelector, setSelectedDeck, studying, setStudying, deckIndex, setDeckIndex, closeDeckManager, openDeckManager, disableRecognizeKanji}){
 
@@ -22,6 +23,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const [kanjiIndex, setKanjiIndex] = useState()
 
     const {data, status} = useSession()
+
+    const [openDialog, setOpenDialog] = useState(false)
+    const [addedDeck, setAddedDeck] = useState(false)
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
@@ -57,6 +61,16 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             openDeckManager()
         }
     }, [studying])
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setAddedDeck(false);
+    };
+
+    
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
 
     const createDeck = () => {
         if(deckName){
@@ -218,7 +232,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 {!openEditCardScreen && !openDeck && (<div className={styles.createDeck}>
                     <input type="text" id="deckName" className={styles.deckNameInput} name="deckName" placeholder="Type deck name here" onChange={e => deckName = e.target.value}></input>
                     <button type="button" className={styles.deckNameButton} onClick={() => createDeck()}>Create New Deck</button>
-                    <button type="button" disabled={true} className={styles.backupButton} onClick={() => {}}>Pre-made Decks 📚</button>
+                    <button type="button" className={styles.backupButton} onClick={() => handleOpenDialog()}>Pre-made Decks 📚</button>
                 </div>)}
                 {!editDeckScreen && !openEditCardScreen && openDeck && <DeckEditor/>}
                 {openEditCardScreen && 
@@ -270,6 +284,14 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             <div className={styles.interchangable}>
                 <DeckScreen/>
             </div>
+            <PremadeDeck 
+                openDialog={openDialog} 
+                handleCloseDialog={handleCloseDialog} 
+                allDecks={decks} 
+                email={email}
+                addedDeck={addedDeck}
+                setAddedDeck={setAddedDeck}
+            />
         </div>
     )
 }

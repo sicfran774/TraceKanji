@@ -16,7 +16,6 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
 
     useEffect(() => {
         setDueKanji(sortByDueDate(deck, [], true))
-        console.log(kanjiAndSVG)
     }, [])
 
     useEffect(() => {
