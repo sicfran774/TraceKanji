@@ -1,7 +1,8 @@
 import moment from "moment";
 import clientPromise from ".";
+import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 
-let client, database, kanji, accounts, backup
+let client, database, kanji, accounts, backup, premade
 
 async function init(){
     //Already initialized
@@ -13,6 +14,7 @@ async function init(){
         kanji = database.collection('kvg-v1')
         accounts = database.collection('accounts')
         backup = database.collection('backup')
+        premade = database.collection('premade')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }
@@ -53,6 +55,67 @@ async function createAccount(email){
     }
     const result = await accounts.insertOne(newAccount)
     return result;
+}
+
+export async function createPremadeDeck(){
+    try{
+        if(!premade) await init()
+        //Kanji list goes here
+        const kanjiList = ""
+        const deckList = defaultDeckSettings()
+
+        const appendKanjis = async () => Array.from(kanjiList).forEach(char => {
+                try{
+                    if(char != " "){
+                        fetch(`https://kanjiapi.dev/v1/kanji/${char}`)
+                            .then(result => result.json())
+                            .then(info => prepareKanji(info.kanji, info.heisig_en))
+                            .then(prepared => {
+                                deckList.push(prepared)
+                            })
+                    }
+                    
+                } catch(e){
+                    console.error("Error: Failed to create premade deck")
+                }
+            }
+        )
+        await appendKanjis().then(() => premade.insertOne({name: "test", deck: deckList})).then(result => console.log(result))
+        
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to create premade deck'}
+    }
+}
+
+export async function getPremadeDeck(deckName){
+    try{
+        if(!premade) await init()
+
+        const deck = await premade.findOne({name: deckName})
+
+        if(!deck) 
+            throw new Error("Deck not found.")
+        else 
+            return deck.deck
+        
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to get premade deck'}
+    }
+}
+
+export async function addPremadeToAccount(deck, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$push:{decks: deck}})
+
+        return result
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to push premade deck to account'}
+    }
 }
 
 export async function updateDecks(updatedDecks, email){

@@ -15,9 +15,8 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const {data, status} = useSession() // data.user.email
 
     useEffect(() => {
-        //console.log(deckSettings.maxNewCards)
         setDueKanji(sortByDueDate(deck, [], true))
-        //console.log(kanjiAndSVG)
+        console.log(kanjiAndSVG)
     }, [])
 
     useEffect(() => {
@@ -34,7 +33,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
 
     useEffect(() => {
         //console.log(deck[kanjiIndex])
-        const svgIndex = kanjiAndSVG.findIndex(obj => obj.info.kanji === deck[kanjiIndex].kanji);
+        const svgIndex = kanjiAndSVG.findIndex(obj => obj.kanji === deck[kanjiIndex].kanji);
         //console.log(svgIndex)
         if(svgIndex >= 0){
             setSharedKanji({kanji: deck[kanjiIndex].kanji, svg: kanjiAndSVG[svgIndex].svg})

@@ -1,4 +1,4 @@
-import { getKanji } from "@/lib/mongodb/kanji"
+import { addPremadeToAccount, createPremadeDeck, getKanji, getPremadeDeck } from "@/lib/mongodb/kanji"
 import styles from './css/selection.module.css';
 import Search from "./search";
 
@@ -20,6 +20,9 @@ export default async function Selection(){
     for(let i in kanjis){
         kanjiAndSVG.push({kanji: kanjis[i], svg: kanjiDB[i].svg})
     }
+    //createPremadeDeck()
+    // const deck = await getPremadeDeck("RTK")
+    // console.log(await addPremadeToAccount(deck, "sicfran.774qwert@gmail.com"))
 
     return(
         <div className={styles.main}>
