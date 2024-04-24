@@ -27,6 +27,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const [openDialog, setOpenDialog] = useState(false)
     const [addedDeck, setAddedDeck] = useState(false)
 
+    const scrollRef = useRef(null);
+    const [scrollPos, setScrollPos] = useState(0)
+
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
 
@@ -61,6 +64,12 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             openDeckManager()
         }
     }, [studying])
+
+    useEffect(() => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollTop = scrollPos;
+        }
+    }, [openEditCardScreen])
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
@@ -167,21 +176,21 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                         <td align='left' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Add/Remove Kanji</button></td>
                         <td align='right' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleDeckSettingScreen()}>Deck Settings</button></td>
                     </tr>)}
-                    <tr>
-                        {!confirmDeleteScreen && (<td height={30} colSpan="2" className={styles.selectedKanji}>
-                            {!editingDeck ? (<ul className={styles.kanjiInDeckList}>
+                    <tr className={styles.selectedKanji}>
+                        {!confirmDeleteScreen && (<td valign='bottom' colSpan="2">
+                            {!editingDeck ? (<ul className={styles.kanjiInDeckList} ref={scrollRef}>
                                 {selectedKanji.map((kanji, index) => (
                                     <li key={index}>
                                         <div className={styles.editKanji}>
                                             <h2>{kanji.kanji}</h2>
-                                            <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true)}}>⚙️</button>
+                                            <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true); setScrollPos(scrollRef.current.scrollTop)}}>⚙️</button>
                                             <p>{kanji.meanings}</p>
                                             <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
                                         </div>
                                     </li>
                                 ))}
                             </ul>) :
-                            <>{selectedKanji.map((kanji) => { return kanji.kanji })}</>
+                            <div className={styles.kanjiList}>{selectedKanji.map((kanji) => { return kanji.kanji })}</div>
                             }
                         </td>)}
                     </tr>
@@ -272,7 +281,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
         } else {
             return (
                 <div className={styles.bamboozle}>
-                    <button onClick={() => signIn('google')}>Sign in</button> <span>to access deck creation, study features, stats, and more!</span>
+                    <button onClick={() => signIn('google')}>Sign in</button> <span>to access deck creation, spaced-repetition study tools, stats, and more. <span style={{color: "turquoise"}}>It&apos;s completely free!</span></span>
                 </div>
             )
         }

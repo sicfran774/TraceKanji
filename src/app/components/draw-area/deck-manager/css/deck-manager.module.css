@@ -64,6 +64,11 @@
     height: 30px;
 }
 
+.selectedKanji{
+    height: 100px;
+    overflow-y: scroll;
+}
+
 .deckNumbers span{
     margin-right: 15px;
 }
@@ -103,6 +108,11 @@
     overflow-y: auto;
 }
 
+.kanjiList{
+    height: 280px;
+    overflow-y: auto;
+}
+
 .dueDateText{
     margin-left: auto;
     margin-right: 5px;
@@ -123,7 +133,7 @@
 
 .bamboozle button{
     height: 50px;
-    width: 70px;
+    width: 100px;
     font-family: 'UDDigitalKyokasho';
     font-weight: bold;
     border-radius: 20px;

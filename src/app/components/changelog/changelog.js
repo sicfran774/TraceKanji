@@ -23,6 +23,8 @@ const Changelog = () => {
         <li>- <b>Added feature:</b> Added pre-made decks</li>
         <li>- Creating your own deck too much of a hassle? Use a pre-made deck to get studying quickly!</li>
         <li>- Fixed performance issues like loading times for studying with large decks</li>
+        <li>- Fixed visual bugs caused by large decks</li>
+        <li>- Maintain scroll position when editing a card</li>
       </ul>
       <Typography variant="h6"><u>0.3.5 (4/22/2024)</u></Typography>
       <ul>
