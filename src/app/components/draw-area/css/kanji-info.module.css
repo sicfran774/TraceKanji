@@ -33,6 +33,7 @@
     background-color: #31a387;
     border-radius: 50px;
     border-color: black;
+    color: black;
 }
 
 .toggleRecognizeButton{
@@ -42,6 +43,7 @@
     border-radius: 50px;
     font-family: 'UDDigitalKyokasho';
     border-color: black;
+    color: black;
 }
 
 .notSignedIn{
@@ -75,5 +77,13 @@
 
     .kanji{
         filter: invert(100%) sepia(10%) saturate(16%) hue-rotate(151deg) brightness(98%) contrast(105%);
+    }
+
+    .toggleDeckManagerButton{
+        color: white;
+    }
+
+    .toggleRecognizeButton{
+        color: white;
     }
 }

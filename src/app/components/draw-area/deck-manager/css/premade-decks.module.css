@@ -1,0 +1,17 @@
+.main ul{
+    list-style-type: none;
+}
+
+.main li{
+    margin-bottom: 15px;
+}
+
+.addDeckButton{
+    height: 40px;
+    width: 120px;
+}
+
+.deckAdded{
+    color: cyan;
+    margin-bottom: 50px;
+}

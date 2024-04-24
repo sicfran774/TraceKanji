@@ -52,7 +52,9 @@ export default function Search({kanjiAndSVG}){
             abortController.abort()
         }
         abortController = new AbortController()
-        getKanjiBasedOnArray()
+        if(!studying){
+            getKanjiBasedOnArray()
+        }
     }, [ , selectedDeck, recKanjiList, recognizeKanji])
 
     useEffect(() => {
@@ -236,7 +238,7 @@ export default function Search({kanjiAndSVG}){
             <div id="listAndDrawArea" className={styles.listAndDrawArea}>
                 {studying && doneLoading &&
                 <Study deck={decks[selectedDeck]}
-                       kanjiAndSVG={fetchedKanji}
+                       kanjiAndSVG={kanjiAndSVG}
                        setStudying={setStudying}
                        allDecks={decks}
                        setShowOverlay={setShowOverlay}
@@ -270,6 +272,7 @@ export default function Search({kanjiAndSVG}){
                             <button type="button" onClick={() => changePage(-1)} className='button'>&lt;</button>
                             <div className={styles.pageNumber}><span>Page {page + 1}/{kanjiInfo.length}</span></div>
                             <button type="button" onClick={() => changePage(1)} className='button'>&gt;</button>
+                            
                         </div>
                         <div className={styles.deckSelector}>
                             <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>

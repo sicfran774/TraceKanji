@@ -46,28 +46,36 @@ const dueKanjiFromList = (deck, firstTime = false) => {
 
     const now = moment()
     const arr = deck.slice(2, deck.length)
-    const dueKanji = arr.map(obj => {
-        const kanjiDueDate = moment(obj.due)
-        if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
-            if((!obj.learning && !obj.graduated) && newCardCount < deckSettings.maxNewCards){ //If it's a new card
+    const tempDueKanji = []
+    arr.some(obj => {
+        if(newCardCount < deckSettings.maxNewCards && (!obj.learning && !obj.graduated)){ //If it's a new card
+            const kanjiDueDate = moment(obj.due)
+            if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
                 newCardCount++
-            } else if ((obj.learning || obj.graduated) && reviewCount < deckSettings.maxReviews){ //If it's a learning/graduated card
-                reviewCount++
+                if(firstTime){
+                    obj.due = now   
+                    //This prevents cards repeating too much. If you say again,
+                    //that card will appear before any other card because it's
+                    //technically the most soonest card always.
+                }
+                tempDueKanji.push(obj)
             } else { // If here, amount of new cards/review cards have exceeded for today.
-                return undefined
+                tempDueKanji.push(undefined)
             }
-            if(firstTime){
-                obj.due = now   
-                //This prevents cards repeating too much. If you say again,
-                //that card will appear before any other card because it's
-                //technically the most soonest card always.
+        } else if (reviewCount < deckSettings.maxReviews && (obj.learning || obj.graduated)){
+            const kanjiDueDate = moment(obj.due)
+            if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
+                reviewCount++
+                if(firstTime) obj.due = now
+                tempDueKanji.push(obj)
+            } else {
+                tempDueKanji.push(undefined)
             }
-            
-            return obj
-        } else {
-            return undefined
+        } else { //Can't add any more cards
+            return true //"breaks" out of .some()
         }
-    }).filter(kanji => kanji !== undefined)
+    })
+    const dueKanji = tempDueKanji.filter(kanji => kanji !== undefined)
 
     //console.log(dueKanji)
 
