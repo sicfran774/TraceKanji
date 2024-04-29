@@ -27,7 +27,7 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
 
     const addDeckToAccount = async (deckName) => {
         try {
-            console.log(allDecks)
+            //console.log(allDecks)
             setLoading(true)
             const premadeDeck = (await fetch(`api/mongodb/premade/${deckName}`).then(result => result.json())).deck
             allDecks.push(premadeDeck)
@@ -53,10 +53,19 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
                         <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("RTK")}>Add to Deck List</button>
                     </li>
                     <li>
+                        <h3>Hiragana Deck </h3>
+                        <p>This deck contains all 46 hiragana.</p>
+                        <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("Hiragana")}>Add to Deck List</button>
+                    </li>
+                    <li>
+                        <h3>Katakana Deck </h3>
+                        <p>This deck contains all 46 katakana.</p>
+                        <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("Katakana")}>Add to Deck List</button>
+                    </li>
+                    <li>
                         <h3>Hiragana/Katakana Deck </h3>
                         <p>This deck contains all 46 hiragana and 46 katakana.</p>
                         <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("HiraganaKatakana")}>Add to Deck List</button>
-                        
                     </li>
                 </ul>
                 {loading && <CircularProgress size="24px"/>}

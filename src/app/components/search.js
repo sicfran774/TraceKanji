@@ -208,7 +208,7 @@ export default function Search({kanjiAndSVG}){
                 const batchResults = await Promise.all(batchPromises);
 
                 kanjiJson.push(...batchResults);
-                console.log(kanjiJson)
+                //console.log(kanjiJson)
                 
                 // Send the accumulated data after each batch
                 combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
