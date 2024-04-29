@@ -1,6 +1,7 @@
 import moment from "moment";
 import clientPromise from ".";
 import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
+import { kanaDict } from "@/app/util/kanji-utils";
 
 let client, database, kanji, accounts, backup, premade
 
@@ -61,26 +62,40 @@ export async function createPremadeDeck(){
     try{
         if(!premade) await init()
         //Kanji list goes here
-        const kanjiList = ""
-        const deckList = defaultDeckSettings()
+        const kanjiList = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"
 
-        const appendKanjis = async () => Array.from(kanjiList).forEach(char => {
-                try{
-                    if(char != " "){
+        const appendKanjis = async () => {
+            
+            const deckList = defaultDeckSettings()
+            Array.from(kanjiList).forEach(char => {
+                if(char != " "){
+                    try{
                         fetch(`https://kanjiapi.dev/v1/kanji/${char}`)
-                            .then(result => result.json())
+                            .then(result => {
+                                if(result.ok){
+                                    return result.json()
+                                } else {
+                                    console.log()
+                                    return {
+                                        "heisig_en": kanaDict().get(char)[0],
+                                        "kanji": char,
+                                    }
+                                }
+                            })
                             .then(info => prepareKanji(info.kanji, info.heisig_en))
                             .then(prepared => {
                                 deckList.push(prepared)
                             })
+                        // deckList.push(prepareKanji(char, kanaDict().get(char)[0]))
+                    } catch(e){
+                        console.error("Error: Failed to create premade deck")
                     }
-                    
-                } catch(e){
-                    console.error("Error: Failed to create premade deck")
                 }
-            }
-        )
-        await appendKanjis().then(() => premade.insertOne({name: "test", deck: deckList})).then(result => console.log(result))
+            })
+            return deckList
+        }
+        await appendKanjis().then((deckList) => (premade.insertOne({name: "Hiragana/Katakana", deck: deckList}).then((result) => console.log(result)).then(() => console.log(deckList + "too fast"))))
+        
         
     } catch (e) {
         console.log(e)
