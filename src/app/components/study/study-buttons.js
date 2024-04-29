@@ -49,7 +49,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         // console.log("learningSteps:" + learningSteps)
         let newInterval = deck[kanjiIndex].interval // This is what we add to the date
 
-        // New card to learning (I did this for "New Card" tracking)
+        // If it's a new card, change it to learning (I did this to do "New Card" tracking)
         if(!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning){
             deck[kanjiIndex].learning = true
             // This is a new card, so increment newCardCount in deck (see interval.js => dueKanjiFromList())

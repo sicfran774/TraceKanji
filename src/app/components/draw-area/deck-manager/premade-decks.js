@@ -51,9 +51,15 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
                         <h3>RTK (Remembering the Kanji) Deck </h3>
                         <p>This deck contains all 2200 kanji from Heisig&apos;s Remembering the Kanji 6th edition.</p>
                         <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("RTK")}>Add to Deck List</button>
-                        {loading && <CircularProgress size="24px"/>}
+                    </li>
+                    <li>
+                        <h3>Hiragana/Katakana Deck </h3>
+                        <p>This deck contains all 46 hiragana and 46 katakana.</p>
+                        <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("HiraganaKatakana")}>Add to Deck List</button>
+                        
                     </li>
                 </ul>
+                {loading && <CircularProgress size="24px"/>}
                 {addedDeck && 
                     <div className={styles.deckAdded}>
                         <p>Deck added. Close this window to continue.</p>

@@ -5,6 +5,7 @@ import {useState, useEffect, useRef} from "react";
 import KanjiCard from './kanji-card';
 import KanjiInfo from './draw-area/kanji-info';
 import { CircularProgress } from '@mui/material';
+import { kanaDict } from '../util/kanji-utils';
 import Study from './study/study';
 
 const KANJIAPI_URL = "https://kanjiapi.dev/v1"
@@ -177,13 +178,37 @@ export default function Search({kanjiAndSVG}){
                 i.e. when the deck is changed, we don't want the default deck to keep loading
                 */
                 const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
-                const batchPromises = batchKanjis.map(kanji => 
-                fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {signal: abortController.signal}) 
-                .then(result => result.json()))
+                const batchPromises = batchKanjis.map(kanji =>
+                    fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {signal: abortController.signal})
+                    .then(result => {
+                        if(result.ok){
+                            return result.json()
+                        } else {
+                            return {
+                                "grade": 0,
+                                "heisig_en": kanaDict().get(kanji.kanji)[0],
+                                "jlpt": 0,
+                                "kanji": kanji.kanji,
+                                "kun_readings": [
+                                    kanji.kanji
+                                ],
+                                "meanings": kanaDict().get(kanji.kanji),
+                                "name_readings": [],
+                                "notes": [],
+                                "on_readings": [
+                                    kanji.kanji
+                                ],
+                                "stroke_count": 0,
+                                "unicode": ""
+                            }
+                        }
+                    })
+                )
         
                 const batchResults = await Promise.all(batchPromises);
 
                 kanjiJson.push(...batchResults);
+                console.log(kanjiJson)
                 
                 // Send the accumulated data after each batch
                 combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);

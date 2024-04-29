@@ -18,6 +18,13 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.7 (4/28/2024)</u></Typography>
+      <ul>
+        <li>- <b>Added feature:</b> Hiragana and katakana</li>
+        <li>- Type &quot;hiragana&quot; or &quot;katakana&quot; in the search bar to see them</li>
+        <li>- Alternatively, type the romaji versions</li>
+        <li>- Updated website icon</li>
+      </ul>
       <Typography variant="h6"><u>0.3.6 (4/23/2024)</u></Typography>
       <ul>
         <li>- <b>Added feature:</b> Added pre-made decks</li>
