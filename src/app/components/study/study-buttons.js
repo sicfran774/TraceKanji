@@ -17,6 +17,24 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
 
     useEffect(() => {
         updateLabels()
+
+        const handleKeyDown = (e) => {
+            if(e.code === "Digit1"){
+                nextKanji(-1)
+            } else if (e.code === "Digit2"){
+                nextKanji(0)
+            } else if (e.code === "Digit3"){
+                nextKanji(1)
+            } else if (e.code === "Digit4"){
+                nextKanji(2)
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        }
     }, [])
 
     const updateLabels = () => {
@@ -44,7 +62,6 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
     const nextKanji = (choice) => {
 
         setShowAnswer(false)
-        
 
         // console.log("learningSteps:" + learningSteps)
         let newInterval = deck[kanjiIndex].interval // This is what we add to the date
@@ -95,6 +112,9 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         if((deck[kanjiIndex].learning || deck[kanjiIndex].graduated) && newDate.isAfter(now, 'day')){
             deck[1].reviewCount++ //increment reviewCount in deck (see interval.js => dueKanjiFromList())
         }
+
+        // Info for kanji interval
+        console.log(`${deck[kanjiIndex].kanji} set to ${deck[kanjiIndex].interval} (${deck[kanjiIndex].due})`)
 
         const updatedDueDeck = sortByDueDate(deck, dueKanji)
         setDueKanji(updatedDueDeck)

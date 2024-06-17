@@ -16,6 +16,18 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
 
     useEffect(() => {
         setDueKanji(sortByDueDate(deck, [], true))
+
+        const handleKeyDown = (e) => {
+            if(e.code === "Space"){
+                answerTrue()
+            }
+        }
+        
+        document.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        }
     }, [])
 
     useEffect(() => {

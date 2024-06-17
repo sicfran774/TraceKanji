@@ -47,6 +47,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 }
             })
             updateDecksInDB(email, decks, "beginning use effect")
+            setDecks(decks)
         }
     }, [])
 
@@ -162,6 +163,13 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     }
 
     const DeckEditor = () => {
+
+        const [searchFilter, setSearchFilter] = useState("")
+
+        const FilterKanji = (kanji) => {
+            return kanji.meanings.toLowerCase().startsWith(searchFilter) || kanji.kanji === searchFilter
+        }
+
         return (
             <table className={styles.editingDeck}>
                 <thead>
@@ -176,19 +184,31 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                         <td align='left' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleEditingDeck()}>Add/Remove Kanji</button></td>
                         <td align='right' height={20}><button type="button" className={styles.deckButton} onClick={() => toggleDeckSettingScreen()}>Deck Settings</button></td>
                     </tr>)}
+                    {!editingDeck && <tr><td>Search <input type="text" onChange={e => setSearchFilter(e.target.value)}/></td></tr>}
                     <tr className={styles.selectedKanji}>
                         {!confirmDeleteScreen && (<td valign='bottom' colSpan="2">
                             {!editingDeck ? (<ul className={styles.kanjiInDeckList} ref={scrollRef}>
-                                {selectedKanji.map((kanji, index) => (
-                                    <li key={index}>
-                                        <div className={styles.editKanji}>
-                                            <h2>{kanji.kanji}</h2>
-                                            <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true); setScrollPos(scrollRef.current.scrollTop)}}>⚙️</button>
-                                            <p>{kanji.meanings}</p>
-                                            <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
-                                        </div>
-                                    </li>
-                                ))}
+                                {selectedKanji.map((kanji, index) => {
+                                    if(searchFilter !== "" && FilterKanji(kanji)){
+                                        return (<li key={index}>
+                                            <div className={styles.editKanji}>
+                                                <h2>{kanji.kanji}</h2>
+                                                <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true); setScrollPos(scrollRef.current.scrollTop)}}>⚙️</button>
+                                                <p>{kanji.meanings}</p>
+                                                <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
+                                            </div>
+                                        </li>)
+                                    } else if (searchFilter === ""){
+                                        return (<li key={index}>
+                                            <div className={styles.editKanji}>
+                                                <h2>{kanji.kanji}</h2>
+                                                <button type="button" onClick={() => {setKanjiIndex(index); setOpenEditCardScreen(true); setScrollPos(scrollRef.current.scrollTop)}}>⚙️</button>
+                                                <p>{kanji.meanings}</p>
+                                                <p className={styles.dueDateText}><em>Due {moment(kanji.due).format('MM/DD/YYYY')}</em></p>
+                                            </div>
+                                        </li>)
+                                    }
+                                })}
                             </ul>) :
                             <div className={styles.kanjiList}>{selectedKanji.map((kanji) => { return kanji.kanji })}</div>
                             }

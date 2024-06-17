@@ -18,6 +18,13 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.8 (6/16/2024)</u></Typography>
+      <ul>
+        <li><b>QoL Updates</b></li>
+        <li>- Use Space to show answer and number keys to choose grading</li>
+        <li>(1 = Again, 2 = Hard, 3 = Good, 4 = Easy)</li>
+        <li>- Search kanji when browsing deck to edit faster</li>
+      </ul>
       <Typography variant="h6"><u>0.3.7 (4/28/2024)</u></Typography>
       <ul>
         <li>- <b>Added feature:</b> Hiragana and katakana</li>
