@@ -179,7 +179,9 @@ export default function Search({kanjiAndSVG}){
                 */
                 const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
                 const batchPromises = batchKanjis.map(kanji =>
-                    fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {signal: abortController.signal})
+                    fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {
+                        signal: abortController.signal
+                    })
                     .then(result => {
                         if(result.ok){
                             return result.json()
