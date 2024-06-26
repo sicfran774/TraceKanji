@@ -190,6 +190,23 @@ export const updateSettingsInDB = async (email, settings, msg) => {
     }
 }
 
+export const updateStatsInDB = async (email, stats, msg) => {
+    try{
+        const result = await fetch(`api/mongodb/stats/${email}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                updatedStats: stats
+            })
+        })
+        return result
+    } catch (e){
+        console.error(e)
+    }
+}
+
 export const updateLogInDB = async (email, date, msg) => {
     try{
         const result = await fetch(`api/mongodb/settings/${email}`, {

@@ -4,14 +4,14 @@ import { useSession } from 'next-auth/react';
 import StudyButtons from './study-buttons'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
-import { sortByDueDate, cardCounts, updateDecksInDB } from '@/app/util/interval';
+import { sortByDueDate, cardCounts, updateDecksInDB, updateStatsInDB } from '@/app/util/interval';
 
 export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setShowOverlay }){
     
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
     const [dueKanji, setDueKanji] = useState([])
-    let { setSharedKanji, sharedKanji, userSettings } = useContext(SharedKanjiProvider)
+    let { setSharedKanji, sharedKanji, userSettings, userStats } = useContext(SharedKanjiProvider)
     const {data, status} = useSession() // data.user.email
 
     useEffect(() => {
@@ -51,6 +51,10 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         }
         
     }, [kanjiIndex])
+    
+    useEffect(() => {
+        updateStatsInDB(data.user.email, userStats, "userStats in study")
+    }, [userStats])
 
     const endStudy = () => {
         setStudying(false)

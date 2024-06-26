@@ -52,6 +52,10 @@ async function createAccount(email){
             penWidth: 10,
             autoShowTracing: true,
             subscribed: true
+        },
+        stats: {
+            dayStreak: 0,
+            studied: [],
         }
     }
     const result = await accounts.insertOne(newAccount)
@@ -172,6 +176,35 @@ export async function updateSettings(updatedSettings, email){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to save settings'}
+    }
+}
+
+export async function getStats(email){
+    try{
+        if(!accounts) await init()
+
+        let stats = await accounts.findOne({email: email})
+
+        //create new document if email doesn't exist in DB
+        if(!stats) throw new Error("New account.")
+
+        return stats
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to fetch user stats' + e}
+    }
+}
+
+export async function updateStats(updatedStats, email){
+    try{
+        if(!accounts) await init()
+
+        const result = await accounts.updateOne({email: email}, {$set:{stats: updatedStats}})
+        return result
+
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to save stats'}
     }
 }
 
