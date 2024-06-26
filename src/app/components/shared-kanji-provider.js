@@ -9,7 +9,7 @@ export default function Provider({children}){
     const [editingDeck, setEditingDeck] = useState(false)
     const [selectedKanji, setSelectedKanji] = useState([])
     const [userSettings, setUserSettings] = useState({penWidth: 5, autoShowTracing: true})
-    const [userStats, setUserStats] = useState(null)
+    const [userStats, setUserStats] = useState({dayStreak: 0, studied: []})
 
     return (
         <SharedKanjiProvider.Provider 
