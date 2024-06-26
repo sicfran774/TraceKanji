@@ -9,8 +9,6 @@ import { darkTheme, lightTheme } from '@/app/util/colors';
 import ChangelogDialog from '../changelog/changelog';
 import { ThemeProvider } from '@mui/material/styles'
 import SettingsPage from './settings';
-import moment from 'moment';
-import { updateLogInDB } from '@/app/util/interval';
 
 export default function SignIn() {
 
@@ -24,7 +22,7 @@ export default function SignIn() {
 
     const [theme, setTheme] = useState(lightTheme)
 
-    let { userSettings, setUserSettings } = useContext(SharedKanjiProvider)
+    let { userSettings, setUserSettings, userStats, setUserStats } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -41,7 +39,8 @@ export default function SignIn() {
     useEffect(() => {
         if(status === "authenticated"){
             fetchUserSettings()
-            updateLogInDB(data.user.email, moment())
+            fetchUserStats()
+            //updateLogInDB(data.user.email, moment())
         }
     }, [status])
 
@@ -86,6 +85,26 @@ export default function SignIn() {
         } catch (e){
             console.error(e)
             await fetchUserSettings()
+        }
+    }
+
+    const fetchUserStats = async () => {
+        try {
+            const stats = (await fetch(`api/mongodb/stats/${data.user.email}`).then(result => result.json())).stats
+
+            if(stats){
+                setUserStats(stats)
+            } else {
+                setUserStats({
+                    dayStreak: 0,
+                    studied: [],
+                })
+            }
+            
+
+        } catch (e) {
+            console.error(e)
+            await fetchUserStats()
         }
     }
 
@@ -212,6 +231,7 @@ export default function SignIn() {
                                         <p style={{marginBottom: "0px"}}>Stats</p>
                                         <p style={{fontSize: "10px", margin: "0px"}}>Coming soon...</p>
                                     </div>
+                                    <p style={{fontSize: "14px", color: "blue"}}>Day Streak: <span style={{fontWeight: "bold"}}>{userStats.dayStreak}</span></p>
                                 </li>
                                 <li onClick={() => handleOpenSettings()} className={styles.menuButton}>
                                     <p>⚙️</p>

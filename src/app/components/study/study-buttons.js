@@ -1,13 +1,13 @@
 import styles from './css/study-buttons.module.css'
 import { useContext, useEffect, useState } from 'react'
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { addToDate, multiplyInterval, sortByDueDate } from '@/app/util/interval';
+import { addToDate, multiplyInterval, sortByDueDate, updateStatsInDB } from '@/app/util/interval';
 import moment from "moment"
 
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
-    let { setSharedKanji, sharedKanji } = useContext(SharedKanjiProvider)
+    let { setUserStats, userStats } = useContext(SharedKanjiProvider)
     const deckSettings = deck[1]
     const learningSteps = [...deckSettings.learningSteps]
 
@@ -120,14 +120,33 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         setDueKanji(updatedDueDeck)
         updateLabels()
 
+        if(userStats.studied.some(date => {
+            if (date.date === moment().format('L')){
+                date.reviews = deck[1].reviewCount
+                date.new = deck[1].newCardCount
+                return true
+            }
+        })){
+        } else { // If this is the first time studied today
+            userStats.studied.push({
+                date: moment().format('L'),
+                reviews: deck[1].reviewCount,
+                new: deck[1].newCardCount
+            })
+            ++userStats.dayStreak
+        }
+        
+        setUserStats({
+            dayStreak: userStats.dayStreak,
+            studied: userStats.studied
+        })
+
         if(updatedDueDeck.length === 0){
             endStudy()
         } else {
             document.getElementById("resetDrawingButton").click()
             setShowOverlay(false)
         }
-        // console.log("Calculated next step:" + newInterval)
-        // console.log(deck)
     }
 
     //console.log(deck)

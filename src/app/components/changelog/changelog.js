@@ -18,6 +18,11 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.9 (6/26/2024)</u></Typography>
+      <ul>
+        <li>- Added daily streak to stats button</li>
+        <li>- Email shows how many days in a row you&quot;ve studied</li>
+      </ul>
       <Typography variant="h6"><u>0.3.8 (6/16/2024)</u></Typography>
       <ul>
         <li><b>QoL Updates</b></li>
