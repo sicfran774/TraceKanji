@@ -2,6 +2,7 @@ import moment from "moment";
 import clientPromise from ".";
 import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 import { kanaDict } from "@/app/util/kanji-utils";
+import { resetCardCounts } from "@/app/util/interval";
 
 let client, database, kanji, accounts, backup, premade
 
@@ -272,5 +273,47 @@ export async function backupAccountData(){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to backup account data.'}
+    }
+}
+
+export async function dailyResets(){
+    try{
+        if(!accounts) await init()
+
+        const data = await accounts.find().toArray()
+        //console.log(moment())
+
+        data.forEach(account => {
+            if(account.decks){
+                account.decks.forEach(deck => {
+                    try{
+                        if(moment().isAfter(deck[1].dateReset, 'day')){
+                            resetCardCounts(deck)
+                            deck[1].dateReset = moment()
+                            console.log(`Reset ${deck[0]}`)
+                        }
+                    } catch (e){
+                        console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
+                        deck[1].dateReset = moment().toISOString()
+                        resetCardCounts(deck)
+                    }
+                })
+                updateDecks(account.decks, account.email)
+            }
+            
+            // If NOT studied yesterday
+            if( account.stats &&
+                !account.stats.studied.some(element => element.date === moment().subtract(1, "day").format("L"))
+            ){
+                console.log(`${account.email} lost streak!`)
+                account.stats.dayStreak = 0
+                updateStats(account.stats, account.email)
+            }
+        })
+
+        
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to reset daily deck counts and streaks'}
     }
 }
