@@ -1,4 +1,4 @@
-import { getKanji, dailyResets } from "@/lib/mongodb/kanji"
+import { getKanji } from "@/lib/mongodb/kanji"
 import styles from './css/selection.module.css';
 import Search from "./search";
 
