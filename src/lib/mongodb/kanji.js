@@ -289,8 +289,8 @@ export async function dailyResets(){
                     try{
                         if(moment().isAfter(deck[1].dateReset, 'day')){
                             resetCardCounts(deck)
-                            deck[1].dateReset = moment()
-                            console.log(`Reset ${deck[0]}`)
+                            deck[1].dateReset = moment().toISOString()
+                            console.log(`Reset ${deck[0]} for ${account.email}`)
                         }
                     } catch (e){
                         console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
