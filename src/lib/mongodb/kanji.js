@@ -4,7 +4,7 @@ import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 import { kanaDict } from "@/app/util/kanji-utils";
 import { resetCardCounts } from "@/app/util/interval";
 
-let client, database, kanji, accounts, backup, premade
+let client, database, kanji, accounts, backup, premade, resetLogs
 
 async function init(){
     //Already initialized
@@ -17,6 +17,7 @@ async function init(){
         accounts = database.collection('accounts')
         backup = database.collection('backup')
         premade = database.collection('premade')
+        resetLogs = database.collection('reset-logs')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }
@@ -263,7 +264,7 @@ export async function backupAccountData(){
         const data = await accounts.find().toArray()
 
         const newBackup = {
-            date: moment(),
+            date: moment().toISOString(),
             data: data
         }
 
@@ -278,27 +279,29 @@ export async function backupAccountData(){
 
 export async function dailyResets(){
     try{
-        if(!accounts) await init()
+        if(!accounts || !resetLogs) await init()
 
         const data = await accounts.find().toArray()
-        //console.log(moment())
+        let log
 
-        data.forEach(account => {
+        for(const account in data){
             if(account.decks){
-                account.decks.forEach(deck => {
+                for(const deck in account.decks){
                     try{
                         if(moment().isAfter(deck[1].dateReset, 'day')){
                             resetCardCounts(deck)
                             deck[1].dateReset = moment().toISOString()
                             console.log(`Reset ${deck[0]} for ${account.email}`)
+                            log += `Reset ${deck[0]} for ${account.email}\n`
                         }
                     } catch (e){
                         console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
+                        log += `Invalid date at ${account.email}: ${deck[0]}. Setting to now.\n`
                         deck[1].dateReset = moment().toISOString()
                         resetCardCounts(deck)
                     }
-                })
-                updateDecks(account.decks, account.email)
+                }
+                await updateDecks(account.decks, account.email)
             }
             
             // If NOT studied yesterday
@@ -306,14 +309,30 @@ export async function dailyResets(){
                 !account.stats.studied.some(element => element.date === moment().subtract(1, "day").format("L"))
             ){
                 console.log(`${account.email} lost streak!`)
+                log += `${account.email} lost streak!\n`
                 account.stats.dayStreak = 0
-                updateStats(account.stats, account.email)
+                await updateStats(account.stats, account.email)
             }
-        })
+        }
 
-        
+        const newLog = {
+            date: moment().toISOString(),
+            data: log
+        }
+
+        const result = await resetLogs.insertOne(newLog)
+
+        return result
     } catch (e) {
         console.log(e)
-        return {error: 'Failed to reset daily deck counts and streaks'}
+
+        const newLog = {
+            date: moment().toISOString(),
+            data: `ERROR: Log failed: ${e}`
+        }
+
+        const result = await resetLogs.insertOne(newLog)
+
+        return {error: `Failed to reset daily deck counts and streaks: ${result}`}
     }
 }
