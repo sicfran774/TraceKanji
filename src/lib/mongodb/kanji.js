@@ -282,12 +282,14 @@ export async function dailyResets(){
         if(!accounts || !resetLogs) await init()
 
         const data = await accounts.find().toArray()
-        let log
+        let log = ""
 
-        for(const account in data){
+        for(let i in data){
+            const account = data[i]
             if(account.decks){
-                for(const deck in account.decks){
+                for(let j in account.decks){
                     try{
+                        const deck = account.decks[j]
                         if(moment().isAfter(deck[1].dateReset, 'day')){
                             resetCardCounts(deck)
                             deck[1].dateReset = moment().toISOString()
