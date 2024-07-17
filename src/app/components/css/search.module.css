@@ -126,7 +126,7 @@
     }
 
     .pageButtons > * {
-        margin-right: 0px;
+        margin-right: 2px;
     }
 
     .pageButtons button{
@@ -134,7 +134,8 @@
     }
 
     .pageNumber{
-        width: 85px;
+        width: 100px;
+        text-align: center;
     }
 
     .loading{

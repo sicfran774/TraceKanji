@@ -18,10 +18,16 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.10 (7/17/2024)</u></Typography>
+      <ul>
+        <li>- New setting: Change daily reset hour</li>
+        <li>- Go to your user settings to change what time is considered the &quot;next day&quot;</li>
+        <li>- Fixed daily reset bugs</li>
+      </ul>
       <Typography variant="h6"><u>0.3.9 (6/26/2024)</u></Typography>
       <ul>
         <li>- Added daily streak to stats button</li>
-        <li>- Email shows how many days in a row you&quot;ve studied</li>
+        <li>- Email shows how many days in a row you&apos;ve studied</li>
       </ul>
       <Typography variant="h6"><u>0.3.8 (6/16/2024)</u></Typography>
       <ul>

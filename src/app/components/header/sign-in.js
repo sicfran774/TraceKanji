@@ -75,10 +75,15 @@ export default function SignIn() {
 
     const fetchUserSettings = async () => {
         try{
-            const settings = (await fetch(`api/mongodb/settings/${data.user.email}`).then(result => result.json())).settings
-            
+            let settings = (await fetch(`api/mongodb/settings/${data.user.email}`).then(result => result.json())).settings
+
             if(settings){
+                //Check if user has all needed settings
+                if(!settings.timeReset){
+                    settings = Object.assign({timeReset: 0}, settings)
+                }
                 setUserSettings(settings)
+
             } else {
                 throw new Error("Failed to fetch settings for user.")
             }
@@ -238,7 +243,7 @@ export default function SignIn() {
                                     <p>Settings</p>
                                 </li>
                                 <li onClick={() => handleOpenAbout()} className={styles.menuButton}>
-                                    <p style={{marginLeft: "5px", marginRight: "10px"}}>🛈</p>
+                                    <p style={{marginLeft: "3px", marginRight: "12px", border: "solid black", borderRadius: "10px",padding:"0px 2px"}}>ℹ️</p>
                                     <p>Help/About</p>
                                 </li>
                                 <li onClick={() => signOut()} className={styles.menuButton}>

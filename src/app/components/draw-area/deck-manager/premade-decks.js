@@ -5,6 +5,7 @@ import { darkTheme, lightTheme } from '@/app/util/colors';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles'
 import { CircularProgress } from "@mui/material"
+import moment from "moment";
  
 import styles from "./css/premade-decks.module.css"
 
@@ -30,6 +31,7 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
             //console.log(allDecks)
             setLoading(true)
             const premadeDeck = (await fetch(`api/mongodb/premade/${deckName}`).then(result => result.json())).deck
+            premadeDeck[1].dateReset = moment()
             allDecks.push(premadeDeck)
             updateDecksInDB(email, allDecks)
             setAddedDeck(true)

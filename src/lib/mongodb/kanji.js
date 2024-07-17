@@ -53,7 +53,8 @@ async function createAccount(email){
         settings: {
             penWidth: 10,
             autoShowTracing: true,
-            subscribed: true
+            subscribed: true,
+            timeReset: 0
         },
         stats: {
             dayStreak: 0,
@@ -290,7 +291,8 @@ export async function dailyResets(){
                 for(let j in account.decks){
                     try{
                         const deck = account.decks[j]
-                        if(moment().isAfter(deck[1].dateReset, 'day')){
+                        const timeReset = account.settings.timeReset ? account.settings.timeReset : 0
+                        if(moment().isAfter(deck[1].dateReset, 'day') && moment().hour() >= timeReset){
                             resetCardCounts(deck)
                             deck[1].dateReset = moment().toISOString()
                             console.log(`Reset ${deck[0]} for ${account.email}`)

@@ -11,11 +11,13 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
     const [sliderValue, setSliderValue] = useState(userSettings.penWidth)
     const [autoShowTracing, setAutoShowTracing] = useState(userSettings.autoShowTracing)
     const [subscribed, setSubscribed] = useState(userSettings.subscribed)
+    const [timeReset, setTimeReset] = useState(userSettings.timeReset)
 
     useEffect(() => {
         setSliderValue(userSettings.penWidth)
         setAutoShowTracing(userSettings.autoShowTracing)
         setSubscribed(userSettings.subscribed)
+        setTimeReset(userSettings.timeReset)
     }, [userSettings])
 
     const changePenWidth = (event, value) => {
@@ -30,11 +32,16 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
         setSubscribed(event.target.checked)
     }
 
+    const changeTimeReset = (event, value) => {
+        setTimeReset(value)
+    }
+
     const saveSettingsAndQuit = () => {
         const newUserSettings = {
             penWidth: sliderValue,
             autoShowTracing: autoShowTracing,
-            subscribed: subscribed
+            subscribed: subscribed,
+            timeReset: timeReset
         }
         setUserSettings(newUserSettings)
         const result = updateSettingsInDB(email, newUserSettings)
@@ -58,6 +65,18 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
 
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
+    }
+
+    const handleTimeValue = (hour) => {
+        if(hour === 0){
+            return "12:00 AM"
+        } else if (hour < 12){
+            return `${hour}:00 AM`
+        } else if (hour === 12){
+            return `${hour}:00 PM`
+        } else {
+            return `${hour - 12}:00 PM`
+        }
     }
 
     return (
@@ -97,6 +116,17 @@ export default function SettingsPage({ open, onClose, theme, userSettings, setUs
                                     />} 
                                     label="Get daily email reminders to study due kanji in your decks" 
                                 />
+                                <div>
+                                    Study time reset: {handleTimeValue(timeReset)}
+                                    <Slider
+                                        min={0}
+                                        max={23}
+                                        step={1}
+                                        value={timeReset}
+                                        onChange={changeTimeReset}
+                                        aria-labelledby="continuous-slider"
+                                    />
+                                </div>
                             </div>
                             <h3>Other</h3>
                             <div>

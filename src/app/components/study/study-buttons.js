@@ -7,7 +7,7 @@ import moment from "moment"
 export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
-    let { setUserStats, userStats } = useContext(SharedKanjiProvider)
+    let { setUserStats, userStats, userSettings } = useContext(SharedKanjiProvider)
     const deckSettings = deck[1]
     const learningSteps = [...deckSettings.learningSteps]
 
@@ -104,19 +104,20 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         }
 
         const now = moment()
+        const tempNow = now.clone().add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
         deck[kanjiIndex].interval = newInterval // Update new interval to card info
         const newDate = addToDate(now, newInterval) // Update new due date
         deck[kanjiIndex].due = newDate
 
-        // If that card is a review card and is due after today
-        if((deck[kanjiIndex].learning || deck[kanjiIndex].graduated) && newDate.isAfter(now, 'day')){
+        // If that card is a review card and is due after today (after the hour reset)
+        if((deck[kanjiIndex].learning || deck[kanjiIndex].graduated) && newDate.isAfter(tempNow)){
             deck[1].reviewCount++ //increment reviewCount in deck (see interval.js => dueKanjiFromList())
         }
 
         // Info for kanji interval
         console.log(`${deck[kanjiIndex].kanji} set to ${deck[kanjiIndex].interval} (${deck[kanjiIndex].due})`)
 
-        const updatedDueDeck = sortByDueDate(deck, dueKanji)
+        const updatedDueDeck = sortByDueDate(deck, dueKanji, false, userSettings.timeReset)
         setDueKanji(updatedDueDeck)
         updateLabels()
 

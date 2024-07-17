@@ -1,8 +1,8 @@
 import moment from "moment"
 
-export const cardCounts = (deck) => {
+export const cardCounts = (deck, timeReset) => {
     let counts = [0, 0, 0]
-    const dueKanji = dueKanjiFromList(deck)
+    const dueKanji = dueKanjiFromList(deck, false, timeReset)
 
     if(dueKanji[0]){
         dueKanji.forEach(kanji => {
@@ -15,9 +15,9 @@ export const cardCounts = (deck) => {
     return counts
 }
 
-export const sortByDueDate = (deck, previous = [], firstTime = false) => {
+export const sortByDueDate = (deck, previous = [], firstTime = false, timeReset = 0) => {
     let allNotNew = true
-    const dueKanji = dueKanjiFromList(deck, firstTime).map(obj => {
+    const dueKanji = dueKanjiFromList(deck, firstTime, timeReset).map(obj => {
         if(!obj.learning && !obj.graduated) allNotNew = false
         return {kanji: obj.kanji, date: moment(obj.due)}
     }).filter(kanji => kanji !== undefined)
@@ -40,17 +40,19 @@ export const sortByDueDate = (deck, previous = [], firstTime = false) => {
     return sorted
 }
 
-const dueKanjiFromList = (deck, firstTime = false) => {
+const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
     const deckSettings = deck[1]
     let newCardCount = deckSettings.newCardCount, reviewCount = deckSettings.reviewCount
 
     const now = moment()
+    const tomorrowHourReset = now.clone().add(1,"day").hour(timeReset).minute(0).second(0)
     const arr = deck.slice(2, deck.length)
     const tempDueKanji = []
     arr.some(obj => {
         if(newCardCount < deckSettings.maxNewCards && (!obj.learning && !obj.graduated)){ //If it's a new card
             const kanjiDueDate = moment(obj.due)
-            if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
+            // If the card is due in the past, or if between now until the hour reset
+            if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ 
                 newCardCount++
                 if(firstTime){
                     obj.due = now   
@@ -64,7 +66,7 @@ const dueKanjiFromList = (deck, firstTime = false) => {
             }
         } else if (reviewCount < deckSettings.maxReviews && (obj.learning || obj.graduated)){
             const kanjiDueDate = moment(obj.due)
-            if(kanjiDueDate.isBefore(now) || kanjiDueDate.isSame(now, 'day')){ // If the card is due today or in the past
+            if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ // If the card is due today or in the past
                 reviewCount++
                 if(firstTime) obj.due = now
                 tempDueKanji.push(obj)
