@@ -73,7 +73,6 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     }
 
     const Hint = (kanjiInfo) => {
-        console.log()
         return (
             <div className={styles.hint}>
                 {<p>{kanjiInfo.kanjiInfo.meanings}</p>}
@@ -100,16 +99,16 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
             </div>
             <div className={styles.cardCounts}>
                 {!deck[kanjiIndex].learning && !deck[kanjiIndex].graduated ?
-                    <span id="cardCountNew" style={{color: "lightblue", textDecoration: "underline"}}>{cardCounts(deck)[0]}</span> : 
-                    <span id="cardCountNew" style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
+                    <span id="cardCountNew" style={{color: "lightblue", textDecoration: "underline"}}>{cardCounts(deck, userSettings.timeReset)[0]}</span> : 
+                    <span id="cardCountNew" style={{color: "lightblue"}}>{cardCounts(deck, userSettings.timeReset)[0]}</span>
                 }
                 {deck[kanjiIndex].learning ? 
-                    <span id="cardCountLearn" style={{color: "red", textDecoration: "underline"}}>{cardCounts(deck)[1]}</span> :
-                    <span id="cardCountLearn" style={{color: "red"}}>{cardCounts(deck)[1]}</span>
+                    <span id="cardCountLearn" style={{color: "red", textDecoration: "underline"}}>{cardCounts(deck, userSettings.timeReset)[1]}</span> :
+                    <span id="cardCountLearn" style={{color: "red"}}>{cardCounts(deck, userSettings.timeReset)[1]}</span>
                 }
                 {deck[kanjiIndex].graduated ?
-                    <span id="cardCountGrad" style={{color: "green", textDecoration: "underline"}}>{cardCounts(deck)[2]}</span> :
-                    <span id="cardCountGrad" style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+                    <span id="cardCountGrad" style={{color: "green", textDecoration: "underline"}}>{cardCounts(deck, userSettings.timeReset)[2]}</span> :
+                    <span id="cardCountGrad" style={{color: "green"}}>{cardCounts(deck, userSettings.timeReset)[2]}</span>
                 }
             </div>
             {showAnswer ? 

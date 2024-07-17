@@ -299,7 +299,6 @@ export default function Search({kanjiAndSVG}){
                             <button type="button" onClick={() => changePage(-1)} className='button'>&lt;</button>
                             <div className={styles.pageNumber}><span>Page {page + 1}/{kanjiInfo.length}</span></div>
                             <button type="button" onClick={() => changePage(1)} className='button'>&gt;</button>
-                            
                         </div>
                         <div className={styles.deckSelector}>
                             <select name="decks" id="decks" ref={deckSelector} onChange={e => changeDeck(e)}>

@@ -31,7 +31,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     const [scrollPos, setScrollPos] = useState(0)
 
     //editingDeck is a bool when program in "edit mode", selectedKanji is what's shown in kanji info box below
-    let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji } = useContext(SharedKanjiProvider)
+    let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji, userSettings } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
         const now = moment()
@@ -40,10 +40,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             // If the user logs in and the deck's date is at least a day before,
             // reset the card counts
             decks.forEach(deck => {
-                if(now.isAfter(deck[1].dateReset, 'day')){
+                if(now.isAfter(deck[1].dateReset, 'day') && now.hour() >= userSettings.timeReset){
                     console.log("First login today. Resetting daily card limits")
                     resetCardCounts(deck)
-                    deck[1].dateReset = now
+                    deck[1].dateReset = now.toISOString()
                 }
             })
             updateDecksInDB(email, decks, "beginning use effect")
@@ -94,7 +94,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 maxReviews: 200,
                 newCardCount: 0,
                 reviewCount: 0,
-                dateReset: moment(),
+                dateReset: moment().toISOString(),
                 sequential: true
             }
             let newDecks = [...decks, [deckName, settings]]
@@ -276,11 +276,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                                 {deck[0]}
                                 <div className={styles.editDeck}>
                                     <div className={styles.deckNumbers}>
-                                        <span style={{color: "lightblue"}}>{cardCounts(deck)[0]}</span>
-                                        <span style={{color: "red"}}>{cardCounts(deck)[1]}</span>
-                                        <span style={{color: "green"}}>{cardCounts(deck)[2]}</span>
+                                        <span style={{color: "lightblue"}}>{cardCounts(deck, userSettings.timeReset)[0]}</span>
+                                        <span style={{color: "red"}}>{cardCounts(deck, userSettings.timeReset)[1]}</span>
+                                        <span style={{color: "green"}}>{cardCounts(deck, userSettings.timeReset)[2]}</span>
                                     </div>
-                                    <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck)[0] === 0 && cardCounts(deck)[1] === 0 && cardCounts(deck)[2] === 0}>Start Study</button>
+                                    <button type="button" className='button' onClick={() => startStudy(index)} disabled={cardCounts(deck, userSettings.timeReset)[0] === 0 && cardCounts(deck, userSettings.timeReset)[1] === 0 && cardCounts(deck, userSettings.timeReset)[2] === 0}>Start Study</button>
                                     <button type="button" className='button' onClick={() => toggleOpenDeck(index)}>Edit Deck</button>
                                 </div>
                             </li>
