@@ -40,10 +40,10 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             // If the user logs in and the deck's date is at least a day before,
             // reset the card counts
             decks.forEach(deck => {
-                if(now.isAfter(deck[1].dateReset, 'day') && now.hour() >= userSettings.timeReset){
+                if(now.isAfter(deck[1].dateReset)){
                     console.log("First login today. Resetting daily card limits")
                     resetCardCounts(deck)
-                    deck[1].dateReset = now.toISOString()
+                    deck[1].dateReset = now.add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
                 }
             })
             updateDecksInDB(email, decks, "beginning use effect")
