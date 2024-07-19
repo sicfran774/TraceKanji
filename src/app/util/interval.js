@@ -55,7 +55,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
             if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ 
                 newCardCount++
                 if(firstTime){
-                    obj.due = now   
+                    //obj.due = now   TODO: Decide if this should stay or not. 
                     //This prevents cards repeating too much. If you say again,
                     //that card will appear before any other card because it's
                     //technically the most soonest card always.
@@ -68,7 +68,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
             const kanjiDueDate = moment(obj.due)
             if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ // If the card is due today or in the past
                 reviewCount++
-                if(firstTime) obj.due = now
+                //if(firstTime) obj.due = now TODO: Same as above TODO.
                 tempDueKanji.push(obj)
             } else {
                 tempDueKanji.push(undefined)
@@ -78,8 +78,6 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
         }
     })
     const dueKanji = tempDueKanji.filter(kanji => kanji !== undefined)
-
-    //console.log(dueKanji)
 
     return dueKanji
 }

@@ -15,7 +15,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const {data, status} = useSession() // data.user.email
 
     useEffect(() => {
-        setDueKanji(sortByDueDate(deck, [], true))
+        setDueKanji(sortByDueDate(deck, [], true, userSettings.timeReset))
 
         const handleKeyDown = (e) => {
             if(e.code === "Space"){
