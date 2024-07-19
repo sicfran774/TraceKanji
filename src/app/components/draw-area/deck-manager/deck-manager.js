@@ -34,8 +34,9 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     let { editingDeck, setEditingDeck, selectedKanji, setSelectedKanji, userSettings } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
-        const now = moment()
         if(decks.length > 0){
+            const now = moment()
+            const newDate = now.clone().add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
             // Deck first puts the date it was created.
             // If the user logs in and the deck's date is at least a day before,
             // reset the card counts
@@ -43,7 +44,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 if(now.isAfter(deck[1].dateReset)){
                     console.log("First login today. Resetting daily card limits")
                     resetCardCounts(deck)
-                    deck[1].dateReset = now.add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
+                    deck[1].dateReset = newDate.toISOString()
                 }
             })
             updateDecksInDB(email, decks, "beginning use effect")
