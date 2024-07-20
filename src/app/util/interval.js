@@ -21,7 +21,6 @@ export const sortByDueDate = (deck, previous = [], firstTime = false, timeReset 
         if(!obj.learning && !obj.graduated) allNotNew = false
         return {kanji: obj.kanji, date: moment(obj.due)}
     }).filter(kanji => kanji !== undefined)
-    //console.log(dueKanji)
 
     //Sort by date so that you don't get repeats
     dueKanji.sort((a, b) => {
@@ -45,7 +44,9 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
     let newCardCount = deckSettings.newCardCount, reviewCount = deckSettings.reviewCount
 
     const now = moment()
-    const tomorrowHourReset = now.clone().add(1,"day").hour(timeReset).minute(0).second(0)
+    const tomorrowHourReset = now.clone().hour(timeReset).minute(0).second(0)
+    if(now.isAfter(tomorrowHourReset)) tomorrowHourReset.add(1, "day")
+    
     const arr = deck.slice(2, deck.length)
     const tempDueKanji = []
     arr.some(obj => {
@@ -55,7 +56,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
             if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ 
                 newCardCount++
                 if(firstTime){
-                    //obj.due = now   TODO: Decide if this should stay or not. 
+                    obj.due = now   //TODO: Decide if this should stay or not. 
                     //This prevents cards repeating too much. If you say again,
                     //that card will appear before any other card because it's
                     //technically the most soonest card always.
@@ -68,7 +69,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
             const kanjiDueDate = moment(obj.due)
             if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ // If the card is due today or in the past
                 reviewCount++
-                //if(firstTime) obj.due = now TODO: Same as above TODO.
+                if(firstTime) obj.due = now //TODO: Same as above TODO.
                 tempDueKanji.push(obj)
             } else {
                 tempDueKanji.push(undefined)
@@ -78,6 +79,8 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
         }
     })
     const dueKanji = tempDueKanji.filter(kanji => kanji !== undefined)
+
+    console.log(dueKanji)
 
     return dueKanji
 }
