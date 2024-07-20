@@ -80,7 +80,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
     })
     const dueKanji = tempDueKanji.filter(kanji => kanji !== undefined)
 
-    console.log(dueKanji)
+    //console.log(dueKanji)
 
     return dueKanji
 }

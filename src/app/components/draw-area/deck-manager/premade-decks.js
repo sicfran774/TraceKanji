@@ -31,7 +31,7 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
             //console.log(allDecks)
             setLoading(true)
             const premadeDeck = (await fetch(`api/mongodb/premade/${deckName}`).then(result => result.json())).deck
-            premadeDeck[1].dateReset = moment()
+            premadeDeck[1].dateReset = moment().toISOString()
             allDecks.push(premadeDeck)
             updateDecksInDB(email, allDecks)
             setAddedDeck(true)

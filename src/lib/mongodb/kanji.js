@@ -294,14 +294,14 @@ export async function dailyResets(){
                         const timeReset = account.settings.timeReset ? account.settings.timeReset : 0
                         if(moment().isAfter(deck[1].dateReset)){
                             resetCardCounts(deck)
-                            deck[1].dateReset = moment().add(1,"day").hour(timeReset).minute(0).second(0)
+                            deck[1].dateReset = moment().add(1,"day").hour(timeReset).minute(0).second(0).toISOString()
                             console.log(`Reset ${deck[0]} for ${account.email}`)
                             log += `Reset ${deck[0]} for ${account.email}\n`
                         }
                     } catch (e){
                         console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
                         log += `Invalid date at ${account.email}: ${deck[0]}. Setting to now.\n`
-                        deck[1].dateReset = moment().add(1,"day").hour(account.settings.timeReset).minute(0).second(0)
+                        deck[1].dateReset = moment().add(1,"day").hour(account.settings.timeReset).minute(0).second(0).toISOString()
                         resetCardCounts(deck)
                     }
                 }
