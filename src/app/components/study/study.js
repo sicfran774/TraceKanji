@@ -2,17 +2,22 @@ import styles from './css/study.module.css'
 import { useEffect, useState, useContext } from 'react'
 import { useSession } from 'next-auth/react';
 import StudyButtons from './study-buttons'
+import EditCardScreen from '../draw-area/deck-manager/edit-card';
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import SVG from 'react-inlinesvg'
 import { sortByDueDate, cardCounts, updateDecksInDB, updateStatsInDB } from '@/app/util/interval';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles'
 
 export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setShowOverlay }){
     
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
     const [dueKanji, setDueKanji] = useState([])
-    let { setSharedKanji, sharedKanji, userSettings, userStats } = useContext(SharedKanjiProvider)
+    let { setSharedKanji, sharedKanji, userSettings, userStats, theme } = useContext(SharedKanjiProvider)
     const {data, status} = useSession() // data.user.email
+
+    const [openDialog, setOpenDialog] = useState(false)
 
     useEffect(() => {
         setDueKanji(sortByDueDate(deck, [], true, userSettings.timeReset))
@@ -56,6 +61,14 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         updateStatsInDB(data.user.email, userStats, "userStats in study")
     }, [userStats])
 
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+    
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
     const endStudy = () => {
         setStudying(false)
     }
@@ -88,9 +101,37 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         )
     }
 
+    const CardDialog = () => {
+        return (
+            <ThemeProvider theme={theme}>
+                <Dialog open={openDialog} onClose={handleCloseDialog} scroll='paper'>
+                    <DialogTitle>Kanji Options</DialogTitle>
+                    <DialogContent>
+                        {deck[kanjiIndex] && 
+                        <EditCardScreen
+                            kanji={deck[kanjiIndex]} 
+                            startLearnStep={deck[1].learningSteps[0]}
+                            setOpenEditCardScreen={setOpenDialog}
+                            email={data.user.email} 
+                            allDecks={allDecks}
+                        />}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseDialog} color="primary">
+                            Close
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </ThemeProvider>
+        )
+    }
+
     return (
         <div className={styles.main}>
-            <div className={styles.quitDiv}><button className={styles.quitButton} onClick={() => endStudy()}>Quit</button></div>
+            <div className={styles.quitDiv}>
+                <button className={styles.quitButton} onClick={() => handleOpenDialog()}>Options</button>
+                <button className={styles.quitButton} onClick={() => endStudy()}>Quit</button>
+            </div>
             <div className={styles.info}>
                 {/* Sends MongoDB info for deck */}
                 <Hint kanjiInfo={deck[kanjiIndex]} />
@@ -125,6 +166,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                     <button onClick={() => answerTrue()}>Show Answer</button>
                 </div>)
             }
+            <CardDialog/>
         </div>
     )
 }
