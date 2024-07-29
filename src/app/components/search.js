@@ -202,7 +202,7 @@ export default function Search({kanjiAndSVG}){
                             signal: abortController.signal
                         }).then(result => result.json()).then(jason => kanjiJson.push(jason))
                     } catch (e){
-                        break
+                        return
                     }
                 }
             }
