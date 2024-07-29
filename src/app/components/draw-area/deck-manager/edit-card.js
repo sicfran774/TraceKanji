@@ -6,13 +6,13 @@ import styles from "./css/edit-card.module.css"
 export default function EditCardScreen({ kanji, startLearnStep, setOpenEditCardScreen, email, allDecks }){
 
     const [areYouSure, setAreYouSure] = useState(false)
-
+ 
     const originalMeaning = kanji.meanings
     let hintInput = kanji.meanings
 
     const resetCard = () => {
         kanji.graduated = false
-        kanji.learning = true
+        kanji.learning = false
         kanji.learningIndex = 0
         kanji.interval = startLearnStep
         kanji.due = moment()

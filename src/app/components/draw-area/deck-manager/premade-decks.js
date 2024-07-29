@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { updateDecksInDB } from "@/app/util/interval";
+import { SharedKanjiProvider } from "../../shared-kanji-provider";
 
 import { darkTheme, lightTheme } from '@/app/util/colors';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
@@ -13,6 +14,8 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
 
     const [theme, setTheme] = useState(lightTheme)
     const [loading, setLoading] = useState(false)
+
+    let { userSettings } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -31,7 +34,7 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
             //console.log(allDecks)
             setLoading(true)
             const premadeDeck = (await fetch(`api/mongodb/premade/${deckName}`).then(result => result.json())).deck
-            premadeDeck[1].dateReset = moment().toISOString()
+            premadeDeck[1].dateReset = moment().add(1,"day").hour(userSettings.timeReset).minute(0).second(0).toISOString()
             allDecks.push(premadeDeck)
             updateDecksInDB(email, allDecks)
             setAddedDeck(true)

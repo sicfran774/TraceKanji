@@ -5,10 +5,10 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useState, useEffect, useRef, useContext } from 'react';
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
-import { darkTheme, lightTheme } from '@/app/util/colors';
 import ChangelogDialog from '../changelog/changelog';
 import { ThemeProvider } from '@mui/material/styles'
 import SettingsPage from './settings';
+import { darkTheme, lightTheme } from '@/app/util/colors';
 
 export default function SignIn() {
 
@@ -20,9 +20,7 @@ export default function SignIn() {
     const [openAbout, setOpenAbout] = useState(false)
     const [openSettings, setOpenSettings] = useState(false)
 
-    const [theme, setTheme] = useState(lightTheme)
-
-    let { userSettings, setUserSettings, userStats, setUserStats } = useContext(SharedKanjiProvider)
+    let { userSettings, setUserSettings, userStats, setUserStats, theme, setTheme } = useContext(SharedKanjiProvider)
 
     useEffect(() => {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
