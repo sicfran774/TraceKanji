@@ -50,7 +50,7 @@ export default function Search({kanjiAndSVG}){
             any existing fetches going on (look below in "fetchDataInBatches()")
         */  
         if(abortController){
-            abortController.abort()
+            abortController.abort("Deck changed, stopping previous fetches")
         }
         abortController = new AbortController()
         if(!studying){
@@ -171,41 +171,49 @@ export default function Search({kanjiAndSVG}){
         setDoneLoadingKanji(false)
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
             const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
-            for (let j = 0; j < batchKanjis.length; j++){
-                if(batchKanjis[j] === undefined) continue;
-                if(kanaDict().get(batchKanjis[j].kanji)){
-                    kanjiJson.push({
-                        "grade": 0,
-                        "heisig_en": kanaDict().get(batchKanjis[j].kanji)[0],
-                        "jlpt": 0,
-                        "kanji": batchKanjis[j].kanji,
-                        "kun_readings": [
-                            batchKanjis[j].kanji
-                        ],
-                        "meanings": kanaDict().get(batchKanjis[j].kanji),
-                        "name_readings": [],
-                        "notes": [],
-                        "on_readings": [
-                            batchKanjis[j].kanji
-                        ],
-                        "stroke_count": 0,
-                        "unicode": ""
-                    })
-                } else {
-                    /*
-                    For signal in fetch:
-                    If another call of this function is made while a current one is running, stop the fetches
-                    i.e. when the deck is changed, we don't want the default deck to keep loading
-                    */
-                    try{
-                        await fetch(`${KANJIAPI_URL}/kanji/${batchKanjis[j].kanji}`, {
-                            signal: abortController.signal
-                        }).then(result => result.json()).then(jason => kanjiJson.push(jason))
-                    } catch (e){
-                        return
+            const promisedKanjis = batchKanjis.map(kanji => {
+                return new Promise((resolve, reject) => {
+                    if(kanji === undefined) reject();
+                    if(kanaDict().get(kanji.kanji)){
+                        resolve(
+                            {
+                                "grade": 0,
+                                "heisig_en": kanaDict().get(kanji.kanji)[0],
+                                "jlpt": 0,
+                                "kanji": kanji.kanji,
+                                "kun_readings": [
+                                    kanji.kanji
+                                ],
+                                "meanings": kanaDict().get(kanji.kanji),
+                                "name_readings": [],
+                                "notes": [],
+                                "on_readings": [
+                                    kanji.kanji
+                                ],
+                                "stroke_count": 0,
+                                "unicode": ""
+                            }
+                        )
+                    } else {
+                        /*
+                        For signal in fetch:
+                        If another call of this function is made while a current one is running, stop the fetches
+                        i.e. when the deck is changed, we don't want the default deck to keep loading
+                        */
+                        try{
+                            fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {
+                                signal: abortController.signal
+                            }).then(result => result.json()).then(json => resolve(json))
+                        } catch (e){
+                            reject()
+                        }
                     }
-                }
-            }
+                })
+            })
+
+            const batchResults = await Promise.all(promisedKanjis)
+
+            kanjiJson.push(...batchResults)
             
             // Send the accumulated data after each batch
             combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
