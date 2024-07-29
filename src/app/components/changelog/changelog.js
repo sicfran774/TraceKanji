@@ -18,6 +18,14 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.11 (7/28/2024)</u></Typography>
+      <ul>
+        <li>- New study feature: Undo card interval, bury card</li>
+        <li>- You can now undo a card if you&apos;ve made a mistake when choosing the new time interval during study</li>
+        <li>- Burying a card will move a card&apos;s due date to tomorrow</li>
+        <li>- You can now edit card information in the study screen</li>
+        <li>- Fixed Hiragana/Katakana loading bugs</li>
+      </ul>
       <Typography variant="h6"><u>0.3.10 (7/17/2024)</u></Typography>
       <ul>
         <li>- New setting: Change daily reset hour</li>
