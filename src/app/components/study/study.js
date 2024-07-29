@@ -15,6 +15,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
     const [dueKanji, setDueKanji] = useState([])
+    const [firstLoad, setFirstLoad] = useState(false)
     const [lastKanji, setLastKanji] = useState({})
 
     let { setSharedKanji, sharedKanji, userSettings, userStats, theme } = useContext(SharedKanjiProvider)
@@ -30,6 +31,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
 
     useEffect(() => {
         setDueKanji(sortByDueDate(deck, [], true, userSettings.timeReset))
+        setFirstLoad(true)
     }, [])
 
     useEffect(() => {
@@ -39,8 +41,8 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
             const index = deck.findIndex(obj => obj.kanji === dueKanji[0]);
             //console.log("current: " + deck[index].meanings)
             setKanjiIndex(index)
-        } else {
-            //endStudy()
+        } else if (firstLoad) {
+            endStudy()
         }
     }, [dueKanji])
 
@@ -50,13 +52,14 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         if(svgIndex >= 0){
             setSharedKanji({kanji: deck[kanjiIndex].kanji, svg: kanjiAndSVG[svgIndex].svg})
         }
+        
+        answerFalse()
 
         document.addEventListener('keydown', handleKeyDown)
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         }
-        
     }, [kanjiIndex])
     
     useEffect(() => {
@@ -83,25 +86,38 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         if(userSettings.autoShowTracing){
             setShowOverlay(true)
         }
-        
-        //Create a copy of the kanji so that it's not pointing to array
-        setLastKanji({
-            kanji: JSON.parse(JSON.stringify(deck[kanjiIndex])),
-            index: kanjiIndex
-        }) 
+
         setShowAnswer(true)
     }
 
     const undoKanji = () => {
-        deck[lastKanji.kanjiIndex] = lastKanji.kanji
-        setKanjiIndex(lastKanji.kanjiIndex)
+        addToDeckCount(-1)
+        deck[lastKanji.index] = lastKanji.kanji
+        setKanjiIndex(lastKanji.index)
     }
 
     const buryKanji = () => {
+        setLastKanji({
+            kanji: JSON.parse(JSON.stringify(deck[kanjiIndex])),
+            index: kanjiIndex
+        })
+
         setShowAnswer(false)
+
         const newDate = addToDate(moment(), "1d") // Add one day to card
         deck[kanjiIndex].due = newDate
+        
+        addToDeckCount(1)
         setDueKanji(sortByDueDate(deck, dueKanji, false, userSettings.timeReset))
+
+        handleCloseDialog()
+    }
+
+    const addToDeckCount = (num) => {
+        // If a new card
+        if(!lastKanji.kanji.learning && !lastKanji.kanji.graduated) deck[1].newCardCount += num;
+        // If a review card
+        else if(lastKanji.kanji.learning) deck[1].reviewCount += num;
     }
 
     const Hint = (kanjiInfo) => {
@@ -129,7 +145,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                         {deck[kanjiIndex] && 
                         <div className={styles.optionsScreen}>
                             <div className={styles.editCardScreenButtons}>
-                                <button className={styles.quitButton} onClick={() => undoKanji()} disabled={!lastKanji.kanji}>Undo Last Card</button>
+                                <button className={styles.quitButton} onClick={() => undoKanji()} disabled={!lastKanji.kanji || deck[kanjiIndex].kanji === lastKanji.kanji.kanji}>Undo Last Card</button>
                                 <button className={styles.quitButton} onClick={() => buryKanji()}>Bury Card</button>
                             </div>
                             <div className={styles.editCardScreen}>
@@ -188,6 +204,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                     setDueKanji={setDueKanji}
                     dueKanji={dueKanji}
                     setShowOverlay={setShowOverlay}
+                    setLastKanji={setLastKanji}
                 /> : 
                 (<div className={styles.showAnswerDiv}>
                     <button onClick={() => answerTrue()}>Show Answer</button>

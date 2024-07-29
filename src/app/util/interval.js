@@ -53,7 +53,7 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
         if(newCardCount < deckSettings.maxNewCards && (!obj.learning && !obj.graduated)){ //If it's a new card
             const kanjiDueDate = moment(obj.due)
             // If the card is due in the past, or if between now until the hour reset
-            if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){ 
+            if(kanjiDueDate.isBefore(now) || (kanjiDueDate.isBetween(now, tomorrowHourReset))){
                 newCardCount++
                 if(firstTime){
                     obj.due = now   //TODO: Decide if this should stay or not. 
@@ -74,13 +74,11 @@ const dueKanjiFromList = (deck, firstTime = false, timeReset = 0) => {
             } else {
                 tempDueKanji.push(undefined)
             }
-        } else { //Can't add any more cards
+        } else if (reviewCount >= deckSettings.maxReviews && newCardCount >= deckSettings.maxNewCards){ //Can't add any more cards
             return true //"breaks" out of .some()
         }
     })
     const dueKanji = tempDueKanji.filter(kanji => kanji !== undefined)
-
-    //console.log(dueKanji)
 
     return dueKanji
 }

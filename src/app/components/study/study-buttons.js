@@ -4,7 +4,7 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { addToDate, multiplyInterval, sortByDueDate, updateStatsInDB } from '@/app/util/interval';
 import moment from "moment"
 
-export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay}){
+export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay, setLastKanji}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
     let { setUserStats, userStats, userSettings } = useContext(SharedKanjiProvider)
@@ -60,6 +60,11 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
     }
 
     const nextKanji = (choice) => {
+        //Create a copy of the kanji so that it's not pointing to array
+        setLastKanji({
+            kanji: JSON.parse(JSON.stringify(deck[kanjiIndex])),
+            index: kanjiIndex
+        })
 
         setShowAnswer(false)
 
