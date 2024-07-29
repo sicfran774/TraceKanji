@@ -89,7 +89,6 @@ export default function Search({kanjiAndSVG}){
 
     useEffect(() => {
         setKanjiPerPage()
-        //console.log(filteredList)
     }, [filteredList])
 
     const getKanjiBasedOnFilter = () => {
@@ -171,53 +170,45 @@ export default function Search({kanjiAndSVG}){
         let kanjiJson = []
         setDoneLoadingKanji(false)
         for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
-            try{
-                /*
-                For signal in fetch:
-                If another call of this function is made while a current one is running, stop the fetches
-                i.e. when the deck is changed, we don't want the default deck to keep loading
-                */
-                const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
-                const batchPromises = batchKanjis.map(kanji =>
-                    fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {
-                        signal: abortController.signal
+            const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
+            for (let j = 0; j < batchKanjis.length; j++){
+                if(batchKanjis[j] === undefined) continue;
+                if(kanaDict().get(batchKanjis[j].kanji)){
+                    kanjiJson.push({
+                        "grade": 0,
+                        "heisig_en": kanaDict().get(batchKanjis[j].kanji)[0],
+                        "jlpt": 0,
+                        "kanji": batchKanjis[j].kanji,
+                        "kun_readings": [
+                            batchKanjis[j].kanji
+                        ],
+                        "meanings": kanaDict().get(batchKanjis[j].kanji),
+                        "name_readings": [],
+                        "notes": [],
+                        "on_readings": [
+                            batchKanjis[j].kanji
+                        ],
+                        "stroke_count": 0,
+                        "unicode": ""
                     })
-                    .then(result => {
-                        if(result.ok){
-                            return result.json()
-                        } else {
-                            return {
-                                "grade": 0,
-                                "heisig_en": kanaDict().get(kanji.kanji)[0],
-                                "jlpt": 0,
-                                "kanji": kanji.kanji,
-                                "kun_readings": [
-                                    kanji.kanji
-                                ],
-                                "meanings": kanaDict().get(kanji.kanji),
-                                "name_readings": [],
-                                "notes": [],
-                                "on_readings": [
-                                    kanji.kanji
-                                ],
-                                "stroke_count": 0,
-                                "unicode": ""
-                            }
-                        }
-                    })
-                )
-        
-                const batchResults = await Promise.all(batchPromises);
-
-                kanjiJson.push(...batchResults);
-                //console.log(kanjiJson)
-                
-                // Send the accumulated data after each batch
-                combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
-            } catch (err) {
-                //We reached here possibly because the signal threw an AbortSignal error, so just return nothing
-                return
+                } else {
+                    /*
+                    For signal in fetch:
+                    If another call of this function is made while a current one is running, stop the fetches
+                    i.e. when the deck is changed, we don't want the default deck to keep loading
+                    */
+                    try{
+                        await fetch(`${KANJIAPI_URL}/kanji/${batchKanjis[j].kanji}`, {
+                            signal: abortController.signal
+                        }).then(result => result.json()).then(jason => kanjiJson.push(jason))
+                    } catch (e){
+                        break
+                    }
+                }
             }
+            
+            // Send the accumulated data after each batch
+            combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
         }
     
         setDoneLoadingKanji(true)
@@ -313,9 +304,9 @@ export default function Search({kanjiAndSVG}){
                     {kanjiInfo.length > 0 ? 
                     (<div className={styles.kanjiListGrid}>
                         <ul>
-                            {kanjiInfo.length > 0 && kanjiInfo[page].map(item => {
+                            {kanjiInfo.length > 0 && kanjiInfo[page].map((item, index) => {
                                 return (
-                                    <li key={item.info.kanji}>
+                                    <li key={item.info.kanji + index}>
                                         <KanjiCard kanji={item.info} svg={item.svg}/>
                                     </li>
                             )})}

@@ -67,6 +67,29 @@
     margin: 0 7px;
 }
 
+.optionsScreen {
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 10px;
+}
+
+.editCardScreen {
+    width: 400px;
+}
+
+.editCardScreenButtons{
+    display: flex;
+    flex-direction: column;
+    margin-right: 40px;
+    padding-right: 20px;
+    border-right: 1px solid black;
+}
+
+.editCardScreenButtons button{
+    margin-bottom: 30px;
+    height: 50px;
+}
+
 @media (prefers-color-scheme: dark) {
     .info{
         border-color: white;
@@ -78,4 +101,9 @@
     .hint{
         border-color: white;
     }
+
+    .editCardScreenButtons{
+        border-right: 1px solid white;
+    }
+    
 }

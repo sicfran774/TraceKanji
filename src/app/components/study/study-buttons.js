@@ -76,8 +76,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             // Clamp to at least 0 (if said "Again" on first step, don't go to a "negative" step)
             const learningIndex = Math.max(0, choice + deck[kanjiIndex].learningIndex)
             
-            // console.log("learningIndex: " + learningIndex)
-            if(choice < 0){
+            if(choice < 0){ //Hit Again
                 newInterval = learningSteps[0]
                 deck[kanjiIndex].learningIndex = 0
             } else if(choice < 2 && learningIndex < learningSteps.length){ // If still within step length

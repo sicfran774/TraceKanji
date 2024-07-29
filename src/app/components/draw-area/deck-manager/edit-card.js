@@ -12,7 +12,7 @@ export default function EditCardScreen({ kanji, startLearnStep, setOpenEditCardS
 
     const resetCard = () => {
         kanji.graduated = false
-        kanji.learning = true
+        kanji.learning = false
         kanji.learningIndex = 0
         kanji.interval = startLearnStep
         kanji.due = moment()

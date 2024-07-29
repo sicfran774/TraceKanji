@@ -3,9 +3,10 @@ import { useEffect, useState, useContext } from 'react'
 import { useSession } from 'next-auth/react';
 import StudyButtons from './study-buttons'
 import EditCardScreen from '../draw-area/deck-manager/edit-card';
-import { SharedKanjiProvider } from '../shared-kanji-provider';
+import moment from 'moment';
 import SVG from 'react-inlinesvg'
-import { sortByDueDate, cardCounts, updateDecksInDB, updateStatsInDB } from '@/app/util/interval';
+import { SharedKanjiProvider } from '../shared-kanji-provider';
+import { sortByDueDate, cardCounts, updateDecksInDB, updateStatsInDB, addToDate } from '@/app/util/interval';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles'
 
@@ -14,25 +15,21 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const [showAnswer, setShowAnswer] = useState(false);
     const [kanjiIndex, setKanjiIndex] = useState(2);
     const [dueKanji, setDueKanji] = useState([])
+    const [lastKanji, setLastKanji] = useState({})
+
     let { setSharedKanji, sharedKanji, userSettings, userStats, theme } = useContext(SharedKanjiProvider)
     const {data, status} = useSession() // data.user.email
 
     const [openDialog, setOpenDialog] = useState(false)
 
+    const handleKeyDown = (e) => {
+        if(e.code === "Space"){
+            answerTrue()
+        }
+    }
+
     useEffect(() => {
         setDueKanji(sortByDueDate(deck, [], true, userSettings.timeReset))
-
-        const handleKeyDown = (e) => {
-            if(e.code === "Space"){
-                answerTrue()
-            }
-        }
-        
-        document.addEventListener('keydown', handleKeyDown)
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        }
     }, [])
 
     useEffect(() => {
@@ -48,11 +45,16 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     }, [dueKanji])
 
     useEffect(() => {
-        //console.log(deck[kanjiIndex])
         const svgIndex = kanjiAndSVG.findIndex(obj => obj.kanji === deck[kanjiIndex].kanji);
-        //console.log(svgIndex)
+
         if(svgIndex >= 0){
             setSharedKanji({kanji: deck[kanjiIndex].kanji, svg: kanjiAndSVG[svgIndex].svg})
+        }
+
+        document.addEventListener('keydown', handleKeyDown)
+
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
         }
         
     }, [kanjiIndex])
@@ -82,7 +84,24 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
             setShowOverlay(true)
         }
         
+        //Create a copy of the kanji so that it's not pointing to array
+        setLastKanji({
+            kanji: JSON.parse(JSON.stringify(deck[kanjiIndex])),
+            index: kanjiIndex
+        }) 
         setShowAnswer(true)
+    }
+
+    const undoKanji = () => {
+        deck[lastKanji.kanjiIndex] = lastKanji.kanji
+        setKanjiIndex(lastKanji.kanjiIndex)
+    }
+
+    const buryKanji = () => {
+        setShowAnswer(false)
+        const newDate = addToDate(moment(), "1d") // Add one day to card
+        deck[kanjiIndex].due = newDate
+        setDueKanji(sortByDueDate(deck, dueKanji, false, userSettings.timeReset))
     }
 
     const Hint = (kanjiInfo) => {
@@ -108,13 +127,21 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                     <DialogTitle>Kanji Options</DialogTitle>
                     <DialogContent>
                         {deck[kanjiIndex] && 
-                        <EditCardScreen
-                            kanji={deck[kanjiIndex]} 
-                            startLearnStep={deck[1].learningSteps[0]}
-                            setOpenEditCardScreen={setOpenDialog}
-                            email={data.user.email} 
-                            allDecks={allDecks}
-                        />}
+                        <div className={styles.optionsScreen}>
+                            <div className={styles.editCardScreenButtons}>
+                                <button className={styles.quitButton} onClick={() => undoKanji()} disabled={!lastKanji.kanji}>Undo Last Card</button>
+                                <button className={styles.quitButton} onClick={() => buryKanji()}>Bury Card</button>
+                            </div>
+                            <div className={styles.editCardScreen}>
+                                <EditCardScreen
+                                    kanji={deck[kanjiIndex]} 
+                                    startLearnStep={deck[1].learningSteps[0]}
+                                    setOpenEditCardScreen={setOpenDialog}
+                                    email={data.user.email} 
+                                    allDecks={allDecks}
+                                />
+                            </div>
+                        </div>}
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseDialog} color="primary">
