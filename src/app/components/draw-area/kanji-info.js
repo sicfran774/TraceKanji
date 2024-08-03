@@ -14,11 +14,12 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Start Studying")
-    const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
+    const [recKanjiMsg, setRecKanjiMsg] = useState("Kanji Recognition Currently Disabled")
 
     const [userEmail, setUserEmail] = useState("")
 
     const [open, setOpen] = useState(false)
+    const [recognizeSnack, setRecognizeSnack] = useState(false)
     const {data, status} = useSession()
 
     useEffect(() => {
@@ -98,7 +99,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
             disableRecognizeKanji()
             document.getElementById("toggleRecognize").className = ""
         } else {
-            enableRecognizeKanji()
+            enableRecognizeKanji() 
             if (window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 document.getElementById("toggleRecognize").className = styles.recognitionTextLight
             } else {
@@ -131,13 +132,26 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
         setOpen(false);
     };
 
+    const handleRecognizeSnack = (event, reason) => {
+        if (reason === "clickaway") {
+          return;
+        }
+        setRecognizeSnack(false);
+    };
+
     return(
         <div className={styles.main}>
             {!studying && (<div className={styles.deckManager}>
                 <div className={styles.deckManagerButtons}>
                     <button className={styles.toggleDeckManagerButton} type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 </div>
-                <button type="button" className={styles.toggleRecognizeButton} onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" className={styles.toggleRecognizeButton} onClick={() => setRecognizeSnack(true) /*toggleRecognizeKanji()*/}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <Snackbar
+                    open={recognizeSnack}
+                    autoHideDuration={6000}
+                    onClose={handleRecognizeSnack}
+                    message="We are currently migrating servers, sorry for the inconvenience!"
+                />
             </div>)}
             {/* {status !== 'authenticated' && (<div className={styles.notSignedIn}>
                 <span></span>

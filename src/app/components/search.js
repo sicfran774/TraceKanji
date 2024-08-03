@@ -167,60 +167,63 @@ export default function Search({kanjiAndSVG}){
 
     // Fetches Kanji info from KanjiAPI
     const fetchDataInBatches = async (kanjiAndSVG, originalOrder = []) => {
-        let kanjiJson = []
-        setDoneLoadingKanji(false)
-        for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
-            const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
-            const promisedKanjis = batchKanjis.map(kanji => {
-                return new Promise((resolve, reject) => {
-                    if(kanji === undefined) reject();
-                    if(kanaDict().get(kanji.kanji)){
-                        resolve(
-                            {
-                                "grade": 0,
-                                "heisig_en": kanaDict().get(kanji.kanji)[0],
-                                "jlpt": 0,
-                                "kanji": kanji.kanji,
-                                "kun_readings": [
-                                    kanji.kanji
-                                ],
-                                "meanings": kanaDict().get(kanji.kanji),
-                                "name_readings": [],
-                                "notes": [],
-                                "on_readings": [
-                                    kanji.kanji
-                                ],
-                                "stroke_count": 0,
-                                "unicode": ""
-                            }
-                        )
-                    } else {
-                        /*
-                        For signal in fetch:
-                        If another call of this function is made while a current one is running, stop the fetches
-                        i.e. when the deck is changed, we don't want the default deck to keep loading
-                        */
-                        try{
+        try {
+            let kanjiJson = []
+            setDoneLoadingKanji(false)
+            for (let i = 0; i < kanjiAndSVG.length; i += ITEMS_PER_FETCH) {
+                const batchKanjis = kanjiAndSVG.slice(i, i + ITEMS_PER_FETCH);
+                const promisedKanjis = batchKanjis.map(kanji => {
+                    return new Promise((resolve, reject) => {
+                        if(kanji === undefined) reject();
+                        if(kanaDict().get(kanji.kanji)){
+                            resolve(
+                                {
+                                    "grade": 0,
+                                    "heisig_en": kanaDict().get(kanji.kanji)[0],
+                                    "jlpt": 0,
+                                    "kanji": kanji.kanji,
+                                    "kun_readings": [
+                                        kanji.kanji
+                                    ],
+                                    "meanings": kanaDict().get(kanji.kanji),
+                                    "name_readings": [],
+                                    "notes": [],
+                                    "on_readings": [
+                                        kanji.kanji
+                                    ],
+                                    "stroke_count": 0,
+                                    "unicode": ""
+                                }
+                            )
+                        } else {
+                            /*
+                            For signal in fetch:
+                            If another call of this function is made while a current one is running, stop the fetches
+                            i.e. when the deck is changed, we don't want the default deck to keep loading
+                            */
                             fetch(`${KANJIAPI_URL}/kanji/${kanji.kanji}`, {
                                 signal: abortController.signal
-                            }).then(result => result.json()).then(json => resolve(json))
-                        } catch (e){
-                            reject()
+                            })
+                            .then(result => result.json())
+                            .then(json => resolve(json))
+                            .catch(e => reject())
                         }
-                    }
+                    })
                 })
-            })
-
-            const batchResults = await Promise.all(promisedKanjis)
-
-            kanjiJson.push(...batchResults)
-            
-            // Send the accumulated data after each batch
-            combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
-        }
     
-        setDoneLoadingKanji(true)
-        combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
+                const batchResults = await Promise.all(promisedKanjis)
+    
+                kanjiJson.push(...batchResults)
+                
+                // Send the accumulated data after each batch
+                combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
+            }
+        
+            setDoneLoadingKanji(true)
+            combineKanjiAPIandSVG(kanjiJson, kanjiAndSVG, originalOrder);
+        } catch (e) {
+            console.log("Deck changed, stopping previous fetches")
+        }
     }
 
     //This combines the KanjiAPI info with the SVG from MongoDB
