@@ -9,12 +9,12 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelector, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelector, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay, setDoneLoading}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Start Studying")
-    const [recKanjiMsg, setRecKanjiMsg] = useState("Kanji Recognition Disabled")
+    const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
 
     const [userEmail, setUserEmail] = useState("")
 
@@ -117,7 +117,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
     const disableRecognizeKanji = () => {
         setRecognizeKanji(false)
         setSelectedKanji([])
-        setRecKanjiMsg("Kanji Recognition Disabled")
+        setRecKanjiMsg("Enable Kanji Recognition")
     }
 
     const copyKanji = () => {
@@ -166,6 +166,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                                     studying={studying}
                                     showOverlay={showOverlay}
                                     setShowOverlay={setShowOverlay}
+                                    setDoneLoading={setDoneLoading}
                                     />}
             {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>

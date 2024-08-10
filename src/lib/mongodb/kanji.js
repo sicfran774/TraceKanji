@@ -4,7 +4,7 @@ import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 import { kanaDict } from "@/app/util/kanji-utils";
 import { resetCardCounts } from "@/app/util/interval";
 
-let client, database, kanji, accounts, backup, premade, resetLogs
+let client, database, kanji, accounts, backup, premade, resetLogs, websiteStats
 
 async function init(){
     //Already initialized
@@ -18,6 +18,7 @@ async function init(){
         backup = database.collection('backup')
         premade = database.collection('premade')
         resetLogs = database.collection('reset-logs')
+        websiteStats = database.collection('website-stats')
     } catch (e) {
         throw new Error('Failed to connect to database')
     }
@@ -336,5 +337,21 @@ export async function dailyResets(){
         const result = await resetLogs.insertOne(newLog)
 
         return {error: `Failed to reset daily deck counts and streaks: ${result}`}
+    }
+}
+
+export async function incrementRecognitionTimes(){
+    try{
+        if(!websiteStats) await init()
+
+        const result = await websiteStats.updateOne(
+            { name: "Stats" },
+            { $inc: { count: 1} }
+        )
+
+        return result
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to increment recognition count data.'}
     }
 }
