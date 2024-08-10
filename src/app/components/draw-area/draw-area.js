@@ -8,8 +8,6 @@ import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { darkModeBackgroundColor, darkModeColor } from '@/app/util/colors';
 
-const backgroundColor = 'black'
-
 export default function DrawArea({enableRecognition, setRecKanjiList, studying, showOverlay, setShowOverlay}) {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);

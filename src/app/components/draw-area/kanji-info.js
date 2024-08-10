@@ -14,7 +14,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Start Studying")
-    const [recKanjiMsg, setRecKanjiMsg] = useState("Kanji Recognition Currently Disabled")
+    const [recKanjiMsg, setRecKanjiMsg] = useState("Kanji Recognition Disabled")
 
     const [userEmail, setUserEmail] = useState("")
 
@@ -145,7 +145,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                 <div className={styles.deckManagerButtons}>
                     <button className={styles.toggleDeckManagerButton} type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 </div>
-                <button type="button" className={styles.toggleRecognizeButton} onClick={() => setRecognizeSnack(true) /*toggleRecognizeKanji()*/}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" className={styles.toggleRecognizeButton} onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
                 <Snackbar
                     open={recognizeSnack}
                     autoHideDuration={6000}
@@ -153,12 +153,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                     message="We are currently migrating servers, sorry for the inconvenience!"
                 />
             </div>)}
-            {/* {status !== 'authenticated' && (<div className={styles.notSignedIn}>
-                <span></span>
-                <button type="button" onClick={() => toggleRecognizeKanji()}>
-                    <span className={styles.recognitionText} id="toggleRecognize">{recKanjiMsg}</span>
-                </button>
-            </div>)} */}
             
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={userEmail} 
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
