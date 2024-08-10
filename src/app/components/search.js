@@ -287,6 +287,7 @@ export default function Search({kanjiAndSVG}){
                     setDeckIndex={setDeckIndex}
                     showOverlay={showOverlay}
                     setShowOverlay={setShowOverlay}
+                    setDoneLoading={setDoneLoadingKanji}
                 />
                 {!studying &&
                 (

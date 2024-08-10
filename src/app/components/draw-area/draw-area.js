@@ -8,9 +8,7 @@ import { useEffect, useRef, useState, useContext} from "react";
 import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { darkModeBackgroundColor, darkModeColor } from '@/app/util/colors';
 
-const backgroundColor = 'black'
-
-export default function DrawArea({enableRecognition, setRecKanjiList, studying, showOverlay, setShowOverlay}) {
+export default function DrawArea({enableRecognition, setRecKanjiList, studying, showOverlay, setShowOverlay, setDoneLoading}) {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -199,6 +197,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
   }
 
   async function predictKanji(){
+    setDoneLoading(false)
     setRecKanjiList(await fetch(`api/recognize`, {
       method: "POST",
       headers: {
@@ -209,6 +208,7 @@ export default function DrawArea({enableRecognition, setRecKanjiList, studying, 
       .then(response => {
         return response.json()
     }))
+    setDoneLoading(true)
   }
 
   const GridOverlay = () => {

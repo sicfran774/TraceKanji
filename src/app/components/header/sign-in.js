@@ -2,9 +2,10 @@
 
 import styles from './css/sign-in.module.css'
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { useState, useEffect, useRef, useContext } from 'react';
+import { useState, useEffect, useRef, useContext, Fragment } from 'react';
 import { SharedKanjiProvider } from '../shared-kanji-provider';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Snackbar, IconButton, Alert } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import ChangelogDialog from '../changelog/changelog';
 import { ThemeProvider } from '@mui/material/styles'
 import SettingsPage from './settings';
@@ -19,6 +20,8 @@ export default function SignIn() {
     const [openDialog, setOpenDialog] = useState(false)
     const [openAbout, setOpenAbout] = useState(false)
     const [openSettings, setOpenSettings] = useState(false)
+    const [openSnack, setOpenSnack] = useState(true)
+    const [openAlertSnack, setOpenAlertSnack] = useState(true)
 
     let { userSettings, setUserSettings, userStats, setUserStats, theme, setTheme } = useContext(SharedKanjiProvider)
 
@@ -65,6 +68,20 @@ export default function SignIn() {
     const handleCloseSettings = () => {
         setOpenSettings(false);
     };
+
+    const handleCloseSnack = (event, reason) => {
+        if (reason === "clickaway") {
+            return
+        }
+        setOpenSnack(false)
+    }
+
+    const handleCloseAlertSnack = (event, reason) => {
+        if (reason === "clickaway") {
+            return
+        }
+        setOpenAlertSnack(false)
+    }
 
     const toggleMenu = () => {
         //console.log("toggle")
@@ -118,6 +135,40 @@ export default function SignIn() {
         }
     };
 
+    const action = (
+        <Fragment>
+          <Button size="small" onClick={handleOpenAbout}>
+            How to use this website
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleCloseSnack}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Fragment>
+    );
+
+    const SnackAlert = () => {
+        return <Snackbar 
+            open={openAlertSnack} 
+            autoHideDuration={6000} 
+            onClose={handleCloseAlertSnack}
+            anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+        >
+            <Alert
+                onClose={handleCloseAlertSnack}
+                severity="success"
+                variant="filled"
+                sx={{ width: '100%' }}
+            >
+                Kanji recognition has returned! Thank you for your patience!
+            </Alert>
+        </Snackbar>
+    }
+
     const SignedInTutorial = () => {
         return (
         <>
@@ -161,7 +212,7 @@ export default function SignIn() {
                 <p>Click on a kanji to show info, and also overlay it on the draw area</p>
                 <p>You can toggle the overlay, undo, and reset the drawing by using the buttons below the drawing pad.</p>
                 <p><span style={{color: '#1e88e5'}}>Click and drag (desktop)</span> or <span style={{color: '#1e88e5'}}>drag your finger</span> to draw on the pad.</p>
-                <p>Click the<span style={{color: '#f57f17'}}> Enable Recognition</span> button and start drawing. The website will give you the best matching kanji in the list.</p>
+                <p>Click the<span style={{color: '#f57f17'}}> Enable Kanji Recognition</span> button and start drawing. The website will give you the best matching kanji in the list.</p>
                 <br/><hr/><br/>
 
                 {status !== "authenticated" ? (
@@ -262,6 +313,7 @@ export default function SignIn() {
                         email={data.user.email}
                     />
                 </div>
+                <SnackAlert/>
             </ThemeProvider>
         )
     }
@@ -299,6 +351,15 @@ export default function SignIn() {
                 </div>
                 <AboutDialog/>
             </div>
+            <SnackAlert/>
+            <Snackbar
+                open={openSnack}
+                onClose={handleCloseSnack}
+                message="Welcome to Trace Kanji!"
+                action={action}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+            />
+            
         </ThemeProvider>
     )
 }

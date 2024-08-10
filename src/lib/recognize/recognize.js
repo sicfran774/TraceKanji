@@ -1,5 +1,5 @@
 export async function getRecognizedKanji(canvasRef){
-    const data = await fetch(process.env.FLASK_ENDPOINT + "api/recognize", {
+    const data = await fetch(process.env.FLASK_ENDPOINT, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

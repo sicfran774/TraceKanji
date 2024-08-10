@@ -9,12 +9,12 @@ import DrawArea from './draw-area';
 import DeckManager from './deck-manager/deck-manager';
 import Snackbar from '@mui/material/Snackbar';
 
-export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelector, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay}){
+export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelector, recognizeKanji, setRecognizeKanji, setRecKanjiList, studying, setStudying, deckIndex, setDeckIndex, showOverlay, setShowOverlay, setDoneLoading}){
     const { sharedKanji, setEditingDeck, setSelectedKanji } = useContext(SharedKanjiProvider)
     const [openDeckManager, setOpenDeckManager] = useState(false)
     
     const [deckManagerMsg, setDeckManagerMsg] = useState("Start Studying")
-    const [recKanjiMsg, setRecKanjiMsg] = useState("Kanji Recognition Currently Disabled")
+    const [recKanjiMsg, setRecKanjiMsg] = useState("Enable Kanji Recognition")
 
     const [userEmail, setUserEmail] = useState("")
 
@@ -117,7 +117,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
     const disableRecognizeKanji = () => {
         setRecognizeKanji(false)
         setSelectedKanji([])
-        setRecKanjiMsg("Kanji Recognition Disabled")
+        setRecKanjiMsg("Enable Kanji Recognition")
     }
 
     const copyKanji = () => {
@@ -145,7 +145,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                 <div className={styles.deckManagerButtons}>
                     <button className={styles.toggleDeckManagerButton} type="button" id="openDeckManagerButton" onClick={() => toggleDeckManager()}>{deckManagerMsg}</button>
                 </div>
-                <button type="button" className={styles.toggleRecognizeButton} onClick={() => setRecognizeSnack(true) /*toggleRecognizeKanji()*/}><p id="toggleRecognize">{recKanjiMsg}</p></button>
+                <button type="button" className={styles.toggleRecognizeButton} onClick={() => toggleRecognizeKanji()}><p id="toggleRecognize">{recKanjiMsg}</p></button>
                 <Snackbar
                     open={recognizeSnack}
                     autoHideDuration={6000}
@@ -153,12 +153,6 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                     message="We are currently migrating servers, sorry for the inconvenience!"
                 />
             </div>)}
-            {/* {status !== 'authenticated' && (<div className={styles.notSignedIn}>
-                <span></span>
-                <button type="button" onClick={() => toggleRecognizeKanji()}>
-                    <span className={styles.recognitionText} id="toggleRecognize">{recKanjiMsg}</span>
-                </button>
-            </div>)} */}
             
             {openDeckManager && <DeckManager decks={decks} setDecks={setDecks} email={userEmail} 
                                     deckSelector={deckSelector} setSelectedDeck={setSelectedDeck}
@@ -172,6 +166,7 @@ export default function KanjiInfo({decks, setDecks, setSelectedDeck, deckSelecto
                                     studying={studying}
                                     showOverlay={showOverlay}
                                     setShowOverlay={setShowOverlay}
+                                    setDoneLoading={setDoneLoading}
                                     />}
             {!studying && (<div className={styles.kanjiInfo}>
                 <div className={styles.kanji}>
