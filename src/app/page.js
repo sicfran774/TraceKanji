@@ -13,6 +13,7 @@ export default async function App() {
 
   return (
       <div className={styles.main}>
+        <link rel="icon" href="/icon.png" sizes="any" />
         <Header />
         <div className={styles.body} id="mainBody">
           <Selection />

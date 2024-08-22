@@ -6,8 +6,8 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Trace Kanji',
-  description: 'Online japanese kanji trainer',
+  title: 'Trace Kanji: Kanji recognition and learning tool',
+  description: 'Handwritten kanji recognizer. Learn stroke orders, discover words and info about the kanji in a mobile-friendly environment. Sign-in to create kanji decks.',
 }
 
 export default function RootLayout({ children }) {
