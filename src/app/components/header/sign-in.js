@@ -313,7 +313,7 @@ export default function SignIn() {
                         email={data.user.email}
                     />
                 </div>
-                <SnackAlert/>
+                {/* <SnackAlert/> */}
             </ThemeProvider>
         )
     }
@@ -351,7 +351,7 @@ export default function SignIn() {
                 </div>
                 <AboutDialog/>
             </div>
-            <SnackAlert/>
+            {/* <SnackAlert/> */}
             <Snackbar
                 open={openSnack}
                 onClose={handleCloseSnack}
