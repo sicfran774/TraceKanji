@@ -42,8 +42,11 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
             // reset the card counts
             decks.forEach(deck => {
                 try{
-                    if(now.isAfter(deck[1].dateReset)){
-                        console.log("First login today. Resetting daily card limits")
+                    if (typeof deck[1].dateReset !== 'string'){
+                        console.log(`Invalid date at ${deck[0]}. Setting to now.`)
+                        deck[1].dateReset = moment().toISOString()
+                        resetCardCounts(deck)
+                    } else if (moment().isAfter(deck[1].dateReset)){
                         resetCardCounts(deck)
                         deck[1].dateReset = newDate.toISOString()
                     }

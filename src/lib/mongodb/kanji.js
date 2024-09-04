@@ -288,24 +288,24 @@ export async function dailyResets(){
 
         for(let i in data){
             const account = data[i]
-            if(account.decks){
-                for(let j in account.decks){
-                    const deck = account.decks[j]
-                    const timeReset = account.settings.timeReset ? account.settings.timeReset : 0
-                    if (typeof deck[1].dateReset !== 'string'){
-                        console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
-                        log += `Invalid date at ${account.email}: ${deck[0]}. Setting to now.\n`
-                        deck[1].dateReset = moment().toISOString()
-                        resetCardCounts(deck)
-                    } else if (moment().isAfter(deck[1].dateReset)){
-                        resetCardCounts(deck)
-                        deck[1].dateReset = moment().add(1,"day").hour(timeReset).minute(0).second(0).toISOString()
-                        console.log(`Reset ${deck[0]} for ${account.email}`)
-                        log += `Reset ${deck[0]} for ${account.email}\n`
-                    }
-                }
-                await updateDecks(account.decks, account.email)
-            }
+            // if(account.decks){
+            //     for(let j in account.decks){
+            //         const deck = account.decks[j]
+            //         const timeReset = account.settings.timeReset ? account.settings.timeReset : 0
+            //         if (typeof deck[1].dateReset !== 'string'){
+            //             console.log(`Invalid date at ${account.email}: ${deck[0]}. Setting to now.`)
+            //             log += `Invalid date at ${account.email}: ${deck[0]}. Setting to now.\n`
+            //             deck[1].dateReset = moment().toISOString()
+            //             resetCardCounts(deck)
+            //         } else if (moment().isAfter(deck[1].dateReset)){
+            //             resetCardCounts(deck)
+            //             deck[1].dateReset = moment().add(1,"day").hour(timeReset).minute(0).second(0).toISOString()
+            //             console.log(`Reset ${deck[0]} for ${account.email}`)
+            //             log += `Reset ${deck[0]} for ${account.email}\n`
+            //         }
+            //     }
+            //     await updateDecks(account.decks, account.email)
+            // }
             
             // If NOT studied yesterday
             if( account.stats &&
