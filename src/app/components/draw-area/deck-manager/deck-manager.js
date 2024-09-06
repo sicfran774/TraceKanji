@@ -36,7 +36,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
     useEffect(() => {
         if(decks.length > 0){
             const now = moment()
-            const newDate = now.clone().add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
+            const newDate = now.clone().add(1, "day").hour(userSettings.timeReset).minute(0).second(0)
             // Deck first puts the date it was created.
             // If the user logs in and the deck's date is at least a day before,
             // reset the card counts
@@ -44,10 +44,15 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 try{
                     if (typeof deck[1].dateReset !== 'string'){
                         console.log(`Invalid date at ${deck[0]}. Setting to now.`)
-                        deck[1].dateReset = moment().toISOString()
+                        deck[1].dateReset = now.toISOString()
                         resetCardCounts(deck)
-                    } else if (moment().isAfter(deck[1].dateReset)){
+                    } else if (now.isAfter(deck[1].dateReset)){
                         resetCardCounts(deck)
+                        // e.g. timeReset hour = 1am, if 12:30AM then now.hour() = 0 --> now.hour() < timeReset
+                        // so just set it to today + timeReset
+                        if (now.hour() < userSettings.timeReset){
+                            newDate.subtract(1, "day")
+                        }
                         deck[1].dateReset = newDate.toISOString()
                     }
                 }
