@@ -174,13 +174,13 @@ export default function SignIn() {
         <>
             <h2 style={{color: "cyan"}}>User-exclusive features</h2>
             <h3>Deck Creation</h3>
-            <p>Access deck features by clicking on &quot;<span style={{color: "#32abe3"}}>Open Deck Manager</span>&quot; above the drawing pad.</p>
+            <p>Access deck features by clicking on &quot;<span style={{color: "#32abe3"}}>Start Studying</span>&quot; above the drawing pad.</p>
             <p>Type a name and click on &quot;<span style={{color: "#32abe3"}}>Create New Deck</span>&quot;</p>
             <p>To add kanji to the deck, click on &quot;<span style={{color: "#32abe3"}}>Edit Deck</span>&quot; and then &quot;<span style={{color: "#32abe3"}}>Add/Remove Kanji</span>&quot;</p>
             <p>You can access more deck settings by clicking on &quot;<span style={{color: "#32abe3"}}>Deck Settings</span>&quot;</p>
             <br/>
             <h3>Accessing Deck</h3>
-            <p>To change the list to display the kanji in your deck, click the dropdown next to &quot;<span style={{color: "#32abe3"}}>Open Deck Manager</span>&quot;.
+            <p>To change the list to display the kanji in your deck, click the dropdown next to &quot;<span style={{color: "#32abe3"}}>Start Studying</span>&quot;.
             By default, it will show &quot;<span style={{color: "cyan"}}>All Kanji</span>&quot;.</p>
             <br/>
             <h3>Study Tool</h3>

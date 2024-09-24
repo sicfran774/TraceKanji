@@ -69,10 +69,20 @@ const MaxCards = () => {
   );
 };
 
-const sections = [DeckInterval(), GradInterval(), EasyInterval(), Ease(), Easy(), NewCards(), MaxCards()]
+const CardInsertion = () => {
+  return (
+    <div className={styles.changelog}>
+      <p className={styles.tooltip}>The order that the cards appear.</p>
+      <p className={styles.tooltip}>Sequential: older cards appear first. Random: cards are randomly inserted.</p>
+      <p className={styles.tooltip}>Note -- new cards are shuffled as well, and shuffling repeats every card</p>
+    </div>
+  );
+};
+
+const sections = [DeckInterval(), GradInterval(), EasyInterval(), Ease(), Easy(), NewCards(), MaxCards(), CardInsertion()]
 
 export default function DeckInfoDialog({ open, onClose, section }){
-    const titles = ["Learning interval", "Graduating interval", "Easy interval", "Ease", "Easy factor", "New cards/day", "Max reviews/day"]
+    const titles = ["Learning interval", "Graduating interval", "Easy interval", "Ease", "Easy factor", "New cards/day", "Max reviews/day", "Card insertion order"]
 
     const [theme, setTheme] = useState(lightTheme)
 
