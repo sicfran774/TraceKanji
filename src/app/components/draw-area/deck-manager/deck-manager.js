@@ -110,7 +110,7 @@ export default function DeckManager({decks, setDecks, email, deckSelector, setSe
                 newCardCount: 0,
                 reviewCount: 0,
                 dateReset: moment().toISOString(),
-                sequential: true
+                sequential: true,
             }
             let newDecks = [...decks, [deckName, settings]]
             setDecks(newDecks)

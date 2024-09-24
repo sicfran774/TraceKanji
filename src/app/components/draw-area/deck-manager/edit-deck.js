@@ -5,8 +5,8 @@ import { useState } from "react"
 
 export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } ){
 
-    const originals = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews]
-    const inputs = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews]
+    const originals = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews, deck[1].sequential]
+    const inputs = [deck[0], deck[1].learningSteps.toString(), deck[1].graduatingInterval, deck[1].easyInterval, deck[1].ease, deck[1].easy, deck[1].maxNewCards, deck[1].maxReviews, deck[1].sequential]
 
     const [openDialog, setOpenDialog] = useState(false);
     const [infoIndex, setInfoIndex] = useState(0);
@@ -38,6 +38,7 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
         deck[1].easy = inputs[5]
         deck[1].maxNewCards = Number(inputs[6])
         deck[1].maxReviews = Number(inputs[7])
+        deck[1].sequential = inputs[8]
     }
 
     const saveAndQuit = () => {
@@ -57,6 +58,16 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
                     <p className={styles.hintText}>Deck name</p>
                     <input type="text" id="deckNameInput" className={styles.hintInput} defaultValue={originals[0]} name="deckNameInput" placeholder="Name" onChange={e => inputs[0] = e.target.value}></input>
                     <button type="button" className={styles.deckNameButton} onClick={() => undoInput(0, document.getElementById("deckNameInput"))}>Undo</button>
+                </div>
+                <div className={styles.hintDiv}>
+                    <p className={styles.hintText}>Card insertion order</p>
+                    <div className={styles.titleDiv}>
+                        <select name="insertionSelect" id="insertionSelect" defaultValue={(originals[8]) ? "Sequential" : "Random"} onChange={e => inputs[8] = (e.target.value === "Sequential")}>
+                            <option value="Sequential">Sequential</option>
+                            <option value="Random">Random</option>
+                        </select>
+                        <p onClick={() => handleOpenDialog(7)}>ⓘ</p>
+                    </div>
                 </div>
                 <div className={styles.hintDiv}>
                     <p className={styles.hintText}>New cards/day</p>

@@ -26,8 +26,12 @@ export const sortByDueDate = (deck, previous = [], firstTime = false, timeReset 
     dueKanji.sort((a, b) => {
         return a.date.diff(b.date)
     })
-    const sorted = dueKanji.map(item => item.kanji)
-    //if(sorted && allNotNew) return shuffleArray(sorted)
+
+    let sorted = dueKanji.map(item => item.kanji);
+
+    if (!deck[1].sequential){
+        sorted = shuffleArray(sorted)
+    }
 
     // Avoid repeats when current card is always the soonest due
     if(previous.length > 1 && sorted.length > 1 && sorted[0] === previous[0]){

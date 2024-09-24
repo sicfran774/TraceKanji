@@ -18,6 +18,11 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.12 (9/23/2024)</u></Typography>
+      <ul>
+        <li>- New study feature: Change order cards appear when you study</li>
+        <li>- Go to the deck settings before you Start Study to change it between &quot;Sequential&quot; and &quot;Random&quot;</li>
+      </ul>
       <Typography variant="h6"><u>0.3.11 (7/28/2024)</u></Typography>
       <ul>
         <li>- New study feature: Undo card interval, bury card</li>
