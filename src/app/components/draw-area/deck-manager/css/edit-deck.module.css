@@ -61,6 +61,11 @@
     margin-right: 10px;
 }
 
+.resetDefaultButton{
+    padding: 8px;
+    height: 40px;
+}
+
 .titleDiv{
     display: flex;
 }

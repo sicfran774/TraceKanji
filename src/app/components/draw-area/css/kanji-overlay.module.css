@@ -5,6 +5,7 @@
 .kanji{
     width: 500px;
     height: 500px;
+    margin: 1px;
     opacity: 0.25;
     position: absolute;
 }

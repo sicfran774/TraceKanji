@@ -1,6 +1,7 @@
 .drawArea{
     width: 500px;
     height: 500px;
+    margin: 1px;
 }
 
 .canvas{

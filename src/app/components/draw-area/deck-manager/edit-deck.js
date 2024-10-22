@@ -145,7 +145,7 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
             
             <div className={styles.settings}>
                 <div className={styles.hintDiv}>
-                    <button type="button" className={styles.deckNameButton} onClick={() => resetDeckSettings()}>Reset Deck Settings</button>
+                    <button type="button" className={styles.resetDefaultButton} onClick={() => resetDeckSettings()}>Reset Deck Settings to Default</button>
                 </div>
                 <div className={styles.hintDiv}>
                     <p className={styles.hintText}>Deck name</p>
