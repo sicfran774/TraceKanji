@@ -144,6 +144,32 @@ export const addToDate = (date, time) => {
     return date
 }
 
+// Helper function for below
+const validSingleInterval = (string) => {
+    const timeAmount = string.slice(0, -1)
+    const timeType = string[string.length - 1]
+
+    const result = !isNaN(timeAmount) && (["s", "m", "h", "d", "M", "Y"]).includes(timeType)
+
+    return result
+}
+
+/**
+ * Checks if interval/string of intervals are valid.
+ * @param {string} string - Interval string e.g. 1m for 1 minute, or 1m,1d,2d for a series of intervals.
+ * @returns {Boolean} The resulting date.
+ */
+export const validInterval = (string) => {
+    if (string.includes(",")){ // If it's a list of intervals like "1m,1d,2d" as oppposed to just "1m"
+        const intervals = string.split(",")
+        return !intervals.some((interval) => {
+            return !validSingleInterval(interval)
+        })
+    } else{
+        return validSingleInterval(string)
+    }
+}
+
 export const resetCard = (card) => {
     card.graduated = false
     card.learning = true

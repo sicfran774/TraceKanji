@@ -65,7 +65,7 @@ export function prepareKanji(kanji, meanings){
 
 export function defaultDeckSettings(){
     return [
-        "Hiragana/Katakana",
+        "Deck Name",
         {
             learningSteps: ["1m","10m","1d","3d"], //If user chooses Good, go up one. Easy --> up 2
             graduatingInterval: "4d", // If user hits good, it will graduate and be susceptible to ease.
