@@ -37,7 +37,7 @@
 
 .importantButtons{
     display: flex;
-    justify-content: right;
+    justify-content: space-between;
 }
 
 .importantButtonsButton{
@@ -46,8 +46,24 @@
     margin-top: 10px;
 }
 
+.saveChanges{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.saveChangesTooltip{
+    color: red;
+    font-size: 10px;
+}
+
 .deckNameButton{
     margin-right: 10px;
+}
+
+.resetDefaultButton{
+    padding: 8px;
+    height: 40px;
 }
 
 .titleDiv{
