@@ -18,6 +18,10 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      <Typography variant="h6"><u>0.3.13 (11/3/2024)</u></Typography>
+      <ul>
+        <li>- Prevent user input error when changing deck settings</li>
+      </ul>
       <Typography variant="h6"><u>0.3.12 (9/23/2024)</u></Typography>
       <ul>
         <li>- New study feature: Change order cards appear when you study</li>
