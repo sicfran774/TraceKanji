@@ -29,6 +29,7 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
             document.getElementById("easyAddInput"),
             document.getElementById("maxCardsInput"),
             document.getElementById("maxReviewsInput"),
+            document.getElementById("insertionSelect"),
         )
     }
 
@@ -51,7 +52,11 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
         }
 
         if(validateInput(index, input)){
-            inputs[index] = input
+            if(index == 8){ // Select box
+                inputs[index] = input === "Sequential"
+            } else {
+                inputs[index] = input
+            }
         }
         
     }
@@ -68,7 +73,7 @@ export default function EditDeckScreen( { toggleScreen, deck, allDecks, email } 
             return false
         }
 
-        elements[index].style.borderColor = ""
+        if(index >= 1 && index <= 7) elements[index].style.borderColor = ""
         return true
     }
 
