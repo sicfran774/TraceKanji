@@ -4,7 +4,7 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { addToDate, multiplyInterval, sortByDueDate, updateStatsInDB } from '@/app/util/interval';
 import moment from "moment"
 
-export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay, setLastKanji}){
+export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay, setLastKanji, timeTaken}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
     let { setUserStats, userStats, userSettings } = useContext(SharedKanjiProvider)
@@ -75,6 +75,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
                 } else {
                     date.new = date.new + 1
                 }
+                date.timeTaken = date.timeTaken + timeTaken
                 return true
             }
         })){
@@ -82,7 +83,8 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             userStats.studied.push({
                 date: moment().format('L'),
                 reviews: (deck[kanjiIndex].graduated || deck[kanjiIndex].learning) ? 1 : 0,
-                new: (!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning) ? 1 : 0
+                new: (!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning) ? 1 : 0,
+                timeTaken: timeTaken
             })
             ++userStats.dayStreak
         }
@@ -141,7 +143,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             "date": now.toISOString(),
             "learning": deck[kanjiIndex].learning,
             "grading": choice,
-            "timeTaken": 0
+            "timeTaken": timeTaken
         })
 
         const tempNow = now.clone().add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
