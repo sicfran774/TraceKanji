@@ -142,6 +142,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         deck[kanjiIndex].reviews.push({
             "date": now.toISOString(),
             "learning": deck[kanjiIndex].learning,
+            "interval": deck[kanjiIndex].interval,
             "grading": choice,
             "timeTaken": timeTaken
         })
