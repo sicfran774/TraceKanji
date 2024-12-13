@@ -18,6 +18,13 @@ const ContactInfo = () => {
 const Changelog = () => {
   return (
     <div className={styles.changelog}>
+      {/* <Typography variant="h6"><u>0.4 ()</u></Typography>
+      <ul>
+        <li>- New feature! See your study statistics in the menu at the top-right</li>
+        <li>- Check how many reviews you&apos;ve done each day</li>
+        <li>- See which cards you struggle with the most with review history</li>
+        <li>- Track how long it takes to finish your study session</li>
+      </ul> */}
       <Typography variant="h6"><u>0.3.13 (11/3/2024)</u></Typography>
       <ul>
         <li>- Prevent user input error when changing deck settings</li>

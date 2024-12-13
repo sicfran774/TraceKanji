@@ -49,8 +49,7 @@ async function createAccount(email){
     const newAccount = {
         email: email,
         decks: [],
-        lastLoggedIn: moment(),
-        dateRecord: [],
+        dateCreated: moment().toISOString(),
         settings: {
             penWidth: 10,
             autoShowTracing: true,

@@ -4,7 +4,7 @@ import { SharedKanjiProvider } from '../shared-kanji-provider';
 import { addToDate, multiplyInterval, sortByDueDate, updateStatsInDB } from '@/app/util/interval';
 import moment from "moment"
 
-export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay, setLastKanji}){
+export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy, dueKanji, setDueKanji, setShowOverlay, setLastKanji, timeTaken}){
     // Deck --> [title, settings, {kanji: ~, meanings: ~, interval: ~}]
 
     let { setUserStats, userStats, userSettings } = useContext(SharedKanjiProvider)
@@ -68,7 +68,32 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
 
         setShowAnswer(false)
 
-        // console.log("learningSteps:" + learningSteps)
+        if(userStats.studied.some(date => {
+            if (date.date === moment().format('L')){
+                if(deck[kanjiIndex].learning || deck[kanjiIndex].graduated){
+                    date.reviews = date.reviews + 1
+                } else {
+                    date.new = date.new + 1
+                }
+                date.timeTaken = date.timeTaken + timeTaken
+                return true
+            }
+        })){
+        } else { // If this is the first time studied today
+            userStats.studied.push({
+                date: moment().format('L'),
+                reviews: (deck[kanjiIndex].graduated || deck[kanjiIndex].learning) ? 1 : 0,
+                new: (!deck[kanjiIndex].graduated && !deck[kanjiIndex].learning) ? 1 : 0,
+                timeTaken: timeTaken
+            })
+            ++userStats.dayStreak
+        }
+        
+        setUserStats({
+            dayStreak: userStats.dayStreak,
+            studied: userStats.studied
+        })
+
         let newInterval = deck[kanjiIndex].interval // This is what we add to the date
 
         // If it's a new card, change it to learning (I did this to do "New Card" tracking)
@@ -108,6 +133,19 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         }
 
         const now = moment()
+
+        // Add card statistics
+        if(!Object.hasOwn(deck[kanjiIndex], "reviews")){
+            deck[kanjiIndex].reviews = []
+        }
+
+        deck[kanjiIndex].reviews.push({
+            "date": now.toISOString(),
+            "learning": deck[kanjiIndex].learning,
+            "grading": choice,
+            "timeTaken": timeTaken
+        })
+
         const tempNow = now.clone().add(1,"day").hour(userSettings.timeReset).minute(0).second(0)
         deck[kanjiIndex].interval = newInterval // Update new interval to card info
         const newDate = addToDate(now, newInterval) // Update new due date
@@ -125,27 +163,6 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         setDueKanji(updatedDueDeck)
         updateLabels()
 
-        if(userStats.studied.some(date => {
-            if (date.date === moment().format('L')){
-                date.reviews = deck[1].reviewCount
-                date.new = deck[1].newCardCount
-                return true
-            }
-        })){
-        } else { // If this is the first time studied today
-            userStats.studied.push({
-                date: moment().format('L'),
-                reviews: deck[1].reviewCount,
-                new: deck[1].newCardCount
-            })
-            ++userStats.dayStreak
-        }
-        
-        setUserStats({
-            dayStreak: userStats.dayStreak,
-            studied: userStats.studied
-        })
-
         if(updatedDueDeck.length === 0){
             endStudy()
         } else {
@@ -153,8 +170,6 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
             setShowOverlay(false)
         }
     }
-
-    //console.log(deck)
 
     return (
         <div className={styles.main}>

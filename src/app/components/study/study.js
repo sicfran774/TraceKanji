@@ -17,11 +17,14 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const [dueKanji, setDueKanji] = useState([])
     const [firstLoad, setFirstLoad] = useState(false)
     const [lastKanji, setLastKanji] = useState({})
+    const [timeTaken, setTimeTaken] = useState(moment.duration(0).asMilliseconds());
 
     let { setSharedKanji, sharedKanji, userSettings, userStats, theme } = useContext(SharedKanjiProvider)
     const {data, status} = useSession() // data.user.email
 
     const [openDialog, setOpenDialog] = useState(false)
+
+    let startTime = moment()
 
     const handleKeyDown = (e) => {
         if(e.code === "Space"){
@@ -88,6 +91,8 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         }
 
         setShowAnswer(true)
+        setTimeTaken(moment.duration(moment().diff(startTime)).asMilliseconds())
+        startTime = moment()
     }
 
     const undoKanji = () => {
@@ -205,6 +210,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
                     dueKanji={dueKanji}
                     setShowOverlay={setShowOverlay}
                     setLastKanji={setLastKanji}
+                    timeTaken={timeTaken}
                 /> : 
                 (<div className={styles.showAnswerDiv}>
                     <button onClick={() => answerTrue()}>Show Answer</button>

@@ -59,6 +59,7 @@ export function prepareKanji(kanji, meanings){
         learning: false,
         graduated: false,
         interval: "1m",
+        reviews: [],
         due: moment().toISOString()
     }
 }
