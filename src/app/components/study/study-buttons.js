@@ -158,7 +158,7 @@ export default function StudyButtons({ deck, setShowAnswer, kanjiIndex, endStudy
         }
 
         // Info for kanji interval
-        console.log(`${deck[kanjiIndex].kanji} set to ${deck[kanjiIndex].interval} (${deck[kanjiIndex].due})`)
+        //console.log(`${deck[kanjiIndex].kanji} set to ${deck[kanjiIndex].interval} (${deck[kanjiIndex].due})`)
 
         const updatedDueDeck = sortByDueDate(deck, dueKanji, false, userSettings.timeReset)
         setDueKanji(updatedDueDeck)
