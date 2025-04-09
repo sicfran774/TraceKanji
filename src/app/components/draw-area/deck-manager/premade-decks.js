@@ -72,6 +72,11 @@ export default function PremadeDeck({openDialog, handleCloseDialog, allDecks, em
                         <p>This deck contains all 46 hiragana and 46 katakana.</p>
                         <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("HiraganaKatakana")}>Add to Deck List</button>
                     </li>
+                    <li>
+                        <h3>Genki I: 3rd Edition Deck </h3>
+                        <p>This deck contains 145 kanji from the 3rd Edition of Genki I.</p>
+                        <button type="button" className={styles.addDeckButton} onClick={() => addDeckToAccount("Genki I: 3rd Edition")}>Add to Deck List</button>
+                    </li>
                 </ul>
                 {loading && <CircularProgress size="24px"/>}
                 {addedDeck && 

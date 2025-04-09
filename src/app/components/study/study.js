@@ -26,7 +26,8 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const [openDialog, setOpenDialog] = useState(false)
 
     const handleKeyDown = (e) => {
-        if(e.code === "Space"){
+        if(e.code === "Space" && !openDialog){
+            e.preventDefault();
             answerTrue()
         }
     }
@@ -56,13 +57,15 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
         }
         
         answerFalse()
+    }, [kanjiIndex])
 
+    useEffect(() => {        
         document.addEventListener('keydown', handleKeyDown)
 
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         }
-    }, [kanjiIndex])
+    }, [kanjiIndex, openDialog])
     
     useEffect(() => {
         updateStatsInDB(data.user.email, userStats, "userStats in study")
@@ -144,7 +147,7 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     const CardDialog = () => {
         return (
             <ThemeProvider theme={theme}>
-                <Dialog open={openDialog} onClose={handleCloseDialog} scroll='paper'>
+                <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle>Kanji Options</DialogTitle>
                     <DialogContent>
                         {deck[kanjiIndex] && 
@@ -177,7 +180,9 @@ export default function Study({ kanjiAndSVG, deck, setStudying, allDecks, setSho
     return (
         <div className={styles.main}>
             <div className={styles.quitDiv}>
-                <button className={styles.quitButton} onClick={() => handleOpenDialog()}>Options</button>
+                <button className={styles.quitButton} onClick={(e) => {
+                    handleOpenDialog();
+                }}>Options</button>
                 <button className={styles.quitButton} onClick={() => endStudy()}>Quit</button>
             </div>
             <div className={styles.info}>
