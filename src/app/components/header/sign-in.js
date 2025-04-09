@@ -292,7 +292,7 @@ export default function SignIn() {
                                     <p>Settings</p>
                                 </li>
                                 <li onClick={() => handleOpenAbout()} className={styles.menuButton}>
-                                    <p style={{marginLeft: "3px", marginRight: "12px", border: "solid black", borderRadius: "10px",padding:"0px 2px"}}>ℹ️</p>
+                                    <p style={{marginLeft: "3px", marginRight: "12px",padding:"0px 2px"}}>ℹ️</p>
                                     <p>Help/About</p>
                                 </li>
                                 <li onClick={() => signOut()} className={styles.menuButton}>

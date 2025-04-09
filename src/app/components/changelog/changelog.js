@@ -25,6 +25,11 @@ const Changelog = () => {
         <li>- See which cards you struggle with the most with review history</li>
         <li>- Track how long it takes to finish your study session</li>
       </ul> */}
+      <Typography variant="h6"><u>0.3.14 (4/8/2025)</u></Typography>
+      <ul>
+        <li>- Added new pre-made deck: Genki I 3rd Edition. Check it out in the Deck Manager!</li>
+        <li>- Fixed bug where spacebar would cause issues when editing a card during a study session</li>
+      </ul>
       <Typography variant="h6"><u>0.3.13 (11/3/2024)</u></Typography>
       <ul>
         <li>- Prevent user input error when changing deck settings</li>

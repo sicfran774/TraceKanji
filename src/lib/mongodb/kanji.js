@@ -69,7 +69,7 @@ export async function createPremadeDeck(){
     try{
         if(!premade) await init()
         //Kanji list goes here
-        const kanjiList = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんアイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン"
+        const kanjiList = "一二三四五六七八九十百千万円時日本人月火水木金土曜上下中半山川元気私今田女男見行食飲天東西南北口出右左分先生大学外国京子小会社父母高校毎語文帰入員新聞作仕事電車休言読思次何午後前名白雨書友間家話少古知来住正年売買町長道雪立自夜朝持手紙好近明病院映画歌市所勉強有旅昔々神早起牛使働連別度赤青色"
 
         const appendKanjis = async () => {
             
@@ -82,7 +82,6 @@ export async function createPremadeDeck(){
                                 if(result.ok){
                                     return result.json()
                                 } else {
-                                    console.log()
                                     return {
                                         "heisig_en": kanaDict().get(char)[0],
                                         "kanji": char,
@@ -91,6 +90,7 @@ export async function createPremadeDeck(){
                             })
                             .then(info => prepareKanji(info.kanji, info.heisig_en))
                             .then(prepared => {
+                                console.log(prepared)
                                 deckList.push(prepared)
                             })
                         // deckList.push(prepareKanji(char, kanaDict().get(char)[0]))
@@ -101,7 +101,7 @@ export async function createPremadeDeck(){
             })
             return deckList
         }
-        await appendKanjis().then((deckList) => (premade.insertOne({name: "Hiragana/Katakana", deck: deckList}).then((result) => console.log(result)).then(() => console.log(deckList + "too fast"))))
+        await appendKanjis().then((deckList) => (premade.insertOne({name: "Genki I: 3rd Edition", deck: deckList}).then((result) => console.log(result)).then(() => console.log(deckList + "too fast"))))
         
         
     } catch (e) {

@@ -48,6 +48,7 @@ export const kanaDict = () => {
     map.set("わ", ["wa", "hiragana"]); map.set("ワ", ["wa", "katakana"]);
     map.set("を", ["wo", "hiragana"]); map.set("ヲ", ["wo", "katakana"]);
     map.set("ん", ["n", "hiragana"]); map.set("ン", ["n", "katakana"]);
+    map.set("々", ["repetition kanji, repeating symbol"]);
     return map
 }
 
