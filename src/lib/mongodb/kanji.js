@@ -3,6 +3,7 @@ import clientPromise from ".";
 import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 import { kanaDict } from "@/app/util/kanji-utils";
 import { resetCardCounts } from "@/app/util/interval";
+import zlib from "zlib";
 
 let client, database, kanji, accounts, backup, premade, resetLogs, websiteStats
 
@@ -69,7 +70,7 @@ export async function createPremadeDeck(){
     try{
         if(!premade) await init()
         //Kanji list goes here
-        const kanjiList = "一二三四五六七八九十百千万円時日本人月火水木金土曜上下中半山川元気私今田女男見行食飲天東西南北口出右左分先生大学外国京子小会社父母高校毎語文帰入員新聞作仕事電車休言読思次何午後前名白雨書友間家話少古知来住正年売買町長道雪立自夜朝持手紙好近明病院映画歌市所勉強有旅昔々神早起牛使働連別度赤青色"
+        const kanjiList = "物鳥料理特安飯肉悪体同着空港昼海彼代留族親切英店去急乗当音楽医者死意味注夏魚寺広足転借走場建地通"
 
         const appendKanjis = async () => {
             
@@ -101,7 +102,7 @@ export async function createPremadeDeck(){
             })
             return deckList
         }
-        await appendKanjis().then((deckList) => (premade.insertOne({name: "Genki I: 3rd Edition", deck: deckList}).then((result) => console.log(result)).then(() => console.log(deckList + "too fast"))))
+        await appendKanjis().then((deckList) => (premade.insertOne({name: "Genki II: 3rd Edition", deck: deckList}).then((result) => console.log(result)).then(() => console.log(deckList + "too fast"))))
         
         
     } catch (e) {
@@ -262,14 +263,17 @@ export async function backupAccountData(){
     try{
         if(!accounts || !backup) await init()
 
-        const data = await accounts.find().toArray()
+        const accountData = await accounts.find({}).toArray();
 
-        const newBackup = {
-            date: moment().toISOString(),
-            data: data
-        }
+        const now = moment().toISOString();
+        const backups = accountData.map(acc => ({
+            accountId: acc._id,
+            date: now,
+            data: zlib.gzipSync(JSON.stringify(acc)),
+            compressed: true
+        }));
 
-        const result = await backup.insertOne(newBackup)
+        const result = await backup.insertMany(backups);
 
         return result
     } catch (e) {
