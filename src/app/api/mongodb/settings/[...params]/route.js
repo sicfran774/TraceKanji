@@ -2,7 +2,8 @@ import { getSettings, updateSettings, updateLastLoggedIn } from '@/lib/mongodb/k
 import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
-    const slug = await params.params
+    const parameters = await params
+    const slug = parameters.params
     
     //Get account in database based on email
     const accountInfo = await getSettings(slug[0])
@@ -13,7 +14,8 @@ export async function GET(request, { params }) {
 }
   
 export async function POST(request, { params }) {
-    const slug = await params.params
+    const parameters = await params
+    const slug = parameters.params
     const email = slug[0]
 
     //Get updated settings from body of request
