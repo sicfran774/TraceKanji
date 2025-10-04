@@ -2,7 +2,7 @@ import { getSettings, updateSettings, updateLastLoggedIn, getPremadeDeck } from 
 import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
-    const slug = params.params
+    const slug = await params.params
     
     //Get deck in database based on name of deck
     const deck = await getPremadeDeck(slug[0])
@@ -11,7 +11,7 @@ export async function GET(request, { params }) {
 }
   
 export async function POST(request, { params }) {
-    const slug = params.params
+    const slug = await params.params
     const email = slug[0]
 
     //Get deck from body of request

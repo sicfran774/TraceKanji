@@ -2,7 +2,7 @@ import { getStats, updateStats, updateLastLoggedIn } from '@/lib/mongodb/kanji'
 import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
-    const slug = params.params
+    const slug = await params.params
     
     //Get account in database based on email
     const accountInfo = await getStats(slug[0])
@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
 }
 
 export async function POST(request, { params }) {
-    const slug = params.params
+    const slug = await params.params
     const email = slug[0]
 
     //Get updated settings from body of request

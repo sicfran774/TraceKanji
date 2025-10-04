@@ -2,7 +2,7 @@ import { getDecks, getKanji, updateDecks } from '@/lib/mongodb/kanji'
 import { NextResponse } from 'next/server'
  
 export async function GET(request, { params }) {
-  const slug = params.params //Should be email, then deck
+  const slug = await params.params //Should be email, then deck
   
   //Get account in database based on email
   const accountInfo = await getDecks(slug[0])
@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
 }
 
 export async function POST(request, { params }) {
-  const slug = params.params
+  const slug = await params.params
   const email = slug[0]
 
   //Get updated decks from body of request
