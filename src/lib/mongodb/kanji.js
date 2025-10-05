@@ -4,6 +4,7 @@ import { defaultDeckSettings, prepareKanji } from "@/app/util/kanji-utils";
 import { kanaDict } from "@/app/util/kanji-utils";
 import { resetCardCounts } from "@/app/util/interval";
 import zlib from "zlib";
+import { json } from "stream/consumers";
 
 let client, database, kanji, accounts, backup, premade, resetLogs, websiteStats
 
@@ -267,7 +268,7 @@ export async function backupAccountData(){
 
         const now = moment().toISOString();
         const backups = accountData.map(acc => ({
-            accountId: acc._id,
+            email: acc.email,
             date: now,
             data: zlib.gzipSync(JSON.stringify(acc)),
             compressed: true
@@ -279,6 +280,27 @@ export async function backupAccountData(){
     } catch (e) {
         console.log(e)
         return {error: 'Failed to backup account data.'}
+    }
+}
+
+export async function uncompressBackup(){
+    try{
+        if(!backup) await init()
+
+        const account = await backup.findOne({ email: "sicfran.774@gmail.com" });
+
+        const buffer = account.data.buffer ? Buffer.from(account.data.buffer) : account.data;
+
+        const decompressed = zlib.gunzipSync(buffer);
+
+        const jsonString = decompressed.toString();
+        const result = JSON.parse(jsonString);
+        console.log(result)
+
+        return result
+    } catch (e) {
+        console.log(e)
+        return {error: 'Failed to revert account data from backup.'}
     }
 }
 
