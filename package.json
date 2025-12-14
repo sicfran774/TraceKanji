@@ -20,7 +20,7 @@
     "eslint-config-next": "13.4.12",
     "moment": "^2.30.1",
     "mongodb": "^5.7.0",
-    "next": "^15.5.4",
+    "next": "15.5.9",
     "next-auth": "^4.22.3",
     "next-connect": "^1.0.0",
     "nodemailer": "^6.9.11",
